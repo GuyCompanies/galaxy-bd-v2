@@ -162,6 +162,19 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
     <div class="eyebrow">Galaxy BD Module v2 · CEO Memo</div>
     <div class="h1">Gaps Closing<br><span style="color:var(--pr);">Plan</span>.</div>
     <div class="h2">Synthesis of Pnina + Noa + Yonatan + Idan + Guy inputs.<br>What's already shipped, what's partial, what's missing — and the 3-wave plan to close it in ~15 dev-days.</div>
+
+    <div style="margin-top:28px;padding:16px 20px;background:var(--prbg2);border-left:4px solid var(--pr);border-radius:6px;max-width:640px;">
+      <div style="font-size:11px;font-weight:700;color:var(--pr);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;">What we're asking tomorrow</div>
+      <div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:8px;">
+        <div style="font-size:22px;font-weight:800;color:var(--pr);line-height:1;">1</div>
+        <div style="font-size:14px;color:var(--tx);line-height:1.45;"><strong>Alignment on the 4 landmines</strong> as the actual scope of v2 — not UX polish.</div>
+      </div>
+      <div style="display:flex;gap:14px;align-items:flex-start;">
+        <div style="font-size:22px;font-weight:800;color:var(--pr);line-height:1;">2</div>
+        <div style="font-size:14px;color:var(--tx);line-height:1.45;"><strong>Green-light on the 3-wave plan</strong> with Wave 1 starting Monday. Everything else can iterate in-flight.</div>
+      </div>
+    </div>
+
     <div class="meta">
       <div><strong>Date</strong>2026-06-30</div>
       <div><strong>Audience</strong>Galaxy BD review</div>
@@ -637,52 +650,17 @@ Deal (= BrandProgramAssignment)
   </div>
 </div>
 
-<!-- ============ SLIDE 11: CEO STATEMENTS ============ -->
-<div class="slide" id="s11">
-  <div class="slide-header">
-    <span class="num">10</span>
-    <h2>CEO Statements for Tomorrow's Review</h2>
-    <span class="sub">What Guy can say — direct quotes, ready to use</span>
-  </div>
-  <div class="slide-body">
-    <div class="statement">
-      <div class="q">On the team's read of the work</div>
-      <div class="a">"You're reading this as mostly UX. The UX is the easy part. There are <strong>4 hidden landmines in the data model</strong>. All 4 are resolvable now — we're not negotiating that. We're scoping the resolution."</div>
-    </div>
-    <div class="statement">
-      <div class="q">On Landmine #1 — cascade INACTIVE</div>
-      <div class="a">"Flipping a Brand INACTIVE today silently leaves campaigns running and postbacks firing. That's a revenue leak waiting to happen. We're shipping a <strong>Review Queue + type-to-confirm + soft-flag resolver</strong>. No hard cascade. Reversible in one click."</div>
-    </div>
-    <div class="statement">
-      <div class="q">On Landmine #2 — the 5-seg Deal Name</div>
-      <div class="a">"BD-10 stays 5-seg. Channel slot is not optional. Every postback parser, every report aggregator, every CM filter is built around 5 slots. Dropping it costs 3 days of cascading fixes for zero benefit."</div>
-    </div>
-    <div class="statement">
-      <div class="q">On Landmine #4 — Account grain</div>
-      <div class="a">"Fernando has 3 IT accounts with 3 different caps and 3 different postbacks. Today they collapse into one row. <strong>We start Galaxy fresh — no migration.</strong> So we model ProgramAccount natively from commit one. It's not a migration risk, it's a design lock."</div>
-    </div>
-    <div class="statement">
-      <div class="q">On the schedule</div>
-      <div class="a">"15 dev-days, 3 waves, single engineer. Wave 1 is the schema + Segment Management tab. Wave 2 is the Create Deal v2. Wave 3 is the Deal Management tab. Each wave deploys to staging independently. Pnina + Noa get a review gate at the end of each."</div>
-    </div>
-    <div class="statement">
-      <div class="q">On what we want from tomorrow</div>
-      <div class="a">"Two things. <strong>One:</strong> alignment on the 4 landmines as the actual scope, not UX polish. <strong>Two:</strong> green-light on the 3-wave plan with Wave 1 starting Monday. Everything else can iterate in-flight."</div>
-    </div>
-  </div>
-</div>
-
 </div><!-- /deck -->
 
 <div class="nav" id="nav">
   <button onclick="prev()" title="Previous (←)">&#8592;</button>
   <div class="dots" id="dots"></div>
-  <span class="ctr" id="ctr">1 / 11</span>
+  <span class="ctr" id="ctr">1 / 10</span>
   <button onclick="next()" title="Next (→)">&#8594;</button>
 </div>
 
 <script>
-const N = 11;
+const N = 10;
 let cur = 1;
 
 function show(n) {
