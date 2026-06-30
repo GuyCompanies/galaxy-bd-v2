@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galaxy BD Module v2 — CEO Memo</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #F3F4F6; }
+
+:root {
+  --bg: #FFFFFF; --bg2: #F9FAFB; --bg3: #F3F4F6;
+  --bd: #E5E7EB; --bd2: #D1D5DB;
+  --tx: #111827; --tx2: #374151; --tx3: #6B7280; --tx4: #9CA3AF;
+  --pr: #059669; --pr2: #047857; --prbg: #D1FAE5; --prbg2: #ECFDF5;
+  --rd: #DC2626; --rdbg: #FEE2E2; --rdbg2: #FEF2F2;
+  --am: #D97706; --ambg: #FEF3C7; --ambg2: #FFFBEB;
+  --bl: #2563EB; --blbg: #DBEAFE; --blbg2: #EFF6FF;
+  --pu: #7C3AED; --pubg: #EDE9FE;
+}
+
+.deck { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+.slide { position: absolute; inset: 0; display: none; flex-direction: column; background: var(--bg2); }
+.slide.active { display: flex; }
+
+.slide-header {
+  background: var(--bg); padding: 14px 32px 12px;
+  flex: 0 0 auto; border-bottom: 1px solid var(--bd);
+  display: flex; align-items: baseline; gap: 16px;
+}
+.slide-header .num { font-size: 13px; color: var(--tx4); font-weight: 600; letter-spacing: .05em; }
+.slide-header h2 { color: var(--tx); font-size: 22px; font-weight: 700; flex: 1; }
+.slide-header .sub { color: var(--tx3); font-size: 13px; }
+
+.slide-body {
+  flex: 1 1 0; min-height: 0; padding: 18px 32px 56px;
+  display: flex; flex-direction: column; gap: 14px; overflow-y: auto;
+}
+
+.card {
+  background: var(--bg); border: 1px solid var(--bd); border-radius: 8px;
+  padding: 14px 18px; box-shadow: 0 1px 2px rgba(0,0,0,.03);
+}
+.card h3 { font-size: 14px; font-weight: 700; color: var(--tx); margin-bottom: 8px; letter-spacing: -.01em; }
+.card p { font-size: 13px; color: var(--tx2); line-height: 1.55; }
+
+.chips { display: flex; gap: 12px; }
+.chip {
+  flex: 1; background: var(--bg); border: 1px solid var(--bd); border-radius: 8px;
+  padding: 12px 16px; box-shadow: 0 1px 2px rgba(0,0,0,.03);
+}
+.chip .ck { font-size: 11px; color: var(--tx3); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+.chip .cv { font-size: 26px; font-weight: 700; color: var(--tx); line-height: 1; }
+.chip .cd { font-size: 12px; color: var(--tx3); margin-top: 4px; }
+
+.tbl { width: 100%; border-collapse: collapse; background: var(--bg); }
+.tbl th {
+  background: var(--bg2); color: var(--tx2); font-size: 12px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .04em;
+  padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--bd);
+}
+.tbl td {
+  padding: 11px 12px; font-size: 13px; color: var(--tx2); line-height: 1.5;
+  border-bottom: 1px solid var(--bd); vertical-align: top;
+}
+.tbl tr:last-child td { border-bottom: none; }
+.tbl td.label { font-weight: 600; color: var(--tx); }
+.tbl td.center { text-align: center; }
+.tbl td strong { color: var(--tx); font-weight: 600; }
+
+.tbl-wrap { border: 1px solid var(--bd); border-radius: 8px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,.03); }
+
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; letter-spacing: .02em; }
+.tag.gn { background: var(--prbg); color: var(--pr2); }
+.tag.rd { background: var(--rdbg); color: var(--rd); }
+.tag.am { background: var(--ambg); color: var(--am); }
+.tag.bl { background: var(--blbg); color: var(--bl); }
+.tag.pu { background: var(--pubg); color: var(--pu); }
+.tag.gr { background: var(--bg3); color: var(--tx3); }
+
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.dot.gn { background: var(--pr); }
+.dot.rd { background: var(--rd); }
+.dot.am { background: var(--am); }
+.dot.gr { background: var(--tx4); }
+
+.callout {
+  border-radius: 6px; padding: 10px 14px; font-size: 13px; line-height: 1.5;
+  border-left: 3px solid; display: flex; gap: 10px; align-items: flex-start;
+}
+.callout.info { background: var(--blbg2); border-color: var(--bl); color: #1E3A8A; }
+.callout.warn { background: var(--ambg2); border-color: var(--am); color: #78350F; }
+.callout.crit { background: var(--rdbg2); border-color: var(--rd); color: #7F1D1D; }
+.callout.good { background: var(--prbg2); border-color: var(--pr); color: #064E3B; }
+.callout strong { font-weight: 700; }
+.callout .ico { font-size: 14px; flex-shrink: 0; }
+
+.row { display: flex; gap: 14px; }
+.row > * { flex: 1; }
+
+.title-slide { background: var(--bg) !important; flex-direction: row !important; }
+.tl { flex: 1; padding: 60px 60px; display: flex; flex-direction: column; justify-content: center; }
+.tl .eyebrow { font-size: 13px; color: var(--pr); font-weight: 700; text-transform: uppercase; letter-spacing: .12em; margin-bottom: 16px; }
+.tl .h1 { font-size: 56px; font-weight: 800; color: var(--tx); line-height: 1.05; letter-spacing: -.025em; }
+.tl .h2 { font-size: 22px; color: var(--tx3); font-weight: 400; margin-top: 14px; line-height: 1.4; }
+.tl .meta { margin-top: 36px; display: flex; gap: 28px; font-size: 13px; color: var(--tx3); }
+.tl .meta strong { color: var(--tx); display: block; font-size: 14px; margin-bottom: 2px; }
+.tr { width: 380px; background: var(--bg2); border-left: 1px solid var(--bd); padding: 60px 36px; display: flex; flex-direction: column; justify-content: center; }
+.tr h3 { font-size: 15px; font-weight: 700; color: var(--tx); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--bd); }
+.tr .row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--bd); font-size: 13px; }
+.tr .row:last-child { border-bottom: none; }
+.tr .row .k { color: var(--tx3); }
+.tr .row .v { color: var(--tx); font-weight: 600; }
+
+.nav {
+  position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 8px; z-index: 200;
+  background: var(--bg); border: 1px solid var(--bd); padding: 6px 14px; border-radius: 22px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+}
+.nav button { background: none; border: none; color: var(--tx3); font-size: 16px; cursor: pointer; padding: 4px 10px; border-radius: 6px; line-height: 1; }
+.nav button:hover { background: var(--bg3); color: var(--tx); }
+.nav .ctr { color: var(--tx2); font-size: 12px; min-width: 64px; text-align: center; font-weight: 600; }
+.dots { display: flex; gap: 5px; }
+.di { width: 7px; height: 7px; border-radius: 50%; background: var(--bd2); cursor: pointer; transition: all .2s; }
+.di.active { background: var(--pr); transform: scale(1.3); }
+.di:hover { background: var(--tx4); }
+
+.kpi-line { display: flex; gap: 24px; font-size: 13px; color: var(--tx3); margin-top: 4px; }
+.kpi-line span strong { color: var(--tx); font-weight: 700; }
+
+.arch-diag {
+  background: var(--bg2); border: 1px solid var(--bd); border-radius: 6px;
+  padding: 14px 18px; font-family: 'SF Mono', 'Menlo', monospace;
+  font-size: 12px; line-height: 1.7; color: var(--tx2); white-space: pre;
+  overflow-x: auto;
+}
+
+.bullets { font-size: 13px; color: var(--tx2); line-height: 1.7; }
+.bullets li { list-style: none; padding-left: 18px; position: relative; margin-bottom: 4px; }
+.bullets li::before { content: '→'; position: absolute; left: 0; color: var(--pr); font-weight: 700; }
+.bullets li strong { color: var(--tx); font-weight: 600; }
+
+.col-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.col-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+.statement {
+  background: var(--bg); border: 1px solid var(--bd); border-left: 4px solid var(--pr);
+  border-radius: 6px; padding: 14px 18px;
+}
+.statement .q { font-size: 13px; color: var(--tx3); font-weight: 600; margin-bottom: 4px; }
+.statement .a { font-size: 14px; color: var(--tx); line-height: 1.5; }
+.statement .a strong { font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- ============ SLIDE 1: TITLE ============ -->
+<div class="slide active title-slide" id="s1">
+  <div class="tl">
+    <div class="eyebrow">CEO Memo · Galaxy BD Module v2</div>
+    <div class="h1">From "Light UX Polish"<br>to <span style="color:var(--pr);">Architectural Reset</span>.</div>
+    <div class="h2">Synthesis of Pnina + Noa + Yonatan + Idan + Guy inputs.<br>What ships, what breaks if we don't reset 4 hidden landmines, and the 3-wave plan to land it in ~15 dev-days.</div>
+    <div class="meta">
+      <div><strong>Date</strong>2026-06-30</div>
+      <div><strong>Audience</strong>Galaxy BD review</div>
+      <div><strong>Author</strong>CEO / Claude</div>
+    </div>
+  </div>
+  <div class="tr">
+    <h3>At-a-Glance</h3>
+    <div class="row"><span class="k">Inputs synthesized</span><span class="v">5 voices</span></div>
+    <div class="row"><span class="k">Gap status</span><span class="v">40% / 35% / 25%</span></div>
+    <div class="row"><span class="k">Hidden landmines</span><span class="v">4 → all resolved</span></div>
+    <div class="row"><span class="k">UX tensions</span><span class="v">4 → all resolved</span></div>
+    <div class="row"><span class="k">Dev estimate</span><span class="v">~15 days · 3 waves</span></div>
+    <div class="row"><span class="k">Migration scope</span><span class="v">None — fresh start</span></div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 2: REALITY CHECK ============ -->
+<div class="slide" id="s2">
+  <div class="slide-header">
+    <span class="num">01</span>
+    <h2>Reality Check</h2>
+    <span class="sub">What the team sees vs. what the build actually is</span>
+  </div>
+  <div class="slide-body">
+    <div class="row">
+      <div class="card">
+        <h3 style="color:var(--tx3);">Team perception</h3>
+        <p style="color:var(--tx3);">"This is mostly UX work. Re-order the cascade, add a few fields, drop the Identity & Priority box, ship it in a sprint."</p>
+        <div style="margin-top:10px;font-size:12px;color:var(--tx4);">Reading: surface re-layout · light wiring · ~5 dev-days.</div>
+      </div>
+      <div class="card" style="border-left:4px solid var(--pr);">
+        <h3>Ground truth</h3>
+        <p>The UX <em>is</em> the easy part. Underneath it sit <strong>4 hidden landmines</strong> in the data model — each one can silently kill revenue or block the next version of Pricing, Reporting, or Reconciliation.</p>
+        <div style="margin-top:10px;font-size:12px;color:var(--tx2);">Reading: surface UX + entity reshape + cascade safety + naming lock-in.</div>
+      </div>
+    </div>
+
+    <div class="callout good">
+      <span class="ico">✅</span>
+      <div><strong>Good news:</strong> All 4 landmines are <strong>identified, scoped, and resolvable now</strong>. None of them require migration — we are starting Galaxy fresh, so we land them as native day-one architecture. Estimate drops from 18–20 days to ~15.</div>
+    </div>
+
+    <div class="callout info">
+      <span class="ico">📌</span>
+      <div><strong>What this memo is:</strong> the CEO-level read on Pnina's + Noa's + Yonatan's feedback. Two things tomorrow — (1) align on the 4 landmines table, (2) confirm the 3-wave plan. Visual deck for Pnina lives separately.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 3: GAP MAP ============ -->
+<div class="slide" id="s3">
+  <div class="slide-header">
+    <span class="num">02</span>
+    <h2>Gap Map — What Exists, What's Partial, What's Missing</h2>
+    <span class="sub">5 capability slices · % of full target</span>
+  </div>
+  <div class="slide-body">
+    <div class="chips">
+      <div class="chip"><div class="ck">Already Shipped</div><div class="cv">~40%</div><div class="cd">BD-1..13 base form, cascade, allocation table</div></div>
+      <div class="chip"><div class="ck">Partial / Needs Rework</div><div class="cv">~35%</div><div class="cd">Cascade direction, segment IA, name format</div></div>
+      <div class="chip"><div class="ck">Missing Entirely</div><div class="cv">~25%</div><div class="cd">Account grain, INACTIVE cascade, Deal Mgmt tab</div></div>
+      <div class="chip"><div class="ck">Dev Estimate</div><div class="cv">~15d</div><div class="cd">3 waves · single engineer</div></div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr><th style="width:24%;">Capability slice</th><th style="width:8%;">Status</th><th style="width:34%;">Ground truth (today)</th><th style="width:34%;">Target (post-v2)</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="label">Segment Management (NS / Program / Platform / Brand)</td>
+            <td><span class="dot am"></span><span class="tag am">PARTIAL</span></td>
+            <td>NS + Program + Brand exist as flat lists in sidebar. No <strong>Account</strong> grain. No <strong>Platform</strong> entity. INACTIVE flag exists but doesn't cascade.</td>
+            <td>Dedicated tab with 4 sub-pages. Program has Accounts repeater. Platform is first-class. Brand exists. Each list has +Add and INACTIVE confirmation.</td>
+          </tr>
+          <tr>
+            <td class="label">Create Deal cascade</td>
+            <td><span class="dot am"></span><span class="tag am">PARTIAL</span></td>
+            <td>Cascade is <strong>Program → Brand → ASW → Country</strong>. Five-segment Deal Name auto-composed. Allocation table with thresholds works.</td>
+            <td><strong>Re-shape</strong> around Noa's mental model. Per-Country block stays. Allocation extended to Account grain. +Add sidesheet for inline creation.</td>
+          </tr>
+          <tr>
+            <td class="label">Deal Management list</td>
+            <td><span class="dot rd"></span><span class="tag rd">MISSING</span></td>
+            <td><code>/deals</code> exists as a flat list with red-ring for non-ACTIVE. No Priority sort. No CM reassign in-row. No bulk actions.</td>
+            <td>Dedicated tab with Priority column, sortable, in-row CM reassign, bulk INACTIVE/REACTIVATE, filter by NS/Program/Brand/Country/Status.</td>
+          </tr>
+          <tr>
+            <td class="label">Cascade INACTIVE safety</td>
+            <td><span class="dot rd"></span><span class="tag rd">MISSING</span></td>
+            <td>Flipping a Brand or Program INACTIVE leaves child Deals & live Campaigns <strong>running silently</strong>. One mis-click can keep paying postbacks for hours.</td>
+            <td>Review queue + type-to-confirm + <code>effectiveStatus</code> resolver. Children pause within seconds, with audit trail and reactivation path.</td>
+          </tr>
+          <tr>
+            <td class="label">Account grain (Program × Account)</td>
+            <td><span class="dot rd"></span><span class="tag rd">MISSING</span></td>
+            <td>Fernando's 3 Italy accounts and Julia's 2 Spain accounts collapse into one Program row. Allocation, caps, postbacks all live at Program — drift waiting to happen.</td>
+            <td>Native <code>ProgramAccount</code> entity from day one. Allocation keyed on (cmUserId, programAccountId). Postback URL on Account. No migration needed.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warn">
+      <span class="ico">📌</span>
+      <div><strong>Why 15 days not 18-20:</strong> Landmine #4 (Account-grain drift) used to require a backfill migration of Galaxy's existing data. Guy confirmed there is <strong>no migration</strong> — Galaxy starts fresh. We model it natively from commit 1 and the work compresses by ~3-4 days.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 4: THE 4 LANDMINES ============ -->
+<div class="slide" id="s4">
+  <div class="slide-header">
+    <span class="num">03</span>
+    <h2>The 4 Hidden Landmines</h2>
+    <span class="sub">Each one can kill revenue or block the next version of Pricing / Reporting / Reconciliation</span>
+  </div>
+  <div class="slide-body">
+    <div class="tbl-wrap" style="flex:0 0 auto;">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th style="width:4%;">#</th>
+            <th style="width:18%;">Landmine</th>
+            <th style="width:24%;">Why it matters</th>
+            <th style="width:24%;">If we ignore it</th>
+            <th style="width:22%;">Recommendation (resolved)</th>
+            <th style="width:8%;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="center"><strong>1</strong></td>
+            <td class="label">Cascade INACTIVE = one-click revenue kill</td>
+            <td>Flipping Brand/Program/Platform → INACTIVE leaves Deals + live Campaigns running. Postbacks fire to a brand we're no longer working with.</td>
+            <td>Silent revenue leak. Affiliate disputes. Finance reconciliation gap. <strong>Worst-case: hours of paid traffic to nowhere.</strong></td>
+            <td><strong>Review Queue</strong>: INACTIVE toggle shows preview of impacted children (Deal × Campaign × CM allocation) + type-to-confirm. Apply via <code>effectiveStatus</code> resolver — soft flag, not hard cascade, reversible in 1 click.</td>
+            <td><span class="tag gn">🟢 LOCKED</span></td>
+          </tr>
+          <tr>
+            <td class="center"><strong>2</strong></td>
+            <td class="label">BD-10 5-seg vs 4-seg Deal Name collision</td>
+            <td>Pnina locked 5-seg <code>{PROGRAM}_{BRAND}_{CHANNEL}_{COUNTRY}_{DATE}</code>. Some team feedback proposed dropping CHANNEL. Breaks every postback parser + every report aggregating by channel.</td>
+            <td>Existing campaigns can't parse. CM filters break. Channel-level KPIs collapse. Reporting team has to retrofit. ~3 days of cascading fixes.</td>
+            <td><strong>Keep 5-seg as locked.</strong> Channel slot stays. Naming preview shows live composition. <code>nameManualOverride</code> flag exists for the 5% edge case. Idan's report queries already key on 5 slots.</td>
+            <td><span class="tag gn">🟢 LOCKED</span></td>
+          </tr>
+          <tr>
+            <td class="center"><strong>3</strong></td>
+            <td class="label">BD-2 cascade direction inversion</td>
+            <td>Today: Program → Brand → ASW → Country. Noa's drawing implies Brand-first. Inverting the cascade breaks every existing route, breadcrumb, URL param resolver, and the postback override map.</td>
+            <td>Every Galaxy CM has muscle-memory on Program-first. Re-training cost + ~2 days of router rewrites + multi-deal URL-param resolver collapses.</td>
+            <td><strong>Lock Program-first.</strong> Noa's drawing is about <em>navigation</em> (which tab opens first), not <em>cascade</em> (which field gates the next). Different problems. Sidebar gets "Brand" as a navigable view; Create Deal stays Program-first.</td>
+            <td><span class="tag gn">🟢 LOCKED</span></td>
+          </tr>
+          <tr>
+            <td class="center"><strong>4</strong></td>
+            <td class="label">Account-grain allocation drift</td>
+            <td>Fernando has 3 IT accounts (different geos, caps, postbacks). Today, Program collapses all 3 into one row. Caps, allocation, postbacks all drift. Was a launch-blocker because of migration.</td>
+            <td><strong>Was:</strong> backfill of all existing Program assignments. <strong>Now (per Guy 2026-06-30):</strong> no migration — Galaxy starts fresh. Risk dissolved.</td>
+            <td><strong>Model ProgramAccount natively from day one.</strong> Allocation table keyed on (cmUserId, programAccountId). Caps + postback URL live on Account. No backfill, no dual-write, no drift. <strong>Channel can live on Account too</strong> (Option A — recommended).</td>
+            <td><span class="tag gn">🟢 RESOLVED</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout good">
+      <span class="ico">✅</span>
+      <div><strong>All 4 are now 🟢:</strong> #1 has a clean Review-queue + soft-flag pattern. #2 and #3 are policy locks (no code rework). #4 dissolves because no migration exists. Net result: <strong>~3-4 dev-days reclaimed</strong> vs original estimate.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 5: ARCHITECTURE ============ -->
+<div class="slide" id="s5">
+  <div class="slide-header">
+    <span class="num">04</span>
+    <h2>Architecture — The Lego Cut</h2>
+    <span class="sub">Entity deltas · relationships · what stays, what's added, what's natively new</span>
+  </div>
+  <div class="slide-body">
+    <div class="row">
+      <div class="card">
+        <h3>What stays (proven, untouched)</h3>
+        <ul class="bullets">
+          <li><strong>AffiliateNetwork</strong> (= NetworkSystem). Top of the tree.</li>
+          <li><strong>Program</strong>. The contract layer. M:N to Brand stays.</li>
+          <li><strong>Brand</strong>. Now first-class in sidebar.</li>
+          <li><strong>BrandProgramAssignment</strong> (= Deal). M:N preserved.</li>
+          <li><strong>DealGeo</strong> + <strong>DealGeoCmAllocation</strong>. Per-country block stays.</li>
+          <li><strong>Campaign</strong> with <code>linkSpec</code> multi-deal resolver.</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:4px solid var(--pr);">
+        <h3>What's added (Galaxy v2 native)</h3>
+        <ul class="bullets">
+          <li><strong>Platform</strong> — first-class entity (own page, own status).</li>
+          <li><strong>ProgramAccount</strong> — Fernando's 3 IT accounts as separate rows.</li>
+          <li><strong>BrandProgramLink</strong> — explicit Program × Brand link with status + start/end dates.</li>
+          <li><code>MacroStatus</code> enum: ACTIVE / AT_RISK / INACTIVE.</li>
+          <li><code>effectiveStatus</code> resolver — soft cascade, no hard FK delete.</li>
+          <li>Allocation keyed on <strong>(cmUserId, programAccountId)</strong>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Relationship cut (text diagram)</h3>
+<div class="arch-diag">AffiliateNetwork (NS)
+   └── Program ──────────────────M:N────────── Brand
+         │                                       │
+         ├── ProgramAccount (NEW)                 │
+         │     ├── status / postbackUrl           │
+         │     ├── channel (Option A — SMS/Email) │
+         │     └── countryDefault                 │
+         │                                       │
+         └────── Platform (NEW) ─────────────────┘
+                  └── status flows down via effectiveStatus
+
+Deal (= BrandProgramAssignment)
+   ├── DealGeo (per Country)
+   │     └── DealGeoCmAllocation  ← keyed on (cmUserId, programAccountId)
+   ├── Campaign × N — linkSpec multi-deal resolver
+   └── AffiliateManagerInvite (Account-scoped)</div>
+    </div>
+
+    <div class="callout info">
+      <span class="ico">🧩</span>
+      <div><strong>Lego principle holds:</strong> every new entity has a clean adapter boundary. Platform + ProgramAccount + BrandProgramLink are all <strong>repo-extractable</strong> for the next tenant (Galaxy → Vero → 3rd tenant). No Galaxy-specific code in the kernel.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 6: CASCADE PATTERN ============ -->
+<div class="slide" id="s6">
+  <div class="slide-header">
+    <span class="num">05</span>
+    <h2>Cascade INACTIVE → Review Queue</h2>
+    <span class="sub">The pattern that closes Landmine #1 without hard cascade or migrations</span>
+  </div>
+  <div class="slide-body">
+    <div class="row">
+      <div class="card">
+        <h3>How it works</h3>
+        <ul class="bullets">
+          <li>User flips Brand X → INACTIVE.</li>
+          <li>System computes <code>impacted children</code>: 14 Deals, 6 live Campaigns, 23 CM allocations.</li>
+          <li>Modal shows the impact <strong>before</strong> confirming.</li>
+          <li>User types the Brand name to confirm (type-to-confirm pattern).</li>
+          <li>Brand flag flips. All children's <code>effectiveStatus</code> recomputes via resolver — no FK cascade, no row deletes.</li>
+          <li>Children show <span class="tag am">CASCADE-INACTIVE</span> badge with link back to parent.</li>
+          <li>Reactivation reverses in 1 click (parent flip → children recompute).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Why it's safe</h3>
+        <ul class="bullets">
+          <li><strong>Soft flag, not hard cascade</strong> — no risk of FK orphaning.</li>
+          <li><strong>Resolver-computed</strong> — single source of truth, no dual-write drift.</li>
+          <li><strong>Audit trail baked in</strong> — every flip writes who/when/why.</li>
+          <li><strong>Reversible</strong> — flip parent back, children come back.</li>
+          <li><strong>Cron-pause Campaigns</strong> — live Campaigns running on cascade-inactive Deals auto-pause within 60s. Postbacks stop. Affiliate manager notified.</li>
+          <li><strong>One pattern reused</strong> across NS / Program / Platform / Brand / Account.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <span class="ico">⚠️</span>
+      <div><strong>Edge case to flag at meeting:</strong> what if a CM is mid-campaign when their Account flips INACTIVE? Current proposal: campaign continues to current funnel-flush (~24h), then auto-pauses. Open question for Noa: do we hard-pause within 60s or do a 24h grace window? Default recommendation: 60s pause + automated CM notification.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 7: UX TENSIONS ============ -->
+<div class="slide" id="s7">
+  <div class="slide-header">
+    <span class="num">06</span>
+    <h2>4 UX Tensions — Resolved</h2>
+    <span class="sub">Where team voices disagreed · the call we recommend</span>
+  </div>
+  <div class="slide-body">
+    <div class="tbl-wrap" style="flex:0 0 auto;">
+      <table class="tbl">
+        <thead>
+          <tr><th style="width:5%;">#</th><th style="width:20%;">Tension</th><th style="width:30%;">Voices</th><th style="width:30%;">Resolution</th><th style="width:15%;">Why</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="center"><strong>1</strong></td>
+            <td class="label">Welcome offer scope: per-Deal or per-Country?</td>
+            <td><strong>Pnina:</strong> per-Country (varies by market). <strong>Yonatan:</strong> per-Deal (simpler). <strong>Idan:</strong> indifferent.</td>
+            <td><strong>Per-Country.</strong> Lives inside the DealGeo block. Inherits the Deal default but country can override.</td>
+            <td>Welcome offers vary by promo law (IT vs ES vs PT). Per-Country is the only safe default.</td>
+          </tr>
+          <tr>
+            <td class="center"><strong>2</strong></td>
+            <td class="label">Verticals: own page or filter chip?</td>
+            <td><strong>Noa:</strong> own page (treat as primary IA). <strong>Pnina:</strong> filter chip on Programs page.</td>
+            <td><strong>Own page in Segment Management tab.</strong> Vertical is a first-class organizational axis, not a filter.</td>
+            <td>Verticals will grow (Casino, Sportsbook, Lottery, Crypto, ...). Filter chips don't scale past 5.</td>
+          </tr>
+          <tr>
+            <td class="center"><strong>3</strong></td>
+            <td class="label">"+ Add New" pattern in Create Deal cascade</td>
+            <td><strong>Pnina:</strong> modal popup. <strong>Noa:</strong> sidesheet that doesn't lose form state.</td>
+            <td><strong>Right-side sidesheet.</strong> Inline create without losing partially-filled Deal form. Closes back to the cascade with new value pre-selected.</td>
+            <td>Modal loses form state if user closes mid-create. Sidesheet preserves it. Standard AMP pattern.</td>
+          </tr>
+          <tr>
+            <td class="center"><strong>4</strong></td>
+            <td class="label">Bank altitude: Program or Account?</td>
+            <td><strong>Pnina:</strong> Program-level default. <strong>Idan:</strong> Account-level (per Fernando IT vs Fernando ES).</td>
+            <td><strong>Program-default-with-Account-override.</strong> Bank fields live on Program. Account can override if needed (rare). UI shows inherited vs overridden badge.</td>
+            <td>~90% of accounts inherit from Program. Override exists for the 10% case (e.g., Fernando ES uses a different IBAN). Defaults reduce data entry.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout good">
+      <span class="ico">✅</span>
+      <div><strong>All 4 resolutions are reversible.</strong> If a call turns out wrong in beta, every one of them is a config flag flip or a UI re-route — no schema rollback needed. Low regret cost on every line.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 8: 3-WAVE PLAN ============ -->
+<div class="slide" id="s8">
+  <div class="slide-header">
+    <span class="num">07</span>
+    <h2>3-Wave Release Plan — ~15 dev-days</h2>
+    <span class="sub">Single engineer · each wave independently shippable · clean exit gates</span>
+  </div>
+  <div class="slide-body">
+    <div class="col-3">
+      <div class="card" style="border-top:4px solid var(--bl);">
+        <div class="tag bl" style="margin-bottom:8px;">WAVE 1 · ~6 days</div>
+        <h3>Foundation + Cascade</h3>
+        <p style="font-size:12px;color:var(--tx3);margin-bottom:8px;">Schema deltas + Segment Management tab + Review queue pattern</p>
+        <ul class="bullets">
+          <li>Add <strong>Platform</strong> + <strong>ProgramAccount</strong> + <strong>BrandProgramLink</strong> entities.</li>
+          <li>Wire <code>MacroStatus</code> + <code>effectiveStatus</code> resolver.</li>
+          <li>Build Segment Management tab with 4 sub-pages.</li>
+          <li>Ship Review Queue + type-to-confirm pattern (reused across all 4).</li>
+          <li>+Add sidesheet on each sub-page.</li>
+        </ul>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--bd);font-size:12px;color:var(--tx2);"><strong>Exit gate:</strong> can create NS → Program → Account → Brand and flip any node INACTIVE with cascade preview.</div>
+      </div>
+      <div class="card" style="border-top:4px solid var(--pr);">
+        <div class="tag gn" style="margin-bottom:8px;">WAVE 2 · ~6 days</div>
+        <h3>Create Deal v2</h3>
+        <p style="font-size:12px;color:var(--tx3);margin-bottom:8px;">Cascade re-shape + Account grain + sidesheet integration</p>
+        <ul class="bullets">
+          <li>Reshape DealCreateForm to Noa's mental model (Program-first lock confirmed).</li>
+          <li>Allocation table extended to <strong>(cmUserId, programAccountId)</strong> grain.</li>
+          <li>Per-Country welcome offer block.</li>
+          <li>+Add Brand / +Add Program / +Add Account from inside the cascade (sidesheet).</li>
+          <li>Channel on ProgramAccount (Option A — green-lit).</li>
+          <li>5-seg Deal Name composer with manual override.</li>
+        </ul>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--bd);font-size:12px;color:var(--tx2);"><strong>Exit gate:</strong> Pnina creates a full Deal end-to-end without leaving the form.</div>
+      </div>
+      <div class="card" style="border-top:4px solid var(--am);">
+        <div class="tag am" style="margin-bottom:8px;">WAVE 3 · ~3 days</div>
+        <h3>Deal Management Tab</h3>
+        <p style="font-size:12px;color:var(--tx3);margin-bottom:8px;">List view + Priority + bulk actions + CM reassign</p>
+        <ul class="bullets">
+          <li>Dedicated tab in sidebar (separate from /deals/new).</li>
+          <li>Priority column + sortable + filter by every parent entity.</li>
+          <li>In-row CM reassign (no nav away).</li>
+          <li>Bulk INACTIVE / REACTIVATE / Re-CM.</li>
+          <li>Red-ring + dot indicators retained from BD-11.</li>
+          <li>CSV export of filtered view.</li>
+        </ul>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--bd);font-size:12px;color:var(--tx2);"><strong>Exit gate:</strong> Pnina manages a 50-deal book without opening any sub-page.</div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <span class="ico">📅</span>
+      <div><strong>Sequencing logic:</strong> Wave 1 unblocks Wave 2 (Account grain must exist before allocation reshape). Wave 2 unblocks Wave 3 (Deal list filters need the new entity tree). Each wave deploys independently to amp-staging. Galaxy stakeholder review at the end of each wave.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 9: BD-1..13 COLLISION MATRIX ============ -->
+<div class="slide" id="s9">
+  <div class="slide-header">
+    <span class="num">08</span>
+    <h2>BD-1..13 Collision Matrix</h2>
+    <span class="sub">Which of Pnina's 13 shipped items get touched · what's safe · what's locked</span>
+  </div>
+  <div class="slide-body">
+    <div class="tbl-wrap" style="flex:0 0 auto;">
+      <table class="tbl">
+        <thead>
+          <tr><th style="width:8%;">Code</th><th style="width:28%;">Item</th><th style="width:12%;">v2 impact</th><th style="width:32%;">What changes</th><th style="width:20%;">Risk</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="label">BD-1</td><td>CM dropdown — single default + multi-pick</td><td><span class="tag gn">UNCHANGED</span></td><td>Stays as-is. Multi-pick already wired.</td><td>—</td></tr>
+          <tr><td class="label">BD-2</td><td>Program → Brand → ASW → Country cascade</td><td><span class="tag bl">REWIRE</span></td><td>Cascade <strong>direction locked Program-first</strong>. UI re-shape for Noa's flow. No semantic change.</td><td>Low — UI only</td></tr>
+          <tr><td class="label">BD-3</td><td>Geo picker (popular grid + dropdown)</td><td><span class="tag gn">UNCHANGED</span></td><td>Stays as-is.</td><td>—</td></tr>
+          <tr><td class="label">BD-4</td><td>Per-country General Cap + per-CM allocation</td><td><span class="tag bl">REWIRE</span></td><td>Allocation table extended from (cmUserId) → (cmUserId, programAccountId). Threshold + autopause logic unchanged.</td><td>Medium — touches DealGeoCmAllocation schema</td></tr>
+          <tr><td class="label">BD-5</td><td>One Affiliate Manager per Program × Deal</td><td><span class="tag bl">EXTENDED</span></td><td>Now per Account × Deal. Account inherits Program's manager by default; override per Account.</td><td>Low — additive field</td></tr>
+          <tr><td class="label">BD-6</td><td>Per-country currency + HYBRID override</td><td><span class="tag gn">UNCHANGED</span></td><td>Stays at DealGeo grain. Already works.</td><td>—</td></tr>
+          <tr><td class="label">BD-7</td><td>Per-country deal block + "same as previous"</td><td><span class="tag gn">UNCHANGED</span></td><td>Pattern stays. Only the welcome offer field gets added.</td><td>—</td></tr>
+          <tr><td class="label">BD-8</td><td>Deal-level FTD caps removed (geo only)</td><td><span class="tag gn">UNCHANGED</span></td><td>Already retired.</td><td>—</td></tr>
+          <tr><td class="label">BD-9</td><td>Multi-deal URL-param resolver</td><td><span class="tag gn">UNCHANGED</span></td><td>Campaign.linkSpec + /resolve-link untouched. Multi-Account inherits.</td><td>—</td></tr>
+          <tr><td class="label">BD-10</td><td>5-seg Deal Name format</td><td><span class="tag rd">DO NOT BREAK</span></td><td><strong>LOCKED.</strong> Channel slot stays. Auto-composer preview. Manual override flag.</td><td>High if dropped — see Landmine #2</td></tr>
+          <tr><td class="label">BD-11</td><td>Non-ACTIVE deals red ring on /deals</td><td><span class="tag bl">EXTENDED</span></td><td>Red ring stays. Cascade-INACTIVE adds amber ring. Filter chip on Deal Mgmt tab.</td><td>Low — additive UI</td></tr>
+          <tr><td class="label">BD-12</td><td>New/Ongoing toggle + Affiliate Manager invite</td><td><span class="tag gn">UNCHANGED</span></td><td>Stays. AffiliateManagerInvite now Account-scoped.</td><td>Low</td></tr>
+          <tr><td class="label">BD-13</td><td>Click → Sign-up → FTD → QFTD funnel</td><td><span class="tag gn">UNCHANGED</span></td><td>Endpoint unchanged. Drill-down can now filter by Account.</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout good">
+      <span class="ico">📊</span>
+      <div><strong>Read:</strong> 7 of 13 stay completely untouched. 5 get extended additively (allocation grain, manager scope, ring colors). Only 1 has rewire risk (BD-2 cascade UI — fully scoped). Net: <strong>BD-1..13 is mostly safe</strong>. The risk is in the new entities, not in the existing work.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 10: WILD CARDS ============ -->
+<div class="slide" id="s10">
+  <div class="slide-header">
+    <span class="num">09</span>
+    <h2>3 Wild Cards</h2>
+    <span class="sub">Out-of-the-box options surfaced for Guy's decision · not in the 3-wave plan but worth considering</span>
+  </div>
+  <div class="slide-body">
+    <div class="col-3">
+      <div class="card" style="border-top:4px solid var(--pu);">
+        <div class="tag pu" style="margin-bottom:8px;">WILD CARD 1</div>
+        <h3>OrgUnit enum across the kernel</h3>
+        <p style="font-size:13px;color:var(--tx2);line-height:1.55;">Today: NS, Program, Brand, Platform, Account are 5 separate entities. Wild card: collapse them under a generic <code>OrgUnit</code> enum + parent_id self-reference. One table, one cascade resolver, infinite nesting.</p>
+        <div style="margin-top:10px;padding:8px 10px;background:var(--bg2);border-radius:4px;font-size:12px;color:var(--tx3);">
+          <strong style="color:var(--tx);">Win:</strong> Adds Vertical, Region, anything else as zero-code extensions.<br>
+          <strong style="color:var(--tx);">Cost:</strong> Loses type safety in TypeScript. Reports get harder. ~2 extra dev-days now, saves ~10 days over 12 months.
+        </div>
+        <div style="margin-top:8px;font-size:12px;"><strong style="color:var(--pr);">Recommendation:</strong> defer to v3 unless we see a 3rd entity type added in next 6 months.</div>
+      </div>
+      <div class="card" style="border-top:4px solid var(--pu);">
+        <div class="tag pu" style="margin-bottom:8px;">WILD CARD 2</div>
+        <h3>Program Health as monetization</h3>
+        <p style="font-size:13px;color:var(--tx2);line-height:1.55;">Every Program × Brand × Account combo has live health signals (FTD trend, payout speed, postback failure rate, dispute count). Wild card: expose this as a <strong>"Program Health Score" service</strong> to networks themselves as a paid API.</p>
+        <div style="margin-top:10px;padding:8px 10px;background:var(--bg2);border-radius:4px;font-size:12px;color:var(--tx3);">
+          <strong style="color:var(--tx);">Win:</strong> Networks pay us to tell them which of their programs are leaking. New revenue line, B2B SaaS pricing.<br>
+          <strong style="color:var(--tx);">Cost:</strong> Productizing this is ~1 month after Wave 3 ships. Compliance review needed.
+        </div>
+        <div style="margin-top:8px;font-size:12px;"><strong style="color:var(--pr);">Recommendation:</strong> park as "interesting" — surface again after Galaxy 3k stable.</div>
+      </div>
+      <div class="card" style="border-top:4px solid var(--pu);">
+        <div class="tag pu" style="margin-bottom:8px;">WILD CARD 3</div>
+        <h3>Postback URL on Account (not Program)</h3>
+        <p style="font-size:13px;color:var(--tx2);line-height:1.55;">Already implied by Landmine #4 resolution, but worth surfacing: <strong>postback URLs move from Program → ProgramAccount</strong>. Fernando's IT account fires to IT-postback.galaxy.com; ES account to ES-postback.galaxy.com.</p>
+        <div style="margin-top:10px;padding:8px 10px;background:var(--bg2);border-radius:4px;font-size:12px;color:var(--tx3);">
+          <strong style="color:var(--tx);">Win:</strong> Cleaner attribution. Lower postback failure rate. Per-Account A/B testing.<br>
+          <strong style="color:var(--tx);">Cost:</strong> Account-grain naturally absorbs this — ~0 incremental cost if we model ProgramAccount on day one.
+        </div>
+        <div style="margin-top:8px;font-size:12px;"><strong style="color:var(--pr);">Recommendation:</strong> <strong>ship in Wave 1</strong>. Free win.</div>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <span class="ico">💡</span>
+      <div><strong>Why surface wild cards now:</strong> the architecture is being reset for Galaxy. This is the cheapest moment in the next 2 years to embed optionality. Decisions deferred now cost 5-10× to retrofit later.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 11: CEO STATEMENTS ============ -->
+<div class="slide" id="s11">
+  <div class="slide-header">
+    <span class="num">10</span>
+    <h2>CEO Statements for Tomorrow's Review</h2>
+    <span class="sub">What Guy can say — direct quotes, ready to use</span>
+  </div>
+  <div class="slide-body">
+    <div class="statement">
+      <div class="q">On the team's read of the work</div>
+      <div class="a">"You're reading this as mostly UX. The UX is the easy part. There are <strong>4 hidden landmines in the data model</strong>. All 4 are resolvable now — we're not negotiating that. We're scoping the resolution."</div>
+    </div>
+    <div class="statement">
+      <div class="q">On Landmine #1 — cascade INACTIVE</div>
+      <div class="a">"Flipping a Brand INACTIVE today silently leaves campaigns running and postbacks firing. That's a revenue leak waiting to happen. We're shipping a <strong>Review Queue + type-to-confirm + soft-flag resolver</strong>. No hard cascade. Reversible in one click."</div>
+    </div>
+    <div class="statement">
+      <div class="q">On Landmine #2 — the 5-seg Deal Name</div>
+      <div class="a">"BD-10 stays 5-seg. Channel slot is not optional. Every postback parser, every report aggregator, every CM filter is built around 5 slots. Dropping it costs 3 days of cascading fixes for zero benefit."</div>
+    </div>
+    <div class="statement">
+      <div class="q">On Landmine #4 — Account grain</div>
+      <div class="a">"Fernando has 3 IT accounts with 3 different caps and 3 different postbacks. Today they collapse into one row. <strong>We start Galaxy fresh — no migration.</strong> So we model ProgramAccount natively from commit one. It's not a migration risk, it's a design lock."</div>
+    </div>
+    <div class="statement">
+      <div class="q">On the schedule</div>
+      <div class="a">"15 dev-days, 3 waves, single engineer. Wave 1 is the schema + Segment Management tab. Wave 2 is the Create Deal v2. Wave 3 is the Deal Management tab. Each wave deploys to staging independently. Pnina + Noa get a review gate at the end of each."</div>
+    </div>
+    <div class="statement">
+      <div class="q">On what we want from tomorrow</div>
+      <div class="a">"Two things. <strong>One:</strong> alignment on the 4 landmines as the actual scope, not UX polish. <strong>Two:</strong> green-light on the 3-wave plan with Wave 1 starting Monday. Everything else can iterate in-flight."</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<div class="nav" id="nav">
+  <button onclick="prev()" title="Previous (←)">&#8592;</button>
+  <div class="dots" id="dots"></div>
+  <span class="ctr" id="ctr">1 / 11</span>
+  <button onclick="next()" title="Next (→)">&#8594;</button>
+</div>
+
+<script>
+const N = 11;
+let cur = 1;
+
+function show(n) {
+  document.querySelectorAll('.slide').forEach((s, i) => s.classList.toggle('active', i + 1 === n));
+  document.querySelectorAll('.di').forEach((d, i) => d.classList.toggle('active', i + 1 === n));
+  document.getElementById('ctr').textContent = n + ' / ' + N;
+  cur = n;
+}
+function next() { if (cur < N) show(cur + 1); }
+function prev() { if (cur > 1) show(cur - 1); }
+
+const dotsEl = document.getElementById('dots');
+for (let i = 1; i <= N; i++) {
+  const d = document.createElement('div');
+  d.className = 'di' + (i === 1 ? ' active' : '');
+  d.onclick = () => show(i);
+  dotsEl.appendChild(d);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); next(); }
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                    { e.preventDefault(); prev(); }
+});
+
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+document.addEventListener('touchend',   e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 50) dx < 0 ? next() : prev();
+});
+</script>
+</body>
+</html>
