@@ -374,7 +374,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
   <div class="slide-header">
     <span class="num">T1.3</span>
     <h2>Program sub-page · with Accounts repeater</h2>
-    <span class="sub">Program detail expands inline to show all Accounts (Fernando IT / Fernando ES / etc.)</span>
+    <span class="sub">Program detail expands inline to show all Accounts (logins owned by our CMs across territories)</span>
     <span class="tabchip t1">Tab 1</span>
   </div>
   <div class="slide-body">
@@ -392,31 +392,33 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
           <div class="item">📊 Deal Management</div>
         </div>
         <div class="wf-main">
-          <div class="crumb">Segment Management <span>›</span> Programs <span>›</span> <strong style="color:var(--tx2);">Fernando-Galaxy</strong></div>
-          <h4 style="display:flex;align-items:center;gap:10px;">Fernando-Galaxy <span class="pill act" style="font-size:11px;">ACTIVE</span></h4>
-          <div class="col-2">
-            <div class="wf-form-grp"><label>Network System Parent</label><div class="input filled">GalaxyGold Network</div></div>
-            <div class="wf-form-grp"><label>Vertical</label><div class="input filled">Casino</div></div>
+          <div class="crumb">Segment Management <span>›</span> Programs <span>›</span> <strong style="color:var(--tx2);">GoldenWin</strong></div>
+          <h4 style="display:flex;align-items:center;gap:10px;">GoldenWin <span class="pill act" style="font-size:11px;">ACTIVE</span></h4>
+          <div class="col-3">
+            <div class="wf-form-grp"><label>Login URL</label><div class="input filled" style="font-family:monospace;font-size:10.5px;">ro-affiliate.goldenwin.com/login</div></div>
+            <div class="wf-form-grp"><label>Network System</label><div class="input filled">Cell Expert</div></div>
+            <div class="wf-form-grp"><label>Vertical</label><div class="input filled">Casino + Sportsbook</div></div>
             <div class="wf-form-grp"><label>Default Bank IBAN</label><div class="input filled">IT60X05428...</div></div>
-            <div class="wf-form-grp"><label>Affiliate Manager</label><div class="input filled">Fernando Rossi</div></div>
+            <div class="wf-form-grp"><label>Affiliate Manager (program-side rep)</label><div class="input filled">Marco Bianchi <span style="color:var(--tx4);font-size:10px;">(GoldenWin)</span></div></div>
+            <div class="wf-form-grp"><label>Commercial Terms</label><div class="input filled">HYBRID · €120 CPA + 30% RS</div></div>
           </div>
 
           <div class="wf-section" style="margin-top:6px;">
-            <div class="lbl">Accounts (3) <span class="badge">NEW IN v2</span></div>
+            <div class="lbl">Accounts (3) <span class="badge">NEW IN v2 · login × CM × territory</span></div>
             <table class="wf-table" style="margin-top:6px;background:var(--bg);border-radius:4px;overflow:hidden;">
-              <thead><tr><th>Account Name</th><th>Country Default</th><th>Channel</th><th>Postback URL</th><th>Cap</th><th>Status</th></tr></thead>
+              <thead><tr><th>Account (login)</th><th>CM (our side)</th><th>Country</th><th>Channel</th><th>Postback URL</th><th>Cap</th><th>Status</th></tr></thead>
               <tbody>
-                <tr><td><strong>Fernando-IT</strong></td><td>🇮🇹 Italy</td><td>SMS</td><td style="font-family:monospace;font-size:10px;">it-pb.galaxy.com/...</td><td>500/day</td><td><span class="pill act">ACTIVE</span></td></tr>
-                <tr><td><strong>Fernando-ES</strong></td><td>🇪🇸 Spain</td><td>WA</td><td style="font-family:monospace;font-size:10px;">es-pb.galaxy.com/...</td><td>300/day</td><td><span class="pill act">ACTIVE</span></td></tr>
-                <tr><td><strong>Fernando-PT</strong></td><td>🇵🇹 Portugal</td><td>Email</td><td style="font-family:monospace;font-size:10px;">pt-pb.galaxy.com/...</td><td>200/day</td><td><span class="pill act">ACTIVE</span></td></tr>
+                <tr><td><strong style="font-family:monospace;font-size:10.5px;">galaxygoldm-it</strong></td><td>Fernando</td><td>🇮🇹 IT</td><td>SMS</td><td style="font-family:monospace;font-size:10px;">it-pb.galaxy.com/...</td><td>500/day</td><td><span class="pill act">ACTIVE</span></td></tr>
+                <tr><td><strong style="font-family:monospace;font-size:10.5px;">galaxygoldm-es</strong></td><td>Fernando</td><td>🇪🇸 ES</td><td>WA</td><td style="font-family:monospace;font-size:10px;">es-pb.galaxy.com/...</td><td>300/day</td><td><span class="pill act">ACTIVE</span></td></tr>
+                <tr><td><strong style="font-family:monospace;font-size:10.5px;">julia-galaxygold</strong></td><td>Julia</td><td>🇮🇹 IT</td><td>Email</td><td style="font-family:monospace;font-size:10px;">it-pb.galaxy.com/j/...</td><td>200/day</td><td><span class="pill act">ACTIVE</span></td></tr>
               </tbody>
             </table>
             <button class="btn" style="margin-top:8px;">+ Add Account</button>
           </div>
           <div class="wf-section">
-            <div class="lbl">Brand Links (M:N)</div>
+            <div class="lbl">Brand Links (M:N) — which Brands this Program offers</div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;font-size:11px;">
-              <span class="tag bl">SuperBet</span> <span class="tag bl">CasinoX</span> <span class="tag bl">LottoKing</span>
+              <span class="tag bl">Pandido</span> <span class="tag bl">SuperBet</span> <span class="tag bl">CasinoX</span>
               <button class="btn sec" style="font-size:10px;padding:2px 8px;">+ Link Brand</button>
             </div>
           </div>
@@ -425,7 +427,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
     </div>
     <div class="callout info" style="flex:0 0 auto;">
       <span class="ico">🧩</span>
-      <div><strong>Account = the new grain.</strong> Caps, postbacks, channel, country default — all keyed at Account level. Fernando's 3 markets stop colliding. Native from day one — no migration.</div>
+      <div><strong>Account = login × CM × territory.</strong> Same Program (GoldenWin) hosts multiple accounts — Fernando's IT login, Fernando's ES login, Julia's IT login. Caps + postbacks + channel + credentials all keyed at Account. Native from day one — no migration.</div>
     </div>
   </div>
 </div>
@@ -516,13 +518,13 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
           </div>
 
           <div class="wf-section">
-            <div class="lbl">Program Links — M:N</div>
+            <div class="lbl">Program Links — M:N · which Programs offer this Brand</div>
             <table class="wf-table" style="background:var(--bg);border-radius:4px;overflow:hidden;">
-              <thead><tr><th>Program</th><th>Account</th><th>Active Deals</th><th>Status</th><th>Link Start</th></tr></thead>
+              <thead><tr><th>Program (network)</th><th>Account (login)</th><th>CM (our side)</th><th>Active Deals</th><th>Status</th><th>Link Start</th></tr></thead>
               <tbody>
-                <tr><td>Fernando-Galaxy</td><td>Fernando-IT</td><td>3</td><td><span class="pill act">ACTIVE</span></td><td>2026-04-01</td></tr>
-                <tr><td>Julia-Galaxy</td><td>Julia-IT</td><td>2</td><td><span class="pill act">ACTIVE</span></td><td>2026-05-15</td></tr>
-                <tr><td>Oren-LottoTier</td><td>Oren-IT</td><td>1</td><td><span class="pill ina">INACTIVE</span></td><td>2026-02-10</td></tr>
+                <tr><td><strong>GoldenWin</strong></td><td style="font-family:monospace;font-size:10.5px;">galaxygoldm-it</td><td>Fernando</td><td>3</td><td><span class="pill act">ACTIVE</span></td><td>2026-04-01</td></tr>
+                <tr><td><strong>Gloss Partners</strong></td><td style="font-family:monospace;font-size:10.5px;">julia-gloss-it</td><td>Julia</td><td>2</td><td><span class="pill act">ACTIVE</span></td><td>2026-05-15</td></tr>
+                <tr><td><strong>Haba Partners</strong></td><td style="font-family:monospace;font-size:10.5px;">oren-haba-pt</td><td>Oren</td><td>1</td><td><span class="pill ina">INACTIVE</span></td><td>2026-02-10</td></tr>
               </tbody>
             </table>
             <button class="btn" style="margin-top:8px;">+ Link to Program</button>
@@ -653,16 +655,16 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
           <div class="wf-section">
             <div class="lbl">Step 1 — Cascade <span class="badge">LOCKED PROGRAM-FIRST</span></div>
             <div class="col-3">
-              <div class="wf-form-grp"><label>Program</label>
-                <select class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:5px 8px;font-size:11px;font-weight:600;color:var(--tx);"><option>Fernando-Galaxy ✓</option></select>
+              <div class="wf-form-grp"><label>Program (network)</label>
+                <select class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:5px 8px;font-size:11px;font-weight:600;color:var(--tx);"><option>GoldenWin ✓</option></select>
                 <div style="font-size:10px;color:var(--bl);margin-top:2px;">+ Add Program ↗</div>
               </div>
               <div class="wf-form-grp"><label>Brand</label>
-                <select class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:5px 8px;font-size:11px;font-weight:600;color:var(--tx);"><option>SuperBet ✓</option></select>
+                <select class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:5px 8px;font-size:11px;font-weight:600;color:var(--tx);"><option>Pandido ✓</option></select>
                 <div style="font-size:10px;color:var(--bl);margin-top:2px;">+ Add Brand ↗</div>
               </div>
-              <div class="wf-form-grp"><label>Account</label>
-                <select class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:5px 8px;font-size:11px;font-weight:600;color:var(--tx);"><option>Fernando-IT ✓</option></select>
+              <div class="wf-form-grp"><label>Account (login on Program)</label>
+                <select class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:5px 8px;font-size:11px;font-weight:600;color:var(--tx);font-family:monospace;"><option>galaxygoldm-it (CM: Fernando) ✓</option></select>
                 <div style="font-size:10px;color:var(--bl);margin-top:2px;">+ Add Account ↗</div>
               </div>
             </div>
@@ -693,8 +695,8 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
               <table class="wf-table" style="background:var(--bg);border-radius:4px;overflow:hidden;">
                 <thead><tr><th>CM</th><th>Account</th><th>Allocation</th><th>Consumption</th><th>Threshold Alert</th></tr></thead>
                 <tbody>
-                  <tr><td>Mario</td><td>Fernando-IT</td><td>300/day</td><td>40%</td><td>80%</td></tr>
-                  <tr><td>Luca</td><td>Fernando-IT</td><td>200/day</td><td>15%</td><td>80%</td></tr>
+                  <tr><td>Fernando</td><td style="font-family:monospace;font-size:10.5px;">galaxygoldm-it</td><td>300/day</td><td>40%</td><td>80%</td></tr>
+                  <tr><td>Julia</td><td style="font-family:monospace;font-size:10.5px;">julia-gloss-it</td><td>200/day</td><td>15%</td><td>80%</td></tr>
                 </tbody>
               </table>
             </div>
@@ -703,7 +705,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
           <div class="wf-section">
             <div class="lbl">Step 4 — Auto-Generated Deal Name</div>
             <div style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:8px 10px;font-family:monospace;font-size:13px;color:var(--tx);font-weight:600;">
-              FERNANDO-GALAXY_SUPERBET_SMS_IT_2026-07-01
+              GOLDENWIN_PANDIDO_SMS_IT_2026-07-01
             </div>
             <div style="font-size:11px;color:var(--tx3);margin-top:4px;">5 segments locked. <a style="color:var(--bl);">⚙️ Override manually</a> if needed.</div>
           </div>
@@ -741,7 +743,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
           <div class="wf-section">
             <div class="lbl">Step 1 — Cascade</div>
             <div class="col-3">
-              <div class="wf-form-grp"><label>Program</label><div class="input filled">Fernando-Galaxy ✓</div></div>
+              <div class="wf-form-grp"><label>Program (network)</label><div class="input filled">GoldenWin ✓</div></div>
               <div class="wf-form-grp"><label>Brand</label><div class="input empty">(creating new…)</div></div>
               <div class="wf-form-grp"><label>Account</label><div class="input empty">—</div></div>
             </div>
@@ -762,7 +764,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
           <div class="wf-form-grp"><label>License</label><input type="text" class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:6px 8px;font-size:12px;" placeholder="e.g. ADM (IT)"></div>
           <div class="callout info" style="font-size:11.5px;">
             <span class="ico">🔗</span>
-            <div>This Brand will auto-link to <strong>Fernando-Galaxy</strong> on save (current cascade context).</div>
+            <div>This Brand will auto-link to <strong>GoldenWin</strong> on save (current cascade context).</div>
           </div>
           <div style="display:flex;gap:6px;margin-top:6px;">
             <button class="btn sec" style="flex:1;">Cancel</button>
@@ -840,51 +842,51 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
           </div>
 
           <table class="wf-table">
-            <thead><tr><th><input type="checkbox"></th><th>★</th><th>Deal Name</th><th>Brand</th><th>Account</th><th>Country</th><th>CM</th><th>Status</th><th></th></tr></thead>
+            <thead><tr><th><input type="checkbox"></th><th>★</th><th>Deal Name</th><th>Brand</th><th>Account (login)</th><th>Country</th><th>CM (our side)</th><th>Status</th><th></th></tr></thead>
             <tbody>
               <tr style="background:var(--ambg2);">
                 <td><input type="checkbox" checked></td>
                 <td style="color:var(--am);font-size:14px;">⭐</td>
-                <td style="font-family:monospace;font-size:10.5px;"><strong>FERNANDO_SUPERBET_SMS_IT_07-01</strong></td>
-                <td>SuperBet</td><td>Fernando-IT</td><td>🇮🇹</td>
-                <td><select style="font-size:10.5px;background:var(--bg);border:1px solid var(--bd);border-radius:3px;padding:2px 4px;"><option>Mario</option><option>Luca</option></select></td>
+                <td style="font-family:monospace;font-size:10.5px;"><strong>GOLDENWIN_PANDIDO_SMS_IT_07-01</strong></td>
+                <td>Pandido</td><td style="font-family:monospace;font-size:10.5px;">galaxygoldm-it</td><td>🇮🇹</td>
+                <td><select style="font-size:10.5px;background:var(--bg);border:1px solid var(--bd);border-radius:3px;padding:2px 4px;"><option>Fernando</option><option>Julia</option></select></td>
                 <td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td>
               </tr>
               <tr style="box-shadow:inset 0 0 0 2px var(--rd);background:var(--rdbg2);">
                 <td><input type="checkbox"></td>
                 <td></td>
-                <td style="font-family:monospace;font-size:10.5px;"><strong>JULIA_CASINOX_WA_ES_06-15</strong></td>
-                <td>CasinoX</td><td>Julia-ES</td><td>🇪🇸</td>
-                <td>Sofia</td>
+                <td style="font-family:monospace;font-size:10.5px;"><strong>GLOSSPARTNERS_CASINOX_WA_ES_06-15</strong></td>
+                <td>CasinoX</td><td style="font-family:monospace;font-size:10.5px;">julia-gloss-es</td><td>🇪🇸</td>
+                <td>Julia</td>
                 <td><span class="pill ina">INACTIVE</span></td><td style="color:var(--tx4);">⋯</td>
               </tr>
               <tr style="background:var(--ambg2);box-shadow:inset 0 0 0 2px var(--am);">
                 <td><input type="checkbox" checked></td>
                 <td></td>
-                <td style="font-family:monospace;font-size:10.5px;"><strong>OREN_LOTTOKING_EMAIL_PT_06-10</strong></td>
-                <td>LottoKing</td><td>Oren-PT</td><td>🇵🇹</td>
-                <td>Bruno</td>
+                <td style="font-family:monospace;font-size:10.5px;"><strong>HABAPARTNERS_LOTTOKING_EMAIL_PT_06-10</strong></td>
+                <td>LottoKing</td><td style="font-family:monospace;font-size:10.5px;">oren-haba-pt</td><td>🇵🇹</td>
+                <td>Oren</td>
                 <td><span class="pill cas">CASCADE-INACTIVE</span></td><td style="color:var(--tx4);">⋯</td>
               </tr>
               <tr>
                 <td><input type="checkbox"></td><td></td>
-                <td style="font-family:monospace;font-size:10.5px;"><strong>FERNANDO_SUPERBET_SMS_ES_07-01</strong></td>
-                <td>SuperBet</td><td>Fernando-ES</td><td>🇪🇸</td>
-                <td>Luca</td>
+                <td style="font-family:monospace;font-size:10.5px;"><strong>GOLDENWIN_PANDIDO_SMS_ES_07-01</strong></td>
+                <td>Pandido</td><td style="font-family:monospace;font-size:10.5px;">galaxygoldm-es</td><td>🇪🇸</td>
+                <td>Fernando</td>
                 <td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td>
               </tr>
               <tr>
                 <td><input type="checkbox"></td><td></td>
-                <td style="font-family:monospace;font-size:10.5px;"><strong>JULIA_CASINOX_SMS_IT_06-28</strong></td>
-                <td>CasinoX</td><td>Julia-IT</td><td>🇮🇹</td>
-                <td>Mario</td>
+                <td style="font-family:monospace;font-size:10.5px;"><strong>WHITECLICK_CASINOX_SMS_IT_06-28</strong></td>
+                <td>CasinoX</td><td style="font-family:monospace;font-size:10.5px;">julia-whiteclick-it</td><td>🇮🇹</td>
+                <td>Julia</td>
                 <td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td>
               </tr>
               <tr>
                 <td><input type="checkbox"></td><td></td>
-                <td style="font-family:monospace;font-size:10.5px;"><strong>FERNANDO_NEWCASINO_SMS_IT_06-25</strong></td>
-                <td>NewCasino</td><td>Fernando-IT</td><td>🇮🇹</td>
-                <td>Mario</td>
+                <td style="font-family:monospace;font-size:10.5px;"><strong>GOLDENWIN_SUPERBET_SMS_IT_06-25</strong></td>
+                <td>SuperBet</td><td style="font-family:monospace;font-size:10.5px;">galaxygoldm-it</td><td>🇮🇹</td>
+                <td>Fernando</td>
                 <td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td>
               </tr>
             </tbody>
@@ -933,7 +935,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
         <tr><td><strong>D10</strong></td><td>Welcome offer = per-Country</td><td>Inherits Deal default, country can override</td><td>UI only · 1 day either way</td><td><span class="tag gn">LOCKED</span></td></tr>
         <tr><td><strong>D11</strong></td><td>Verticals = own page (not chip)</td><td>Lives in Segment Mgmt tab. Filter chips don't scale past 5 verticals.</td><td>Easy to swap</td><td><span class="tag gn">LOCKED</span></td></tr>
         <tr><td><strong>D12</strong></td><td>Bank altitude: Program default + Account override</td><td>~90% inherit. Override badge for the 10%.</td><td>UI inheritance pattern · low risk</td><td><span class="tag gn">LOCKED</span></td></tr>
-        <tr><td><strong>D13</strong></td><td>Allocation grain: (cmUser × Account)</td><td>Drops the "Fernando-IT collapses with Fernando-ES" risk to zero.</td><td>Foundational · don't reverse</td><td><span class="tag gn">LOCKED</span></td></tr>
+        <tr><td><strong>D13</strong></td><td>Allocation grain: (cmUser × Account)</td><td>Fernando's IT account ≠ Fernando's ES account ≠ Julia's IT account on the same Program. All keyed separately.</td><td>Foundational · don't reverse</td><td><span class="tag gn">LOCKED</span></td></tr>
         <tr><td><strong>D14</strong></td><td>Deal Mgmt tab — Priority sort + bulk</td><td>Pnina manages 50-deal book without opening sub-pages</td><td>Pure UI · always reversible</td><td><span class="tag gn">LOCKED</span></td></tr>
       </tbody>
     </table>

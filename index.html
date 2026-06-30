@@ -295,7 +295,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
           <tr>
             <td class="label">Account grain (Program × Account)</td>
             <td><span class="dot rd"></span><span class="tag rd">MISSING</span></td>
-            <td>Fernando's 3 Italy accounts and Julia's 2 Spain accounts collapse into one Program row. Allocation, caps, postbacks all live at Program — drift waiting to happen.</td>
+            <td>Fernando (CM) has 3 logins on the same Program for IT/ES/PT. Julia has 2 on another Program. Today all collapse into one Program row — caps + allocation + postbacks drift across logins.</td>
             <td>Native <code>ProgramAccount</code> entity from day one. Allocation keyed on (cmUserId, programAccountId). Postback URL on Account. No migration needed.</td>
           </tr>
         </tbody>
@@ -357,9 +357,9 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
           <tr>
             <td class="center"><strong>4</strong></td>
             <td class="label">Account-grain allocation drift</td>
-            <td>Fernando has 3 IT accounts (different geos, caps, postbacks). Today, Program collapses all 3 into one row. Caps, allocation, postbacks all drift. Was a launch-blocker because of migration.</td>
+            <td>Fernando (CM) has multiple logins on the same Program — one per territory. Today the Program row collapses them, so caps + allocation + postbacks all drift across his IT vs ES vs PT accounts.</td>
             <td><strong>Was:</strong> backfill of all existing Program assignments. <strong>Now (per Guy 2026-06-30):</strong> no migration — Galaxy starts fresh. Risk dissolved.</td>
-            <td><strong>Model ProgramAccount natively from day one.</strong> Allocation table keyed on (cmUserId, programAccountId). Caps + postback URL live on Account. No backfill, no dual-write, no drift. <strong>Channel can live on Account too</strong> (Option A — recommended).</td>
+            <td><strong>Model Account natively from day one.</strong> An Account = (Program, CM, territory) tuple with its own login, caps, postback. Allocation keyed on (cmUserId, programAccountId). <strong>Channel lives on Account too</strong> (Option A — recommended).</td>
             <td><span class="tag gn">🟢 RESOLVED</span></td>
           </tr>
         </tbody>
@@ -397,7 +397,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
         <h3>What's added (Golden Lab level → implementing to Galaxy + Lego/Module Architecture)</h3>
         <ul class="bullets">
           <li><strong>Platform</strong> — first-class entity (own page, own status).</li>
-          <li><strong>ProgramAccount</strong> — Fernando's 3 IT accounts as separate rows.</li>
+          <li><strong>Account</strong> — (Program × CM × territory) tuple with its own login/credentials. Fernando's 3 logins on GoldenWin become 3 rows, not 1.</li>
           <li><strong>BrandProgramLink</strong> — explicit Program × Brand link with status + start/end dates.</li>
           <li><code>MacroStatus</code> enum: ACTIVE / AT_RISK / INACTIVE.</li>
           <li><code>effectiveStatus</code> resolver — soft cascade, no hard FK delete.</li>
@@ -512,9 +512,9 @@ Deal (= BrandProgramAssignment)
           <tr>
             <td class="center"><strong>4</strong></td>
             <td class="label">Bank altitude: Program or Account?</td>
-            <td><strong>Pnina:</strong> Program-level default. <strong>Idan:</strong> Account-level (per Fernando IT vs Fernando ES).</td>
+            <td><strong>Pnina:</strong> Program-level default. <strong>Idan:</strong> Account-level (Fernando's IT login vs his ES login on the same Program may differ).</td>
             <td><strong>Program-default-with-Account-override.</strong> Bank fields live on Program. Account can override if needed (rare). UI shows inherited vs overridden badge.</td>
-            <td>~90% of accounts inherit from Program. Override exists for the 10% case (e.g., Fernando ES uses a different IBAN). Defaults reduce data entry.</td>
+            <td>~90% of Accounts inherit from Program. Override exists for the 10% case (e.g., Fernando's ES login uses a different IBAN). Defaults reduce data entry.</td>
           </tr>
         </tbody>
       </table>
@@ -656,7 +656,7 @@ Deal (= BrandProgramAssignment)
       <div class="card" style="border-top:4px solid var(--pu);">
         <div class="tag pu" style="margin-bottom:8px;">WILD CARD 3</div>
         <h3>Postback URL on Account (not Program)</h3>
-        <p style="font-size:13px;color:var(--tx2);line-height:1.55;">Already implied by Landmine #4 resolution, but worth surfacing: <strong>postback URLs move from Program → ProgramAccount</strong>. Fernando's IT account fires to IT-postback.galaxy.com; ES account to ES-postback.galaxy.com.</p>
+        <p style="font-size:13px;color:var(--tx2);line-height:1.55;">Already implied by Landmine #4 resolution, but worth surfacing: <strong>postback URLs move from Program → Account</strong>. Fernando's IT login on GoldenWin fires to IT-postback.galaxy.com; his ES login on the same Program fires to ES-postback.galaxy.com.</p>
         <div style="margin-top:10px;padding:8px 10px;background:var(--bg2);border-radius:4px;font-size:12px;color:var(--tx3);">
           <strong style="color:var(--tx);">Win:</strong> Cleaner attribution. Lower postback failure rate. Per-Account A/B testing.<br>
           <strong style="color:var(--tx);">Cost:</strong> Account-grain naturally absorbs this — ~0 incremental cost if we model ProgramAccount on day one.
