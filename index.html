@@ -192,35 +192,49 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
   </div>
 </div>
 
-<!-- ============ SLIDE 2: REALITY CHECK ============ -->
+<!-- ============ SLIDE 2: TWO LAYERS ============ -->
 <div class="slide" id="s2">
   <div class="slide-header">
     <span class="num">01</span>
-    <h2>Reality Check</h2>
-    <span class="sub">What the team sees vs. what the build actually is</span>
+    <h2>v2 Ships on Two Layers — Together</h2>
+    <span class="sub">The UX work the team aligned on · plus the platform foundation underneath</span>
   </div>
   <div class="slide-body">
     <div class="row">
-      <div class="card">
-        <h3 style="color:var(--tx3);">Team perception</h3>
-        <p style="color:var(--tx3);">"This is mostly UX work. Re-order the cascade, add a few fields, drop the Identity & Priority box, ship it in a sprint."</p>
-        <div style="margin-top:10px;font-size:12px;color:var(--tx4);">Reading: surface re-layout · light wiring · ~5 dev-days.</div>
+      <div class="card" style="border-left:4px solid var(--bl);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+          <span class="tag bl">LAYER 1 · SURFACE</span>
+        </div>
+        <h3>The UX Pnina + Noa + Yonatan scoped</h3>
+        <p>Cascade re-shape, Segment Management tab, Deal Management list, +Add sidesheet, welcome-offer block, 5-seg name preview. Solid scope, clearly defined, ready to build.</p>
+        <ul class="bullets" style="margin-top:8px;font-size:12.5px;">
+          <li><strong>Source:</strong> Pnina's BD-1..13 + Noa's IA schema + Yonatan's feedback</li>
+          <li><strong>Status:</strong> ~5-6 dev-days · maps cleanly into Waves 2 + 3</li>
+          <li><strong>Decisions:</strong> mostly reversible (config flips, UI swaps)</li>
+        </ul>
       </div>
       <div class="card" style="border-left:4px solid var(--pr);">
-        <h3>Ground truth</h3>
-        <p>The UX <em>is</em> the easy part. Underneath it sit <strong>4 hidden landmines</strong> in the data model — each one can silently kill revenue or block the next version of Pricing, Reporting, or Reconciliation.</p>
-        <div style="margin-top:10px;font-size:12px;color:var(--tx2);">Reading: surface UX + entity reshape + cascade safety + naming lock-in.</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+          <span class="tag gn">LAYER 2 · FOUNDATION</span>
+        </div>
+        <h3>Plus 4 platform-level moves underneath</h3>
+        <p>Golden Lab Lego architecture: Platform + Account entities, cascade INACTIVE resolver, 5-seg naming lock, Account-grain allocation. Reusable across Galaxy → Vero → next tenant.</p>
+        <ul class="bullets" style="margin-top:8px;font-size:12.5px;">
+          <li><strong>Source:</strong> CEO + architecture review</li>
+          <li><strong>Status:</strong> ~6-7 dev-days · lands as Wave 1 foundation</li>
+          <li><strong>Why now:</strong> Galaxy starts fresh — no migration — cheapest moment to embed</li>
+        </ul>
       </div>
     </div>
 
     <div class="callout good">
       <span class="ico">✅</span>
-      <div><strong>Good news:</strong> All 4 landmines are <strong>identified, scoped, and resolvable now</strong>. None of them require migration — we are starting Galaxy fresh, so we land them as native day-one architecture. Estimate drops from 18–20 days to ~15.</div>
+      <div><strong>Both layers in one release:</strong> the UX work the team already aligned on, plus the architecture moves that make it reusable. Total ~15 dev-days, 3 waves, single engineer. <strong>No migration</strong> because Galaxy starts fresh — landmines dissolve into native day-one design.</div>
     </div>
 
     <div class="callout info">
       <span class="ico">📌</span>
-      <div><strong>What this memo is:</strong> the CEO-level read on Pnina's + Noa's + Yonatan's feedback. Two things tomorrow — (1) align on the 4 landmines table, (2) confirm the 3-wave plan. Visual deck for Pnina lives separately.</div>
+      <div><strong>What this memo asks for:</strong> alignment that <em>both</em> layers ship together (not UX first, foundation later). The 4 architectural moves are the cheapest in v2 — they get exponentially more expensive after first paying tenant.</div>
     </div>
   </div>
 </div>
