@@ -247,10 +247,12 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
     <div class="pages">
       <div class="pg-item"><div class="pg-num">1.</div><div class="pg-tx">Sidebar IA — where Segment Management sits</div></div>
       <div class="pg-item"><div class="pg-num">2.</div><div class="pg-tx">Network System sub-page</div></div>
-      <div class="pg-item"><div class="pg-num">3.</div><div class="pg-tx">Program sub-page (with Accounts repeater)</div></div>
-      <div class="pg-item"><div class="pg-num">4.</div><div class="pg-tx">Platform sub-page (new — first-class)</div></div>
-      <div class="pg-item"><div class="pg-num">5.</div><div class="pg-tx">Brand sub-page</div></div>
-      <div class="pg-item"><div class="pg-num">6.</div><div class="pg-tx">INACTIVE confirmation pattern (reused across all 4)</div></div>
+      <div class="pg-item"><div class="pg-num">3.</div><div class="pg-tx">Catalog pattern — where + Add Program / + Add Brand live</div></div>
+      <div class="pg-item"><div class="pg-num">4.</div><div class="pg-tx">Program detail (with Accounts repeater)</div></div>
+      <div class="pg-item"><div class="pg-num">5.</div><div class="pg-tx">Platform sub-page (new — first-class)</div></div>
+      <div class="pg-item"><div class="pg-num">6.</div><div class="pg-tx">Brand detail</div></div>
+      <div class="pg-item"><div class="pg-num">7.</div><div class="pg-tx">INACTIVE confirmation pattern (reused across all)</div></div>
+      <div class="pg-item"><div class="pg-num">8.</div><div class="pg-tx">Send to Affiliate Manager — magic link collaboration (BD-12)</div></div>
     </div>
   </div>
   <div class="div-right t1">
@@ -370,11 +372,89 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
   </div>
 </div>
 
-<!-- ============ SLIDE 5: TAB 1 — PROGRAM ============ -->
-<div class="slide" id="s5">
+<!-- ============ SLIDE 5: TAB 1 — CATALOG / + ADD PATTERN ============ -->
+<div class="slide" id="s5_catalog">
   <div class="slide-header">
     <span class="num">T1.3</span>
-    <h2>Program sub-page · with Accounts repeater</h2>
+    <h2>Catalog pattern — where "+ Add Program" and "+ Add Brand" live</h2>
+    <span class="sub">Every entity sub-page = list view + +Add at the top. Drilling into a row opens the detail (next slides)</span>
+    <span class="tabchip t1">Tab 1</span>
+  </div>
+  <div class="slide-body">
+    <div class="row">
+      <!-- Left: Programs catalog -->
+      <div class="wf" style="flex:1;">
+        <div class="wf-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="url">amp.goldenlab.net/segment-management/programs</div></div>
+        <div class="wf-main">
+          <div class="crumb">Segment Management <span>›</span> Programs / Affiliate NWs</div>
+          <h4>Programs <span style="font-size:11px;color:var(--tx3);font-weight:400;margin-left:6px;">— affiliate networks we partner with</span></h4>
+          <div class="wf-toolbar">
+            <input type="text" placeholder="🔍 Search program name…" style="flex:1;">
+            <select class="input" style="background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:4px 8px;font-size:11px;"><option>All status</option></select>
+            <button class="btn" style="background:var(--pr);font-size:11.5px;padding:6px 12px;">+ Add Program</button>
+          </div>
+          <table class="wf-table">
+            <thead><tr><th>Program / Affiliate NW</th><th>Network System</th><th>Accounts</th><th>Open Deals</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr style="background:var(--prbg2);"><td><strong>GoldenWin</strong></td><td>Cellxpert</td><td>3</td><td>6</td><td><span class="pill act">ACTIVE</span></td></tr>
+              <tr><td><strong>Gloss Partners</strong></td><td>MyAffiliates</td><td>2</td><td>4</td><td><span class="pill act">ACTIVE</span></td></tr>
+              <tr><td><strong>White Click Affiliates</strong></td><td>Affilka</td><td>4</td><td>5</td><td><span class="pill act">ACTIVE</span></td></tr>
+              <tr><td><strong>Haba Partners</strong></td><td>Income Access</td><td>1</td><td>2</td><td><span class="pill ina">INACTIVE</span></td></tr>
+              <tr><td><strong>Globigo MMT</strong></td><td>MyAffiliates</td><td>2</td><td>3</td><td><span class="pill act">ACTIVE</span></td></tr>
+              <tr><td><strong>GypsyAff</strong></td><td>Cellxpert</td><td>1</td><td>1</td><td><span class="pill act">ACTIVE</span></td></tr>
+              <tr><td><strong>Gosu Partners</strong></td><td>Trackier</td><td>1</td><td>0</td><td><span class="pill act">ACTIVE</span></td></tr>
+              <tr><td><strong>GrandeAffiliates</strong></td><td>MyAffiliates</td><td>2</td><td>2</td><td><span class="pill act">ACTIVE</span></td></tr>
+            </tbody>
+          </table>
+          <div style="font-size:11px;color:var(--tx3);margin-top:6px;">Click any row → opens Program detail (next slide, T1.4)</div>
+        </div>
+      </div>
+
+      <!-- Right: Brands catalog -->
+      <div class="wf" style="flex:1;">
+        <div class="wf-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="url">amp.goldenlab.net/segment-management/brands</div></div>
+        <div class="wf-main">
+          <div class="crumb">Segment Management <span>›</span> Brands</div>
+          <h4>Brands <span style="font-size:11px;color:var(--tx3);font-weight:400;margin-left:6px;">— casino / sportsbook brands we promote</span></h4>
+          <div class="wf-toolbar">
+            <input type="text" placeholder="🔍 Search brand name…" style="flex:1;">
+            <select class="input" style="background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:4px 8px;font-size:11px;"><option>All verticals</option></select>
+            <button class="btn" style="background:var(--pr);font-size:11.5px;padding:6px 12px;">+ Add Brand</button>
+          </div>
+          <table class="wf-table">
+            <thead><tr><th>Brand</th><th>Vertical</th><th>Platform</th><th>Programs</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr style="background:var(--prbg2);"><td><strong>SuperBet</strong></td><td>Casino + Sportsbook</td><td>Playtech</td><td>3</td><td><span class="pill act">ACTIVE</span></td></tr>
+              <tr><td><strong>Pandido</strong></td><td>Casino</td><td>Pragmatic Play</td><td>2</td><td><span class="pill act">ACTIVE</span></td></tr>
+              <tr><td><strong>CasinoX</strong></td><td>Casino</td><td>SoftBet</td><td>4</td><td><span class="pill act">ACTIVE</span></td></tr>
+              <tr><td><strong>LottoKing</strong></td><td>Lottery</td><td>Microgaming</td><td>2</td><td><span class="pill cas">CASCADE-INACTIVE</span></td></tr>
+              <tr><td><strong>BetGalaxy</strong></td><td>Sportsbook</td><td>Playtech</td><td>1</td><td><span class="pill act">ACTIVE</span></td></tr>
+              <tr><td><strong>RoyalSlots</strong></td><td>Casino</td><td>NetEnt</td><td>2</td><td><span class="pill act">ACTIVE</span></td></tr>
+              <tr><td><strong>LiveDealer</strong></td><td>Live Casino</td><td>Evolution Gaming</td><td>1</td><td><span class="pill act">ACTIVE</span></td></tr>
+              <tr><td><strong>SpinTime</strong></td><td>Slots</td><td>Pragmatic Play</td><td>1</td><td><span class="pill act">ACTIVE</span></td></tr>
+            </tbody>
+          </table>
+          <div style="font-size:11px;color:var(--tx3);margin-top:6px;">Click any row → opens Brand detail (T1.7)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <span class="ico">🔁</span>
+      <div><strong>Same pattern, 4 entities:</strong> Network Systems · <strong>Programs</strong> · Platforms · <strong>Brands</strong> — each gets the same list view with <strong>+ Add</strong> at the top, search + filter + status, and click-row-to-detail. Pnina learns the layout once.</div>
+    </div>
+    <div class="callout good">
+      <span class="ico">✅</span>
+      <div><strong>Entry points covered:</strong> "+ Add Program" lives here AND inside the Create Deal cascade sidesheet (T2.2). "+ Add Brand" same — both here and in the cascade sidesheet. Pnina never gets stuck looking for the create button.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 6: TAB 1 — PROGRAM DETAIL ============ -->
+<div class="slide" id="s5">
+  <div class="slide-header">
+    <span class="num">T1.4</span>
+    <h2>Program detail · with Accounts repeater</h2>
     <span class="sub">Program detail expands inline to show all Accounts (logins owned by our CMs across territories)</span>
     <span class="tabchip t1">Tab 1</span>
   </div>
@@ -504,7 +584,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
 <!-- ============ SLIDE 6: TAB 1 — PLATFORM ============ -->
 <div class="slide" id="s6">
   <div class="slide-header">
-    <span class="num">T1.4</span>
+    <span class="num">T1.5</span>
     <h2>Platform sub-page</h2>
     <span class="sub">Was missing entirely as a first-class entity · now lives here</span>
     <span class="tabchip t1">Tab 1</span>
@@ -564,8 +644,8 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
 <!-- ============ SLIDE 7: TAB 1 — BRAND ============ -->
 <div class="slide" id="s7">
   <div class="slide-header">
-    <span class="num">T1.5</span>
-    <h2>Brand sub-page</h2>
+    <span class="num">T1.6</span>
+    <h2>Brand detail</h2>
     <span class="sub">Promoted from buried-under-Program to first-class · matches Noa's mental model</span>
     <span class="tabchip t1">Tab 1</span>
   </div>
@@ -622,7 +702,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
 <!-- ============ SLIDE 8: TAB 1 — INACTIVE CONFIRMATION ============ -->
 <div class="slide" id="s8">
   <div class="slide-header">
-    <span class="num">T1.6</span>
+    <span class="num">T1.7</span>
     <h2>INACTIVE confirmation pattern</h2>
     <span class="sub">Reused across all 4 sub-pages · the cascade safety net</span>
     <span class="tabchip t1">Tab 1</span>
@@ -687,7 +767,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
 <!-- ============ SLIDE 9: AFFILIATE MANAGER MAGIC LINK ============ -->
 <div class="slide" id="s9">
   <div class="slide-header">
-    <span class="num">T1.7</span>
+    <span class="num">T1.8</span>
     <h2>Send to Affiliate Manager — the collaboration loop</h2>
     <span class="sub">BD-12 · Marco fills his side via guest magic link · no back-and-forth email</span>
     <span class="tabchip t1">Tab 1</span>
@@ -1106,12 +1186,12 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
 <div class="nav" id="nav">
   <button onclick="prev()" title="Previous (←)">&#8592;</button>
   <div class="dots" id="dots"></div>
-  <span class="ctr" id="ctr">1 / 15</span>
+  <span class="ctr" id="ctr">1 / 16</span>
   <button onclick="next()" title="Next (→)">&#8594;</button>
 </div>
 
 <script>
-const N = 15;
+const N = 16;
 let cur = 1;
 function show(n) {
   document.querySelectorAll('.slide').forEach((s, i) => s.classList.toggle('active', i + 1 === n));
