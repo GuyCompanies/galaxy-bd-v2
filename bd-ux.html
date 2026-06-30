@@ -344,19 +344,20 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
         </div>
         <div class="wf-main">
           <div class="crumb">Segment Management <span>›</span> Network Systems</div>
-          <h4>Network Systems</h4>
+          <h4>Network Systems <span style="font-size:11px;color:var(--tx3);font-weight:400;margin-left:6px;">— the affiliate-management software a Program runs on</span></h4>
           <div class="wf-toolbar">
             <input type="text" placeholder="🔍 Search Network System name…">
             <select class="input" style="background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:4px 8px;font-size:11px;"><option>All status</option><option>Active</option><option>Inactive</option></select>
             <button class="btn">+ Add Network System</button>
           </div>
           <table class="wf-table">
-            <thead><tr><th>Network System Name</th><th>Code</th><th>Programs</th><th>Brands</th><th>Status</th><th></th></tr></thead>
+            <thead><tr><th>Network System</th><th>Vendor</th><th>Programs using it</th><th>Postback Spec</th><th>Status</th><th></th></tr></thead>
             <tbody>
-              <tr><td><strong>GalaxyGold Network</strong></td><td>GGN</td><td>14</td><td>23</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
-              <tr><td><strong>Galaxy Sport</strong></td><td>GSP</td><td>6</td><td>11</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
-              <tr><td><strong>Lotto-Tier</strong></td><td>LTT</td><td>3</td><td>4</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
-              <tr><td><strong>Old EU Network</strong></td><td>OEN</td><td>2</td><td>0</td><td><span class="pill ina">INACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+              <tr><td><strong>MyAffiliates</strong></td><td>MyAffiliates Ltd</td><td>14</td><td>Standard S2S</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+              <tr><td><strong>Cellxpert</strong></td><td>Cellxpert (Israel)</td><td>9</td><td>Standard S2S</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+              <tr><td><strong>Affilka</strong></td><td>SoftSwiss</td><td>6</td><td>Standard S2S + custom</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+              <tr><td><strong>Income Access</strong></td><td>Paysafe</td><td>4</td><td>Custom postback</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+              <tr><td><strong>Trackier</strong></td><td>Trackier</td><td>2</td><td>Standard S2S</td><td><span class="pill ina">INACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
             </tbody>
           </table>
           <div class="callout warn" style="margin-top:8px;font-size:11.5px;">
@@ -396,30 +397,98 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
           <h4 style="display:flex;align-items:center;gap:10px;">GoldenWin <span class="pill act" style="font-size:11px;">ACTIVE</span></h4>
           <div class="col-3">
             <div class="wf-form-grp"><label>Login URL</label><div class="input filled" style="font-family:monospace;font-size:10.5px;">ro-affiliate.goldenwin.com/login</div></div>
-            <div class="wf-form-grp"><label>Network System</label><div class="input filled">Cell Expert</div></div>
+            <div class="wf-form-grp"><label>Network System</label><div class="input filled">Cellxpert</div></div>
             <div class="wf-form-grp"><label>Vertical</label><div class="input filled">Casino + Sportsbook</div></div>
-            <div class="wf-form-grp"><label>Default Bank IBAN</label><div class="input filled">IT60X05428...</div></div>
-            <div class="wf-form-grp"><label>Affiliate Manager (program-side rep)</label><div class="input filled">Marco Bianchi <span style="color:var(--tx4);font-size:10px;">(GoldenWin)</span></div></div>
+            <div class="wf-form-grp"><label>Affiliate Manager (program-side rep)</label>
+              <div style="display:flex;gap:6px;align-items:center;">
+                <div class="input filled" style="flex:1;">Marco Bianchi <span style="color:var(--tx4);font-size:10px;">(GoldenWin)</span></div>
+                <button class="btn" style="font-size:10px;padding:5px 8px;white-space:nowrap;">✉️ Send Magic Link</button>
+              </div>
+            </div>
             <div class="wf-form-grp"><label>Commercial Terms</label><div class="input filled">HYBRID · €120 CPA + 30% RS</div></div>
+            <div class="wf-form-grp"><label>New / Ongoing</label><div class="input filled">New (BD-12)</div></div>
+          </div>
+
+          <div class="wf-section" style="background:var(--blbg2);border-color:#BFDBFE;">
+            <div class="lbl" style="color:var(--bl);">Tracking Link from Program (where Pnina pastes what GoldenWin gives her) <span class="badge" style="background:var(--blbg);color:var(--bl);">BD-9</span></div>
+            <div style="display:flex;gap:6px;align-items:center;margin-top:4px;">
+              <div class="input filled" style="flex:1;font-family:monospace;font-size:10.5px;background:var(--bg);">https://track.goldenwin.com/click?aff={affId}&pid={dealKey}&clickid={clickId}</div>
+              <button class="btn sec" style="font-size:10px;padding:5px 8px;">📋 Copy</button>
+            </div>
+            <div style="font-size:10.5px;color:var(--tx3);margin-top:4px;">Macros <code>{affId}</code>, <code>{dealKey}</code>, <code>{clickId}</code> auto-resolved per Campaign at send time.</div>
           </div>
 
           <div class="wf-section" style="margin-top:6px;">
-            <div class="lbl">Accounts (3) <span class="badge">NEW IN v2 · login × CM × territory</span></div>
+            <div class="lbl">Accounts (3) <span class="badge">NEW IN v2 · CM's login on this Program · Link + User + Password</span></div>
             <table class="wf-table" style="margin-top:6px;background:var(--bg);border-radius:4px;overflow:hidden;">
-              <thead><tr><th>Account (login)</th><th>CM (our side)</th><th>Country</th><th>Channel</th><th>Postback URL</th><th>Cap</th><th>Status</th></tr></thead>
+              <thead><tr><th>Account</th><th>CM</th><th>Country</th><th>Credentials (Link · User · Password)</th><th>Channel</th><th>Cap</th><th>Status</th></tr></thead>
               <tbody>
-                <tr><td><strong style="font-family:monospace;font-size:10.5px;">galaxygoldm-it</strong></td><td>Fernando</td><td>🇮🇹 IT</td><td>SMS</td><td style="font-family:monospace;font-size:10px;">it-pb.galaxy.com/...</td><td>500/day</td><td><span class="pill act">ACTIVE</span></td></tr>
-                <tr><td><strong style="font-family:monospace;font-size:10.5px;">galaxygoldm-es</strong></td><td>Fernando</td><td>🇪🇸 ES</td><td>WA</td><td style="font-family:monospace;font-size:10px;">es-pb.galaxy.com/...</td><td>300/day</td><td><span class="pill act">ACTIVE</span></td></tr>
-                <tr><td><strong style="font-family:monospace;font-size:10.5px;">julia-galaxygold</strong></td><td>Julia</td><td>🇮🇹 IT</td><td>Email</td><td style="font-family:monospace;font-size:10px;">it-pb.galaxy.com/j/...</td><td>200/day</td><td><span class="pill act">ACTIVE</span></td></tr>
+                <tr>
+                  <td><strong style="font-family:monospace;font-size:10.5px;">galaxygoldm-it</strong></td>
+                  <td>Fernando</td>
+                  <td>🇮🇹 IT</td>
+                  <td>
+                    <div style="font-family:monospace;font-size:10px;line-height:1.5;">
+                      <div><span style="color:var(--tx4);">🔗</span> ro-affiliate.goldenwin.com/it</div>
+                      <div><span style="color:var(--tx4);">👤</span> galaxygoldm</div>
+                      <div><span style="color:var(--tx4);">🔒</span> ••••••••• <span style="color:var(--bl);font-size:9px;cursor:pointer;">show</span></div>
+                    </div>
+                  </td>
+                  <td>SMS</td><td>500/day</td><td><span class="pill act">ACTIVE</span></td>
+                </tr>
+                <tr>
+                  <td><strong style="font-family:monospace;font-size:10.5px;">galaxygoldm-es</strong></td>
+                  <td>Fernando</td>
+                  <td>🇪🇸 ES</td>
+                  <td>
+                    <div style="font-family:monospace;font-size:10px;line-height:1.5;">
+                      <div><span style="color:var(--tx4);">🔗</span> ro-affiliate.goldenwin.com/es</div>
+                      <div><span style="color:var(--tx4);">👤</span> galaxygoldm-es</div>
+                      <div><span style="color:var(--tx4);">🔒</span> ••••••••• <span style="color:var(--bl);font-size:9px;cursor:pointer;">show</span></div>
+                    </div>
+                  </td>
+                  <td>WA</td><td>300/day</td><td><span class="pill act">ACTIVE</span></td>
+                </tr>
+                <tr>
+                  <td><strong style="font-family:monospace;font-size:10.5px;">julia-galaxygold</strong></td>
+                  <td>Julia</td>
+                  <td>🇮🇹 IT</td>
+                  <td>
+                    <div style="font-family:monospace;font-size:10px;line-height:1.5;">
+                      <div><span style="color:var(--tx4);">🔗</span> ro-affiliate.goldenwin.com/it</div>
+                      <div><span style="color:var(--tx4);">👤</span> julia.gw</div>
+                      <div><span style="color:var(--tx4);">🔒</span> ••••••••• <span style="color:var(--bl);font-size:9px;cursor:pointer;">show</span></div>
+                    </div>
+                  </td>
+                  <td>Email</td><td>200/day</td><td><span class="pill act">ACTIVE</span></td>
+                </tr>
               </tbody>
             </table>
             <button class="btn" style="margin-top:8px;">+ Add Account</button>
+            <div style="font-size:11px;color:var(--tx3);margin-top:6px;line-height:1.4;">
+              <strong style="color:var(--tx);">Per Noa's hand-drawn schema:</strong> every Account carries its own <strong>Link · User · Password</strong> triplet — Fernando uses different credentials per territory even on the same Program. Stored encrypted at rest.
+            </div>
           </div>
           <div class="wf-section">
             <div class="lbl">Brand Links (M:N) — which Brands this Program offers</div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;font-size:11px;">
               <span class="tag bl">Pandido</span> <span class="tag bl">SuperBet</span> <span class="tag bl">CasinoX</span>
               <button class="btn sec" style="font-size:10px;padding:2px 8px;">+ Link Brand</button>
+            </div>
+          </div>
+
+          <div class="wf-section" style="background:#FAFAF7;border-color:var(--bd2);">
+            <div class="lbl" style="color:var(--tx2);">💳 Bank Details <span style="color:var(--tx4);font-weight:400;text-transform:none;letter-spacing:0;font-size:10px;margin-left:6px;">— Program default · Accounts inherit · per-Account override allowed (D12)</span></div>
+            <div class="col-3" style="font-size:11px;">
+              <div class="wf-form-grp"><label>Beneficiary Name</label><div class="input filled">Golden Lab Holdings Ltd</div></div>
+              <div class="wf-form-grp"><label>Default IBAN</label><div class="input filled" style="font-family:monospace;font-size:10.5px;">IT60 X054 2811 1010 0000 0123 456</div></div>
+              <div class="wf-form-grp"><label>SWIFT / BIC</label><div class="input filled" style="font-family:monospace;font-size:10.5px;">BPMOIT22XXX</div></div>
+              <div class="wf-form-grp"><label>Bank Name</label><div class="input filled">Banco BPM SpA</div></div>
+              <div class="wf-form-grp"><label>Currency</label><div class="input filled">EUR</div></div>
+              <div class="wf-form-grp"><label>Tax / VAT ID</label><div class="input filled">IT12345678901</div></div>
+            </div>
+            <div style="font-size:11px;color:var(--tx3);margin-top:8px;line-height:1.4;">
+              <strong style="color:var(--tx);">Override path:</strong> open any Account row → "Bank override" toggle → enter alternate IBAN. Useful when one of Fernando's territories pays into a different entity (10% case).
             </div>
           </div>
         </div>
@@ -456,28 +525,32 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
         </div>
         <div class="wf-main">
           <div class="crumb">Segment Management <span>›</span> Platforms</div>
-          <h4>Platforms <span class="tag bl" style="font-size:11px;margin-left:8px;vertical-align:middle;">NEW IN v2</span></h4>
+          <h4>Platforms <span style="font-size:11px;color:var(--tx3);font-weight:400;margin-left:6px;">— the operator / B2B layer that runs the Brand</span> <span class="tag bl" style="font-size:11px;margin-left:8px;vertical-align:middle;">NEW IN v2</span></h4>
           <div class="wf-toolbar">
             <input type="text" placeholder="🔍 Search platform…">
             <button class="btn">+ Add Platform</button>
           </div>
           <table class="wf-table">
-            <thead><tr><th>Platform</th><th>Code</th><th>Used by Programs</th><th>Used by Brands</th><th>Status</th><th></th></tr></thead>
+            <thead><tr><th>Platform</th><th>Operator type</th><th>Brands hosted</th><th>Status</th><th></th></tr></thead>
             <tbody>
-              <tr><td><strong>Affilka</strong></td><td>AFK</td><td>8</td><td>14</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
-              <tr><td><strong>MyAffiliates</strong></td><td>MYA</td><td>5</td><td>9</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
-              <tr><td><strong>Income Access</strong></td><td>IAX</td><td>3</td><td>5</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
-              <tr><td><strong>Cellxpert</strong></td><td>CXP</td><td>2</td><td>3</td><td><span class="pill cas">CASCADE-INACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+              <tr><td><strong>S2B</strong></td><td>White-label operator</td><td>8</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+              <tr><td><strong>SoftSwiss</strong></td><td>Casino platform provider</td><td>6</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+              <tr><td><strong>EveryMatrix</strong></td><td>Sportsbook + Casino provider</td><td>4</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+              <tr><td><strong>BetConstruct</strong></td><td>Multi-vertical operator</td><td>3</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
             </tbody>
           </table>
+          <div class="callout warn" style="margin-top:6px;font-size:11.5px;">
+            <span class="ico">📌</span>
+            <div>Platform examples shown are placeholders — Pnina to confirm the actual platforms Galaxy works with. <strong>S2B is the only one confirmed from Noa's hand-drawn schema.</strong></div>
+          </div>
           <div class="row" style="margin-top:6px;">
             <div class="card" style="background:var(--bg2);">
-              <h3 style="font-size:13px;">Why Platform is first-class now</h3>
-              <p style="font-size:12px;">Tracking, postback formats, link macros, and reconciliation rules all vary by Platform. Treating it as a string field caused config drift. As an entity it owns its own status, supports +Add inline, and cascades INACTIVE safely.</p>
+              <h3 style="font-size:13px;">Platform vs Network System — different entities</h3>
+              <p style="font-size:12px;"><strong>Network System</strong> = affiliate tracking software (MyAffiliates, Cellxpert, Affilka). Lives between Program and the postback layer.<br><strong>Platform</strong> = the operator / B2B layer that hosts the Brand. Lives between Brand and gameplay.</p>
             </div>
             <div class="card" style="background:var(--bg2);">
-              <h3 style="font-size:13px;">Cascade-inactive example</h3>
-              <p style="font-size:12px;"><strong>Cellxpert</strong> shows CASCADE-INACTIVE because its parent Network System "Old EU Network" was flipped INACTIVE. Reactivating the Network System auto-restores Cellxpert. Soft flag — no row deletion.</p>
+              <h3 style="font-size:13px;">Why Platform is first-class now</h3>
+              <p style="font-size:12px;">Tracking, KYC rules, payment rails, license context all vary by Platform. Treating it as a string field caused config drift. As an entity it owns its own status, supports +Add inline, and cascades INACTIVE safely.</p>
             </div>
           </div>
         </div>
@@ -609,8 +682,88 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
   </div>
 </div>
 
-<!-- ============ SLIDE 9: TAB 2 DIVIDER ============ -->
-<div class="slide divider-slide" id="s9">
+<!-- ============ SLIDE 9: AFFILIATE MANAGER MAGIC LINK ============ -->
+<div class="slide" id="s9">
+  <div class="slide-header">
+    <span class="num">T1.7</span>
+    <h2>Send to Affiliate Manager — the collaboration loop</h2>
+    <span class="sub">BD-12 · Marco fills his side via guest magic link · no back-and-forth email</span>
+    <span class="tabchip t1">Tab 1</span>
+  </div>
+  <div class="slide-body">
+    <div class="row">
+      <div class="wf" style="flex:1;">
+        <div class="wf-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="url">amp.goldenlab.net/segment-management/programs/goldenwin · Pnina's view</div></div>
+        <div class="wf-main">
+          <div style="font-size:11px;color:var(--tx3);">PNINA CLICKS</div>
+          <h4 style="font-size:15px;">✉️ Send Magic Link to Marco Bianchi</h4>
+          <div class="wf-section" style="background:var(--bg2);">
+            <div class="lbl">What Marco gets in email</div>
+            <div style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:10px 12px;font-size:11.5px;color:var(--tx2);line-height:1.6;">
+              <strong style="color:var(--tx);">From:</strong> Pnina · Golden Lab<br>
+              <strong style="color:var(--tx);">Subject:</strong> GoldenWin × Galaxy — complete your account setup<br><br>
+              Hi Marco,<br>
+              Please complete the program details for our 3 accounts on GoldenWin (IT, ES + Julia's IT).<br>
+              <span style="color:var(--bl);font-family:monospace;font-size:10.5px;">→ amp.goldenlab.net/guest/am/eyJhbGciOi...</span><br><br>
+              The link expires in 7 days · single-use after submit.
+            </div>
+          </div>
+          <div class="wf-section">
+            <div class="lbl">What Pnina sees back</div>
+            <ul class="bullets" style="font-size:12px;">
+              <li><strong>Pending</strong> badge on the Program until Marco submits</li>
+              <li><strong>Submitted</strong> notification — Marco's fields auto-populate the Program + each Account</li>
+              <li><strong>Audit trail</strong> — who submitted what, when, with IP</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="wf" style="flex:1;">
+        <div class="wf-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="url">amp.goldenlab.net/guest/am/... · Marco's guest view</div></div>
+        <div class="wf-main" style="background:var(--bg);">
+          <div style="font-size:11px;color:var(--tx3);">MARCO (AFFILIATE MANAGER) SEES</div>
+          <h4 style="font-size:15px;">GoldenWin × Galaxy — Program Setup</h4>
+          <div style="font-size:11.5px;color:var(--tx2);">Welcome Marco. Please fill in your side of the agreement. Pnina will be notified on submit.</div>
+
+          <div class="wf-section" style="background:var(--bg2);">
+            <div class="lbl">Program-level (your network)</div>
+            <div class="col-2">
+              <div class="wf-form-grp"><label>Your Login URL</label><input type="text" class="input filled" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:5px 8px;font-size:11px;font-family:monospace;" value="ro-affiliate.goldenwin.com/login"></div>
+              <div class="wf-form-grp"><label>Network System (tracking platform)</label><select class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:5px 8px;font-size:11px;"><option>Cell Expert</option></select></div>
+              <div class="wf-form-grp"><label>Postback Spec / Macros</label><input type="text" class="input filled" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:5px 8px;font-size:11px;font-family:monospace;" value="?clickid={clickid}&payout={payout}"></div>
+              <div class="wf-form-grp"><label>Commercial Terms</label><div class="input filled">HYBRID · €120 CPA + 30% RS</div></div>
+            </div>
+          </div>
+
+          <div class="wf-section" style="background:var(--bg2);">
+            <div class="lbl">Per-Account fields (3 accounts to fill)</div>
+            <table class="wf-table" style="background:var(--bg);">
+              <thead><tr><th>Account</th><th>Login user</th><th>Tracking Link</th></tr></thead>
+              <tbody>
+                <tr><td><strong style="font-family:monospace;font-size:10.5px;">galaxygoldm-it</strong></td><td><input type="text" class="input" style="background:var(--bg2);border:1px solid var(--bd);border-radius:3px;padding:3px 6px;font-size:10.5px;width:100px;" value="galaxygoldm"></td><td><input type="text" class="input" style="background:var(--bg2);border:1px solid var(--bd);border-radius:3px;padding:3px 6px;font-size:10.5px;font-family:monospace;width:100%;" value="track.goldenwin.com/?aff=12&pid={dealKey}"></td></tr>
+                <tr><td><strong style="font-family:monospace;font-size:10.5px;">galaxygoldm-es</strong></td><td><input type="text" class="input" style="background:var(--bg2);border:1px solid var(--bd);border-radius:3px;padding:3px 6px;font-size:10.5px;width:100px;" value="galaxygoldm"></td><td><input type="text" class="input" style="background:var(--bg2);border:1px solid var(--bd);border-radius:3px;padding:3px 6px;font-size:10.5px;font-family:monospace;width:100%;" value="track.goldenwin.com/?aff=14&pid={dealKey}"></td></tr>
+                <tr><td><strong style="font-family:monospace;font-size:10.5px;">julia-galaxygold</strong></td><td><input type="text" class="input" style="background:var(--bg2);border:1px solid var(--bd);border-radius:3px;padding:3px 6px;font-size:10.5px;width:100px;" value="julia.gw"></td><td><input type="text" class="input" style="background:var(--bg2);border:1px solid var(--bd);border-radius:3px;padding:3px 6px;font-size:10.5px;font-family:monospace;width:100%;" value="track.goldenwin.com/?aff=19&pid={dealKey}"></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <button class="btn" style="width:100%;padding:8px;font-size:12px;">Submit Setup to Pnina</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout good" style="flex:0 0 auto;">
+      <span class="ico">✅</span>
+      <div><strong>BD-12 delivered, end-to-end:</strong> Pnina clicks once → Marco fills his fields in a guest form (no AMP account needed) → on submit, Program + Accounts auto-populate, audit trail written, Pnina notified. Eliminates 2-3 days of back-and-forth email per Program onboarding.</div>
+    </div>
+    <div class="callout info" style="flex:0 0 auto;">
+      <span class="ico">🔒</span>
+      <div><strong>Security:</strong> JWT magic link · 7-day expiry · single-use · scoped only to the Program in question · field-level audit log · can be revoked from Pnina's side at any time.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 10: TAB 2 DIVIDER ============ -->
+<div class="slide divider-slide" id="s10">
   <div class="div-left">
     <div class="eyebrow t2">Tab 2 / 3</div>
     <div class="h1">Create Deal</div>
@@ -631,8 +784,8 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
   </div>
 </div>
 
-<!-- ============ SLIDE 10: TAB 2 — CASCADE FORM ============ -->
-<div class="slide" id="s10">
+<!-- ============ SLIDE 11: TAB 2 — CASCADE FORM ============ -->
+<div class="slide" id="s11">
   <div class="slide-header">
     <span class="num">T2.1</span>
     <h2>Create Deal — cascade reshape</h2>
@@ -720,8 +873,8 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
   </div>
 </div>
 
-<!-- ============ SLIDE 11: TAB 2 — SIDESHEET ============ -->
-<div class="slide" id="s11">
+<!-- ============ SLIDE 12: TAB 2 — SIDESHEET ============ -->
+<div class="slide" id="s12">
   <div class="slide-header">
     <span class="num">T2.2</span>
     <h2>"+ Add New" sidesheet pattern</h2>
@@ -781,8 +934,8 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
   </div>
 </div>
 
-<!-- ============ SLIDE 12: TAB 3 DIVIDER ============ -->
-<div class="slide divider-slide" id="s12">
+<!-- ============ SLIDE 13: TAB 3 DIVIDER ============ -->
+<div class="slide divider-slide" id="s13">
   <div class="div-left">
     <div class="eyebrow t3">Tab 3 / 3</div>
     <div class="h1">Deal Management</div>
@@ -802,8 +955,8 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
   </div>
 </div>
 
-<!-- ============ SLIDE 13: TAB 3 — DEAL MGMT LIST ============ -->
-<div class="slide" id="s13">
+<!-- ============ SLIDE 14: TAB 3 — DEAL MGMT LIST ============ -->
+<div class="slide" id="s14">
   <div class="slide-header">
     <span class="num">T3.1</span>
     <h2>Deal Management — list view</h2>
@@ -912,8 +1065,8 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
   </div>
 </div>
 
-<!-- ============ SLIDE 14: UX DECISIONS LOG ============ -->
-<div class="slide" id="s14">
+<!-- ============ SLIDE 15: UX DECISIONS LOG ============ -->
+<div class="slide" id="s15">
   <div class="slide-header">
     <span class="num">FIN</span>
     <h2>UX Decisions Log — for the record</h2>
@@ -951,12 +1104,12 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
 <div class="nav" id="nav">
   <button onclick="prev()" title="Previous (←)">&#8592;</button>
   <div class="dots" id="dots"></div>
-  <span class="ctr" id="ctr">1 / 14</span>
+  <span class="ctr" id="ctr">1 / 15</span>
   <button onclick="next()" title="Next (→)">&#8594;</button>
 </div>
 
 <script>
-const N = 14;
+const N = 15;
 let cur = 1;
 function show(n) {
   document.querySelectorAll('.slide').forEach((s, i) => s.classList.toggle('active', i + 1 === n));
