@@ -525,32 +525,34 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
         </div>
         <div class="wf-main">
           <div class="crumb">Segment Management <span>›</span> Platforms</div>
-          <h4>Platforms <span style="font-size:11px;color:var(--tx3);font-weight:400;margin-left:6px;">— the operator / B2B layer that runs the Brand</span> <span class="tag bl" style="font-size:11px;margin-left:8px;vertical-align:middle;">NEW IN v2</span></h4>
+          <h4>Platforms <span style="font-size:11px;color:var(--tx3);font-weight:400;margin-left:6px;">— gaming platform providers (game content / casino engine)</span> <span class="tag bl" style="font-size:11px;margin-left:8px;vertical-align:middle;">NEW IN v2</span></h4>
           <div class="wf-toolbar">
             <input type="text" placeholder="🔍 Search platform…">
             <button class="btn">+ Add Platform</button>
           </div>
           <table class="wf-table">
-            <thead><tr><th>Platform</th><th>Operator type</th><th>Brands hosted</th><th>Status</th><th></th></tr></thead>
+            <thead><tr><th>Platform (provider)</th><th>Content type</th><th>Brands using it</th><th>Status</th><th></th></tr></thead>
             <tbody>
-              <tr><td><strong>S2B</strong></td><td>White-label operator</td><td>8</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
-              <tr><td><strong>SoftSwiss</strong></td><td>Casino platform provider</td><td>6</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
-              <tr><td><strong>EveryMatrix</strong></td><td>Sportsbook + Casino provider</td><td>4</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
-              <tr><td><strong>BetConstruct</strong></td><td>Multi-vertical operator</td><td>3</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+              <tr><td><strong>Playtech</strong></td><td>Casino · Live · Sportsbook</td><td>12</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+              <tr><td><strong>Pragmatic Play</strong></td><td>Slots · Live · Bingo</td><td>9</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+              <tr><td><strong>SoftBet</strong></td><td>Slots · iGaming</td><td>6</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+              <tr><td><strong>Microgaming</strong></td><td>Casino · Slots</td><td>5</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+              <tr><td><strong>NetEnt</strong></td><td>Slots</td><td>4</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+              <tr><td><strong>Evolution Gaming</strong></td><td>Live Casino</td><td>3</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
             </tbody>
           </table>
-          <div class="callout warn" style="margin-top:6px;font-size:11.5px;">
-            <span class="ico">📌</span>
-            <div>Platform examples shown are placeholders — Pnina to confirm the actual platforms Galaxy works with. <strong>S2B is the only one confirmed from Noa's hand-drawn schema.</strong></div>
-          </div>
           <div class="row" style="margin-top:6px;">
             <div class="card" style="background:var(--bg2);">
-              <h3 style="font-size:13px;">Platform vs Network System — different entities</h3>
-              <p style="font-size:12px;"><strong>Network System</strong> = affiliate tracking software (MyAffiliates, Cellxpert, Affilka). Lives between Program and the postback layer.<br><strong>Platform</strong> = the operator / B2B layer that hosts the Brand. Lives between Brand and gameplay.</p>
+              <h3 style="font-size:13px;">Three different layers — don't confuse them</h3>
+              <p style="font-size:12px;line-height:1.55;">
+                <strong>Program</strong> = the affiliate network we partner with (GoldenWin, Gloss Partners).<br>
+                <strong>Network System</strong> = the affiliate tracking software the Program runs on (MyAffiliates, Cellxpert).<br>
+                <strong>Platform</strong> = the gaming platform provider the Brand's content comes from (Playtech, Pragmatic Play).
+              </p>
             </div>
             <div class="card" style="background:var(--bg2);">
               <h3 style="font-size:13px;">Why Platform is first-class now</h3>
-              <p style="font-size:12px;">Tracking, KYC rules, payment rails, license context all vary by Platform. Treating it as a string field caused config drift. As an entity it owns its own status, supports +Add inline, and cascades INACTIVE safely.</p>
+              <p style="font-size:12px;">Game catalog, RTP profiles, payment rails, license context all vary by Platform. Treating it as a string field caused config drift. As an entity it owns its own status, supports +Add inline, and cascades INACTIVE safely.</p>
             </div>
           </div>
         </div>
@@ -913,7 +915,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
             <div class="wf-form-grp"><label>Vertical</label><select class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:6px 8px;font-size:12px;"><option>Casino</option></select></div>
             <div class="wf-form-grp"><label>Primary Country</label><select class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:6px 8px;font-size:12px;"><option>🇮🇹 Italy</option></select></div>
           </div>
-          <div class="wf-form-grp"><label>Platform</label><select class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:6px 8px;font-size:12px;"><option>Affilka</option></select></div>
+          <div class="wf-form-grp"><label>Platform (gaming provider)</label><select class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:6px 8px;font-size:12px;"><option>Playtech</option><option>Pragmatic Play</option><option>SoftBet</option></select></div>
           <div class="wf-form-grp"><label>License</label><input type="text" class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:6px 8px;font-size:12px;" placeholder="e.g. ADM (IT)"></div>
           <div class="callout info" style="font-size:11.5px;">
             <span class="ico">🔗</span>
