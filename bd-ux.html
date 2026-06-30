@@ -218,7 +218,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
     <div class="tab t1">
       <div class="ti">Tab 1</div>
       <div class="tn">Segment Management</div>
-      <div class="td">NS / Program / Platform / Brand — the catalog layer with INACTIVE cascade safety.</div>
+      <div class="td">Network System / Program / Platform / Brand — the catalog layer with INACTIVE cascade safety.</div>
     </div>
     <div class="tab t2">
       <div class="ti">Tab 2</div>
@@ -246,7 +246,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
     <div class="h2">The catalog. Where every Network, Program, Platform, and Brand lives. Each sub-page has +Add, in-line edit, and INACTIVE cascade safety. <strong>This is the unblocker for everything else.</strong></div>
     <div class="pages">
       <div class="pg-item"><div class="pg-num">1.</div><div class="pg-tx">Sidebar IA — where Segment Management sits</div></div>
-      <div class="pg-item"><div class="pg-num">2.</div><div class="pg-tx">Network System (NS) sub-page</div></div>
+      <div class="pg-item"><div class="pg-num">2.</div><div class="pg-tx">Network System sub-page</div></div>
       <div class="pg-item"><div class="pg-num">3.</div><div class="pg-tx">Program sub-page (with Accounts repeater)</div></div>
       <div class="pg-item"><div class="pg-num">4.</div><div class="pg-tx">Platform sub-page (new — first-class)</div></div>
       <div class="pg-item"><div class="pg-num">5.</div><div class="pg-tx">Brand sub-page</div></div>
@@ -301,8 +301,8 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
         <div class="card">
           <h3>What's new vs today</h3>
           <ul class="bullets">
-            <li><strong>Top-level tab</strong> "Segment Management" with 4 sub-items (NS, Program, Platform, Brand).</li>
-            <li><strong>Platform is first-class</strong> — it was missing as an entity. Now lives as its own page with status + parent NS link.</li>
+            <li><strong>Top-level tab</strong> "Segment Management" with 4 sub-items (Network System, Program, Platform, Brand).</li>
+            <li><strong>Platform is first-class</strong> — it was missing as an entity. Now lives as its own page with status + parent Network System link.</li>
             <li><strong>Brand is promoted</strong> from buried under Program to a top-level sub-page (matches Noa's mental model).</li>
             <li><strong>Account is nested</strong> inside Program (not a separate sidebar item — see slide T1.3).</li>
           </ul>
@@ -346,12 +346,12 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
           <div class="crumb">Segment Management <span>›</span> Network Systems</div>
           <h4>Network Systems</h4>
           <div class="wf-toolbar">
-            <input type="text" placeholder="🔍 Search NS name…">
+            <input type="text" placeholder="🔍 Search Network System name…">
             <select class="input" style="background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:4px 8px;font-size:11px;"><option>All status</option><option>Active</option><option>Inactive</option></select>
             <button class="btn">+ Add Network System</button>
           </div>
           <table class="wf-table">
-            <thead><tr><th>NS Name</th><th>Code</th><th>Programs</th><th>Brands</th><th>Status</th><th></th></tr></thead>
+            <thead><tr><th>Network System Name</th><th>Code</th><th>Programs</th><th>Brands</th><th>Status</th><th></th></tr></thead>
             <tbody>
               <tr><td><strong>GalaxyGold Network</strong></td><td>GGN</td><td>14</td><td>23</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
               <tr><td><strong>Galaxy Sport</strong></td><td>GSP</td><td>6</td><td>11</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
@@ -395,7 +395,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
           <div class="crumb">Segment Management <span>›</span> Programs <span>›</span> <strong style="color:var(--tx2);">Fernando-Galaxy</strong></div>
           <h4 style="display:flex;align-items:center;gap:10px;">Fernando-Galaxy <span class="pill act" style="font-size:11px;">ACTIVE</span></h4>
           <div class="col-2">
-            <div class="wf-form-grp"><label>NS Parent</label><div class="input filled">GalaxyGold Network</div></div>
+            <div class="wf-form-grp"><label>Network System Parent</label><div class="input filled">GalaxyGold Network</div></div>
             <div class="wf-form-grp"><label>Vertical</label><div class="input filled">Casino</div></div>
             <div class="wf-form-grp"><label>Default Bank IBAN</label><div class="input filled">IT60X05428...</div></div>
             <div class="wf-form-grp"><label>Affiliate Manager</label><div class="input filled">Fernando Rossi</div></div>
@@ -475,7 +475,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
             </div>
             <div class="card" style="background:var(--bg2);">
               <h3 style="font-size:13px;">Cascade-inactive example</h3>
-              <p style="font-size:12px;"><strong>Cellxpert</strong> shows CASCADE-INACTIVE because its parent NS "Old EU Network" was flipped INACTIVE. Reactivating the NS auto-restores Cellxpert. Soft flag — no row deletion.</p>
+              <p style="font-size:12px;"><strong>Cellxpert</strong> shows CASCADE-INACTIVE because its parent Network System "Old EU Network" was flipped INACTIVE. Reactivating the Network System auto-restores Cellxpert. Soft flag — no row deletion.</p>
             </div>
           </div>
         </div>
@@ -596,7 +596,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
         </div>
         <div class="callout info">
           <span class="ico">🔁</span>
-          <div><strong>Same modal, 4 entities:</strong> the pattern is identical for NS, Program, Platform, Brand, and Account. One component, reused. Pnina learns it once.</div>
+          <div><strong>Same modal, 4 entities:</strong> the pattern is identical for Network System, Program, Platform, Brand, and Account. One component, reused. Pnina learns it once.</div>
         </div>
         <div class="callout warn">
           <span class="ico">📨</span>
@@ -792,7 +792,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
   </div>
   <div class="div-right t3">
     <h3>Tab 3 at a glance</h3>
-    <div class="kr"><span class="k">Filter axes</span><span class="v">5 (NS/Prog/Brand/Country/Status)</span></div>
+    <div class="kr"><span class="k">Filter axes</span><span class="v">5 (Network/Prog/Brand/Country/Status)</span></div>
     <div class="kr"><span class="k">In-row actions</span><span class="v">CM reassign · Priority flip</span></div>
     <div class="kr"><span class="k">Bulk actions</span><span class="v">INACTIVE · REACTIVATE · CSV</span></div>
     <div class="kr"><span class="k">Indicators</span><span class="v">Red ring + cascade amber</span></div>

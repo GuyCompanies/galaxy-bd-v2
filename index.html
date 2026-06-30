@@ -234,9 +234,9 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
         </thead>
         <tbody>
           <tr>
-            <td class="label">Segment Management (NS / Program / Platform / Brand)</td>
+            <td class="label">Segment Management (Network System / Program / Platform / Brand)</td>
             <td><span class="dot am"></span><span class="tag am">PARTIAL</span></td>
-            <td>NS + Program + Brand exist as flat lists in sidebar. No <strong>Account</strong> grain. No <strong>Platform</strong> entity. INACTIVE flag exists but doesn't cascade.</td>
+            <td>Network System + Program + Brand exist as flat lists in sidebar. No <strong>Account</strong> grain. No <strong>Platform</strong> entity. INACTIVE flag exists but doesn't cascade.</td>
             <td>Dedicated tab with 4 sub-pages. Program has Accounts repeater. Platform is first-class. Brand exists. Each list has +Add and INACTIVE confirmation.</td>
           </tr>
           <tr>
@@ -249,7 +249,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
             <td class="label">Deal Management list</td>
             <td><span class="dot rd"></span><span class="tag rd">MISSING</span></td>
             <td><code>/deals</code> exists as a flat list with red-ring for non-ACTIVE. No Priority sort. No CM reassign in-row. No bulk actions.</td>
-            <td>Dedicated tab with Priority column, sortable, in-row CM reassign, bulk INACTIVE/REACTIVATE, filter by NS/Program/Brand/Country/Status.</td>
+            <td>Dedicated tab with Priority column, sortable, in-row CM reassign, bulk INACTIVE/REACTIVATE, filter by Network System/Program/Brand/Country/Status.</td>
           </tr>
           <tr>
             <td class="label">Cascade INACTIVE safety</td>
@@ -373,7 +373,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
 
     <div class="card">
       <h3>Relationship cut (text diagram)</h3>
-<div class="arch-diag">AffiliateNetwork (NS)
+<div class="arch-diag">Network System (AffiliateNetwork)
    └── Program ──────────────────M:N────────── Brand
          │                                       │
          ├── ProgramAccount (NEW)                 │
@@ -427,7 +427,7 @@ Deal (= BrandProgramAssignment)
           <li><strong>Audit trail baked in</strong> — every flip writes who/when/why.</li>
           <li><strong>Reversible</strong> — flip parent back, children come back.</li>
           <li><strong>Cron-pause Campaigns</strong> — live Campaigns running on cascade-inactive Deals auto-pause within 60s. Postbacks stop. Affiliate manager notified.</li>
-          <li><strong>One pattern reused</strong> across NS / Program / Platform / Brand / Account.</li>
+          <li><strong>One pattern reused</strong> across Network System / Program / Platform / Brand / Account.</li>
         </ul>
       </div>
     </div>
@@ -512,7 +512,7 @@ Deal (= BrandProgramAssignment)
           <li>Ship Review Queue + type-to-confirm pattern (reused across all 4).</li>
           <li>+Add sidesheet on each sub-page.</li>
         </ul>
-        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--bd);font-size:12px;color:var(--tx2);"><strong>Exit gate:</strong> can create NS → Program → Account → Brand and flip any node INACTIVE with cascade preview.</div>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--bd);font-size:12px;color:var(--tx2);"><strong>Exit gate:</strong> can create Network System → Program → Account → Brand and flip any node INACTIVE with cascade preview.</div>
       </div>
       <div class="card" style="border-top:4px solid var(--pr);">
         <div class="tag gn" style="margin-bottom:8px;">WAVE 2 · ~6 days</div>
@@ -601,7 +601,7 @@ Deal (= BrandProgramAssignment)
       <div class="card" style="border-top:4px solid var(--pu);">
         <div class="tag pu" style="margin-bottom:8px;">WILD CARD 1</div>
         <h3>OrgUnit enum across the kernel</h3>
-        <p style="font-size:13px;color:var(--tx2);line-height:1.55;">Today: NS, Program, Brand, Platform, Account are 5 separate entities. Wild card: collapse them under a generic <code>OrgUnit</code> enum + parent_id self-reference. One table, one cascade resolver, infinite nesting.</p>
+        <p style="font-size:13px;color:var(--tx2);line-height:1.55;">Today: Network System, Program, Brand, Platform, Account are 5 separate entities. Wild card: collapse them under a generic <code>OrgUnit</code> enum + parent_id self-reference. One table, one cascade resolver, infinite nesting.</p>
         <div style="margin-top:10px;padding:8px 10px;background:var(--bg2);border-radius:4px;font-size:12px;color:var(--tx3);">
           <strong style="color:var(--tx);">Win:</strong> Adds Vertical, Region, anything else as zero-code extensions.<br>
           <strong style="color:var(--tx);">Cost:</strong> Loses type safety in TypeScript. Reports get harder. ~2 extra dev-days now, saves ~10 days over 12 months.
