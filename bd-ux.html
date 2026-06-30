@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galaxy BD Module v2 — UX Deck for Pnina</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #F3F4F6; }
+
+:root {
+  --bg: #FFFFFF; --bg2: #F9FAFB; --bg3: #F3F4F6;
+  --bd: #E5E7EB; --bd2: #D1D5DB; --bd3: #9CA3AF;
+  --tx: #111827; --tx2: #374151; --tx3: #6B7280; --tx4: #9CA3AF; --tx5: #D1D5DB;
+  --pr: #059669; --pr2: #047857; --prbg: #D1FAE5; --prbg2: #ECFDF5;
+  --rd: #DC2626; --rdbg: #FEE2E2; --rdbg2: #FEF2F2;
+  --am: #D97706; --ambg: #FEF3C7; --ambg2: #FFFBEB;
+  --bl: #2563EB; --blbg: #DBEAFE; --blbg2: #EFF6FF;
+  --pu: #7C3AED; --pubg: #EDE9FE;
+}
+
+.deck { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+.slide { position: absolute; inset: 0; display: none; flex-direction: column; background: var(--bg2); }
+.slide.active { display: flex; }
+
+.slide-header {
+  background: var(--bg); padding: 14px 32px 12px;
+  flex: 0 0 auto; border-bottom: 1px solid var(--bd);
+  display: flex; align-items: baseline; gap: 16px;
+}
+.slide-header .num { font-size: 13px; color: var(--tx4); font-weight: 600; letter-spacing: .05em; }
+.slide-header h2 { color: var(--tx); font-size: 22px; font-weight: 700; flex: 1; }
+.slide-header .sub { color: var(--tx3); font-size: 13px; }
+.slide-header .tabchip {
+  font-size: 11px; padding: 3px 10px; border-radius: 12px; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase;
+}
+.slide-header .tabchip.t1 { background: var(--blbg); color: var(--bl); }
+.slide-header .tabchip.t2 { background: var(--prbg); color: var(--pr2); }
+.slide-header .tabchip.t3 { background: var(--ambg); color: var(--am); }
+
+.slide-body { flex: 1 1 0; min-height: 0; padding: 16px 32px 56px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
+
+.card { background: var(--bg); border: 1px solid var(--bd); border-radius: 8px; padding: 12px 16px; box-shadow: 0 1px 2px rgba(0,0,0,.03); }
+.card h3 { font-size: 14px; font-weight: 700; color: var(--tx); margin-bottom: 6px; }
+.card p { font-size: 13px; color: var(--tx2); line-height: 1.5; }
+
+.row { display: flex; gap: 12px; }
+.row > * { flex: 1; min-width: 0; }
+.col-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.col-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+.callout { border-radius: 6px; padding: 10px 14px; font-size: 13px; line-height: 1.5; border-left: 3px solid; display: flex; gap: 10px; }
+.callout.info { background: var(--blbg2); border-color: var(--bl); color: #1E3A8A; }
+.callout.warn { background: var(--ambg2); border-color: var(--am); color: #78350F; }
+.callout.good { background: var(--prbg2); border-color: var(--pr); color: #064E3B; }
+.callout strong { font-weight: 700; }
+.callout .ico { font-size: 14px; flex-shrink: 0; }
+
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+.tag.gn { background: var(--prbg); color: var(--pr2); }
+.tag.rd { background: var(--rdbg); color: var(--rd); }
+.tag.am { background: var(--ambg); color: var(--am); }
+.tag.bl { background: var(--blbg); color: var(--bl); }
+.tag.gr { background: var(--bg3); color: var(--tx3); }
+
+/* ============== WIREFRAME PRIMITIVES ============== */
+.wf {
+  background: var(--bg); border: 1px solid var(--bd2); border-radius: 8px;
+  padding: 0; overflow: hidden; flex: 1; display: flex; flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0,0,0,.05);
+}
+.wf-bar {
+  background: var(--bg2); padding: 8px 14px; border-bottom: 1px solid var(--bd);
+  font-size: 11px; color: var(--tx3); display: flex; gap: 8px; align-items: center;
+  font-family: 'SF Mono', 'Menlo', monospace;
+}
+.wf-bar .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bd3); }
+.wf-bar .dot.r { background: #FCA5A5; }
+.wf-bar .dot.y { background: #FCD34D; }
+.wf-bar .dot.g { background: #86EFAC; }
+.wf-bar .url { flex: 1; background: var(--bg); border: 1px solid var(--bd); border-radius: 4px; padding: 3px 8px; font-size: 11px; color: var(--tx3); }
+
+.wf-app { display: flex; flex: 1; min-height: 0; }
+.wf-sidebar {
+  width: 180px; background: var(--bg2); border-right: 1px solid var(--bd);
+  padding: 12px 0; display: flex; flex-direction: column; gap: 1px;
+  font-size: 12px;
+}
+.wf-sidebar .grp { padding: 6px 14px 3px; color: var(--tx4); font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: .05em; margin-top: 4px; }
+.wf-sidebar .item { padding: 6px 14px; color: var(--tx2); cursor: pointer; }
+.wf-sidebar .item.active { background: var(--prbg2); color: var(--pr2); font-weight: 600; border-left: 3px solid var(--pr); padding-left: 11px; }
+.wf-sidebar .item.sub { padding-left: 28px; color: var(--tx3); font-size: 11.5px; }
+.wf-sidebar .item.sub.active { background: var(--prbg); border-left: 3px solid var(--pr); padding-left: 25px; }
+
+.wf-main { flex: 1; padding: 14px 18px; overflow-y: auto; background: var(--bg); display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.wf-main h4 { font-size: 16px; font-weight: 700; color: var(--tx); }
+.wf-main .crumb { font-size: 11px; color: var(--tx3); }
+.wf-main .crumb span { color: var(--tx4); }
+
+.wf-toolbar { display: flex; gap: 8px; align-items: center; font-size: 11px; flex-wrap: wrap; }
+.wf-toolbar input { background: var(--bg2); border: 1px solid var(--bd); border-radius: 4px; padding: 4px 8px; font-size: 11px; color: var(--tx2); flex: 1; min-width: 120px; }
+.wf-toolbar .btn { background: var(--pr); color: white; border: none; border-radius: 4px; padding: 5px 10px; font-size: 11px; font-weight: 600; cursor: pointer; }
+.wf-toolbar .btn.sec { background: var(--bg); color: var(--tx2); border: 1px solid var(--bd); }
+
+.wf-table { width: 100%; border-collapse: collapse; font-size: 11px; background: var(--bg); }
+.wf-table th { background: var(--bg2); padding: 6px 10px; text-align: left; font-size: 10px; color: var(--tx3); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid var(--bd); }
+.wf-table td { padding: 7px 10px; border-bottom: 1px solid var(--bd); color: var(--tx2); }
+.wf-table tr:last-child td { border-bottom: none; }
+.wf-table .pill { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; }
+.wf-table .pill.act { background: var(--prbg); color: var(--pr2); }
+.wf-table .pill.ina { background: var(--rdbg); color: var(--rd); }
+.wf-table .pill.cas { background: var(--ambg); color: var(--am); }
+
+.wf-form-grp { display: flex; flex-direction: column; gap: 3px; }
+.wf-form-grp label { font-size: 10px; color: var(--tx3); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.wf-form-grp .input { background: var(--bg2); border: 1px solid var(--bd); border-radius: 4px; padding: 5px 8px; font-size: 11px; color: var(--tx2); }
+.wf-form-grp .input.empty { color: var(--tx4); font-style: italic; }
+.wf-form-grp .input.filled { color: var(--tx); font-weight: 600; }
+
+.wf-section {
+  border: 1px solid var(--bd); border-radius: 6px; padding: 10px 12px;
+  background: var(--bg2);
+}
+.wf-section .lbl { font-size: 10px; color: var(--tx3); font-weight: 700; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+.wf-section .lbl .badge { background: var(--blbg); color: var(--bl); padding: 1px 6px; border-radius: 3px; font-size: 9px; font-weight: 700; }
+
+.wf-modal-shade {
+  background: rgba(17, 24, 39, .35); position: relative;
+  display: flex; align-items: stretch; justify-content: flex-end;
+  border-radius: 8px; overflow: hidden;
+}
+.wf-sidesheet {
+  width: 60%; background: var(--bg); padding: 14px 18px;
+  display: flex; flex-direction: column; gap: 10px;
+  box-shadow: -8px 0 24px rgba(0,0,0,.15);
+}
+.wf-sidesheet h5 { font-size: 14px; font-weight: 700; color: var(--tx); display: flex; justify-content: space-between; align-items: center; }
+.wf-sidesheet h5 .x { color: var(--tx4); font-weight: 400; cursor: pointer; }
+
+.kv-list { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 12px; }
+.kv-list dt { color: var(--tx3); font-weight: 600; }
+.kv-list dd { color: var(--tx); font-weight: 500; }
+
+/* ============ SECTION DIVIDER SLIDES ============ */
+.divider-slide { background: var(--bg) !important; flex-direction: row !important; padding: 0; }
+.div-left { flex: 1; padding: 80px 80px; display: flex; flex-direction: column; justify-content: center; }
+.div-left .eyebrow { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; margin-bottom: 16px; }
+.div-left .eyebrow.t1 { color: var(--bl); }
+.div-left .eyebrow.t2 { color: var(--pr); }
+.div-left .eyebrow.t3 { color: var(--am); }
+.div-left .h1 { font-size: 52px; font-weight: 800; color: var(--tx); line-height: 1.05; letter-spacing: -.025em; }
+.div-left .h2 { font-size: 18px; color: var(--tx3); margin-top: 18px; line-height: 1.5; max-width: 600px; }
+.div-left .pages { margin-top: 32px; display: flex; flex-direction: column; gap: 8px; max-width: 500px; }
+.div-left .pg-item { display: flex; gap: 12px; align-items: center; padding: 8px 14px; background: var(--bg2); border-radius: 6px; border: 1px solid var(--bd); }
+.div-left .pg-item .pg-num { font-size: 11px; font-weight: 700; color: var(--tx4); width: 16px; }
+.div-left .pg-item .pg-tx { font-size: 13px; color: var(--tx2); font-weight: 600; }
+.div-right { width: 340px; padding: 80px 36px; display: flex; flex-direction: column; justify-content: center; gap: 20px; }
+.div-right.t1 { background: var(--blbg2); border-left: 4px solid var(--bl); }
+.div-right.t2 { background: var(--prbg2); border-left: 4px solid var(--pr); }
+.div-right.t3 { background: var(--ambg2); border-left: 4px solid var(--am); }
+.div-right h3 { font-size: 14px; font-weight: 700; color: var(--tx); text-transform: uppercase; letter-spacing: .05em; }
+.div-right .kr { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--bd); font-size: 12px; }
+.div-right .kr .k { color: var(--tx3); }
+.div-right .kr .v { color: var(--tx); font-weight: 700; }
+
+/* TITLE SLIDE */
+.title-slide { background: var(--bg) !important; flex-direction: column !important; padding: 60px 80px; justify-content: center; }
+.title-slide .eyebrow { font-size: 13px; color: var(--pr); font-weight: 700; text-transform: uppercase; letter-spacing: .14em; margin-bottom: 18px; }
+.title-slide .h1 { font-size: 60px; font-weight: 800; color: var(--tx); line-height: 1.05; letter-spacing: -.025em; }
+.title-slide .h2 { font-size: 22px; color: var(--tx3); margin-top: 16px; max-width: 800px; line-height: 1.4; }
+.title-slide .tabs { display: flex; gap: 16px; margin-top: 40px; }
+.title-slide .tab {
+  flex: 1; max-width: 280px; padding: 20px 22px; border-radius: 10px;
+  border: 1px solid var(--bd); background: var(--bg2);
+}
+.title-slide .tab.t1 { border-left: 4px solid var(--bl); }
+.title-slide .tab.t2 { border-left: 4px solid var(--pr); }
+.title-slide .tab.t3 { border-left: 4px solid var(--am); }
+.title-slide .tab .ti { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+.title-slide .tab.t1 .ti { color: var(--bl); }
+.title-slide .tab.t2 .ti { color: var(--pr); }
+.title-slide .tab.t3 .ti { color: var(--am); }
+.title-slide .tab .tn { font-size: 18px; font-weight: 700; color: var(--tx); margin-bottom: 4px; }
+.title-slide .tab .td { font-size: 12px; color: var(--tx3); line-height: 1.5; }
+.title-slide .meta { margin-top: 32px; display: flex; gap: 28px; font-size: 13px; color: var(--tx3); }
+.title-slide .meta strong { color: var(--tx); display: block; font-size: 14px; margin-bottom: 2px; }
+
+.nav {
+  position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 8px; z-index: 200;
+  background: var(--bg); border: 1px solid var(--bd); padding: 6px 14px; border-radius: 22px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+}
+.nav button { background: none; border: none; color: var(--tx3); font-size: 16px; cursor: pointer; padding: 4px 10px; border-radius: 6px; }
+.nav button:hover { background: var(--bg3); color: var(--tx); }
+.nav .ctr { color: var(--tx2); font-size: 12px; min-width: 64px; text-align: center; font-weight: 600; }
+.dots { display: flex; gap: 5px; }
+.di { width: 7px; height: 7px; border-radius: 50%; background: var(--bd2); cursor: pointer; transition: all .2s; }
+.di.active { background: var(--pr); transform: scale(1.3); }
+.di:hover { background: var(--tx4); }
+
+.bullets { font-size: 13px; color: var(--tx2); line-height: 1.7; }
+.bullets li { list-style: none; padding-left: 18px; position: relative; margin-bottom: 4px; }
+.bullets li::before { content: '→'; position: absolute; left: 0; color: var(--pr); font-weight: 700; }
+.bullets li strong { color: var(--tx); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- ============ SLIDE 1: TITLE ============ -->
+<div class="slide active title-slide" id="s1">
+  <div class="eyebrow">UX Deck for Pnina · Galaxy BD Module v2</div>
+  <div class="h1">3 tabs.<br>The whole BD workflow.</div>
+  <div class="h2">Restructured around Noa's IA schema. Each tab earns its sidebar slot. Wireframes show the actual screens — what Pnina sees, where she clicks, what changes.</div>
+  <div class="tabs">
+    <div class="tab t1">
+      <div class="ti">Tab 1</div>
+      <div class="tn">Segment Management</div>
+      <div class="td">NS / Program / Platform / Brand — the catalog layer with INACTIVE cascade safety.</div>
+    </div>
+    <div class="tab t2">
+      <div class="ti">Tab 2</div>
+      <div class="tn">Create Deal</div>
+      <div class="td">The cascade — Program → Brand → Account → Country. +Add sidesheet on every step.</div>
+    </div>
+    <div class="tab t3">
+      <div class="ti">Tab 3</div>
+      <div class="tn">Deal Management</div>
+      <div class="td">List view, Priority sort, in-row CM reassign, bulk INACTIVE / REACTIVATE.</div>
+    </div>
+  </div>
+  <div class="meta">
+    <div><strong>For</strong>Pnina · BD lead</div>
+    <div><strong>Date</strong>2026-06-30</div>
+    <div><strong>Pair deck</strong>bd-meeting.html (CEO memo)</div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 2: TAB 1 DIVIDER ============ -->
+<div class="slide divider-slide" id="s2">
+  <div class="div-left">
+    <div class="eyebrow t1">Tab 1 / 3</div>
+    <div class="h1">Segment Management</div>
+    <div class="h2">The catalog. Where every Network, Program, Platform, and Brand lives. Each sub-page has +Add, in-line edit, and INACTIVE cascade safety. <strong>This is the unblocker for everything else.</strong></div>
+    <div class="pages">
+      <div class="pg-item"><div class="pg-num">1.</div><div class="pg-tx">Sidebar IA — where Segment Management sits</div></div>
+      <div class="pg-item"><div class="pg-num">2.</div><div class="pg-tx">Network System (NS) sub-page</div></div>
+      <div class="pg-item"><div class="pg-num">3.</div><div class="pg-tx">Program sub-page (with Accounts repeater)</div></div>
+      <div class="pg-item"><div class="pg-num">4.</div><div class="pg-tx">Platform sub-page (new — first-class)</div></div>
+      <div class="pg-item"><div class="pg-num">5.</div><div class="pg-tx">Brand sub-page</div></div>
+      <div class="pg-item"><div class="pg-num">6.</div><div class="pg-tx">INACTIVE confirmation pattern (reused across all 4)</div></div>
+    </div>
+  </div>
+  <div class="div-right t1">
+    <h3>Tab 1 at a glance</h3>
+    <div class="kr"><span class="k">Sub-pages</span><span class="v">4</span></div>
+    <div class="kr"><span class="k">New entities</span><span class="v">Platform · Account</span></div>
+    <div class="kr"><span class="k">Reused pattern</span><span class="v">+Add sidesheet</span></div>
+    <div class="kr"><span class="k">Safety pattern</span><span class="v">Review queue</span></div>
+    <div class="kr"><span class="k">Dev wave</span><span class="v">Wave 1 · ~6d</span></div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 3: TAB 1 — SIDEBAR IA ============ -->
+<div class="slide" id="s3">
+  <div class="slide-header">
+    <span class="num">T1.1</span>
+    <h2>Sidebar IA — where Segment Management lives</h2>
+    <span class="sub">Top-level nav · matches Noa's 3-tab schema</span>
+    <span class="tabchip t1">Tab 1</span>
+  </div>
+  <div class="slide-body">
+    <div class="row">
+      <div class="wf" style="max-width:520px;">
+        <div class="wf-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="url">amp.goldenlab.net</div></div>
+        <div class="wf-app">
+          <div class="wf-sidebar">
+            <div class="grp">BD Module</div>
+            <div class="item active">📁 Segment Management</div>
+            <div class="item sub">— Network System</div>
+            <div class="item sub">— Program</div>
+            <div class="item sub">— Platform</div>
+            <div class="item sub">— Brand</div>
+            <div class="item">➕ Create Deal</div>
+            <div class="item">📊 Deal Management</div>
+            <div class="grp">Reports</div>
+            <div class="item">📈 Funnel</div>
+            <div class="item">💰 Finance</div>
+            <div class="grp">Admin</div>
+            <div class="item">👥 Users</div>
+            <div class="item">⚙️ Settings</div>
+          </div>
+          <div class="wf-main" style="background:var(--bg2);align-items:center;justify-content:center;color:var(--tx4);font-size:13px;font-style:italic;">
+            Sub-page content area<br>(see next 4 slides)
+          </div>
+        </div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
+        <div class="card">
+          <h3>What's new vs today</h3>
+          <ul class="bullets">
+            <li><strong>Top-level tab</strong> "Segment Management" with 4 sub-items (NS, Program, Platform, Brand).</li>
+            <li><strong>Platform is first-class</strong> — it was missing as an entity. Now lives as its own page with status + parent NS link.</li>
+            <li><strong>Brand is promoted</strong> from buried under Program to a top-level sub-page (matches Noa's mental model).</li>
+            <li><strong>Account is nested</strong> inside Program (not a separate sidebar item — see slide T1.3).</li>
+          </ul>
+        </div>
+        <div class="callout info">
+          <span class="ico">📌</span>
+          <div><strong>Sidebar lock:</strong> the 3 top-level BD items mirror Noa's 3 tabs exactly — Segment Mgmt, Create Deal, Deal Mgmt. Predictable mental map for every user.</div>
+        </div>
+        <div class="callout good">
+          <span class="ico">✅</span>
+          <div><strong>Backward compat:</strong> existing /deals/new URL keeps working. /segment-management is the new home; /deals/new redirects there for safety during rollout.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 4: TAB 1 — NETWORK SYSTEM ============ -->
+<div class="slide" id="s4">
+  <div class="slide-header">
+    <span class="num">T1.2</span>
+    <h2>Network System sub-page</h2>
+    <span class="sub">Top of the catalog tree · simple list + status + +Add</span>
+    <span class="tabchip t1">Tab 1</span>
+  </div>
+  <div class="slide-body">
+    <div class="wf" style="flex:1;">
+      <div class="wf-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="url">amp.goldenlab.net/segment-management/network-systems</div></div>
+      <div class="wf-app">
+        <div class="wf-sidebar">
+          <div class="grp">BD Module</div>
+          <div class="item">📁 Segment Management</div>
+          <div class="item sub active">— Network System</div>
+          <div class="item sub">— Program</div>
+          <div class="item sub">— Platform</div>
+          <div class="item sub">— Brand</div>
+          <div class="item">➕ Create Deal</div>
+          <div class="item">📊 Deal Management</div>
+        </div>
+        <div class="wf-main">
+          <div class="crumb">Segment Management <span>›</span> Network Systems</div>
+          <h4>Network Systems</h4>
+          <div class="wf-toolbar">
+            <input type="text" placeholder="🔍 Search NS name…">
+            <select class="input" style="background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:4px 8px;font-size:11px;"><option>All status</option><option>Active</option><option>Inactive</option></select>
+            <button class="btn">+ Add Network System</button>
+          </div>
+          <table class="wf-table">
+            <thead><tr><th>NS Name</th><th>Code</th><th>Programs</th><th>Brands</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><strong>GalaxyGold Network</strong></td><td>GGN</td><td>14</td><td>23</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+              <tr><td><strong>Galaxy Sport</strong></td><td>GSP</td><td>6</td><td>11</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+              <tr><td><strong>Lotto-Tier</strong></td><td>LTT</td><td>3</td><td>4</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+              <tr><td><strong>Old EU Network</strong></td><td>OEN</td><td>2</td><td>0</td><td><span class="pill ina">INACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+            </tbody>
+          </table>
+          <div class="callout warn" style="margin-top:8px;font-size:11.5px;">
+            <span class="ico">⚠️</span>
+            <div>Toggling a Network System → INACTIVE opens the <strong>Review Queue modal</strong> (see slide T1.6). Cascade impact is shown <em>before</em> confirm.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 5: TAB 1 — PROGRAM ============ -->
+<div class="slide" id="s5">
+  <div class="slide-header">
+    <span class="num">T1.3</span>
+    <h2>Program sub-page · with Accounts repeater</h2>
+    <span class="sub">Program detail expands inline to show all Accounts (Fernando IT / Fernando ES / etc.)</span>
+    <span class="tabchip t1">Tab 1</span>
+  </div>
+  <div class="slide-body">
+    <div class="wf" style="flex:1;">
+      <div class="wf-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="url">amp.goldenlab.net/segment-management/programs/fernando-galaxy</div></div>
+      <div class="wf-app">
+        <div class="wf-sidebar">
+          <div class="grp">BD Module</div>
+          <div class="item">📁 Segment Management</div>
+          <div class="item sub">— Network System</div>
+          <div class="item sub active">— Program</div>
+          <div class="item sub">— Platform</div>
+          <div class="item sub">— Brand</div>
+          <div class="item">➕ Create Deal</div>
+          <div class="item">📊 Deal Management</div>
+        </div>
+        <div class="wf-main">
+          <div class="crumb">Segment Management <span>›</span> Programs <span>›</span> <strong style="color:var(--tx2);">Fernando-Galaxy</strong></div>
+          <h4 style="display:flex;align-items:center;gap:10px;">Fernando-Galaxy <span class="pill act" style="font-size:11px;">ACTIVE</span></h4>
+          <div class="col-2">
+            <div class="wf-form-grp"><label>NS Parent</label><div class="input filled">GalaxyGold Network</div></div>
+            <div class="wf-form-grp"><label>Vertical</label><div class="input filled">Casino</div></div>
+            <div class="wf-form-grp"><label>Default Bank IBAN</label><div class="input filled">IT60X05428...</div></div>
+            <div class="wf-form-grp"><label>Affiliate Manager</label><div class="input filled">Fernando Rossi</div></div>
+          </div>
+
+          <div class="wf-section" style="margin-top:6px;">
+            <div class="lbl">Accounts (3) <span class="badge">NEW IN v2</span></div>
+            <table class="wf-table" style="margin-top:6px;background:var(--bg);border-radius:4px;overflow:hidden;">
+              <thead><tr><th>Account Name</th><th>Country Default</th><th>Channel</th><th>Postback URL</th><th>Cap</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Fernando-IT</strong></td><td>🇮🇹 Italy</td><td>SMS</td><td style="font-family:monospace;font-size:10px;">it-pb.galaxy.com/...</td><td>500/day</td><td><span class="pill act">ACTIVE</span></td></tr>
+                <tr><td><strong>Fernando-ES</strong></td><td>🇪🇸 Spain</td><td>WA</td><td style="font-family:monospace;font-size:10px;">es-pb.galaxy.com/...</td><td>300/day</td><td><span class="pill act">ACTIVE</span></td></tr>
+                <tr><td><strong>Fernando-PT</strong></td><td>🇵🇹 Portugal</td><td>Email</td><td style="font-family:monospace;font-size:10px;">pt-pb.galaxy.com/...</td><td>200/day</td><td><span class="pill act">ACTIVE</span></td></tr>
+              </tbody>
+            </table>
+            <button class="btn" style="margin-top:8px;">+ Add Account</button>
+          </div>
+          <div class="wf-section">
+            <div class="lbl">Brand Links (M:N)</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;font-size:11px;">
+              <span class="tag bl">SuperBet</span> <span class="tag bl">CasinoX</span> <span class="tag bl">LottoKing</span>
+              <button class="btn sec" style="font-size:10px;padding:2px 8px;">+ Link Brand</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="callout info" style="flex:0 0 auto;">
+      <span class="ico">🧩</span>
+      <div><strong>Account = the new grain.</strong> Caps, postbacks, channel, country default — all keyed at Account level. Fernando's 3 markets stop colliding. Native from day one — no migration.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 6: TAB 1 — PLATFORM ============ -->
+<div class="slide" id="s6">
+  <div class="slide-header">
+    <span class="num">T1.4</span>
+    <h2>Platform sub-page</h2>
+    <span class="sub">Was missing entirely as a first-class entity · now lives here</span>
+    <span class="tabchip t1">Tab 1</span>
+  </div>
+  <div class="slide-body">
+    <div class="wf" style="flex:1;">
+      <div class="wf-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="url">amp.goldenlab.net/segment-management/platforms</div></div>
+      <div class="wf-app">
+        <div class="wf-sidebar">
+          <div class="grp">BD Module</div>
+          <div class="item">📁 Segment Management</div>
+          <div class="item sub">— Network System</div>
+          <div class="item sub">— Program</div>
+          <div class="item sub active">— Platform</div>
+          <div class="item sub">— Brand</div>
+          <div class="item">➕ Create Deal</div>
+          <div class="item">📊 Deal Management</div>
+        </div>
+        <div class="wf-main">
+          <div class="crumb">Segment Management <span>›</span> Platforms</div>
+          <h4>Platforms <span class="tag bl" style="font-size:11px;margin-left:8px;vertical-align:middle;">NEW IN v2</span></h4>
+          <div class="wf-toolbar">
+            <input type="text" placeholder="🔍 Search platform…">
+            <button class="btn">+ Add Platform</button>
+          </div>
+          <table class="wf-table">
+            <thead><tr><th>Platform</th><th>Code</th><th>Used by Programs</th><th>Used by Brands</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><strong>Affilka</strong></td><td>AFK</td><td>8</td><td>14</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+              <tr><td><strong>MyAffiliates</strong></td><td>MYA</td><td>5</td><td>9</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+              <tr><td><strong>Income Access</strong></td><td>IAX</td><td>3</td><td>5</td><td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+              <tr><td><strong>Cellxpert</strong></td><td>CXP</td><td>2</td><td>3</td><td><span class="pill cas">CASCADE-INACTIVE</span></td><td style="color:var(--tx4);">⋯</td></tr>
+            </tbody>
+          </table>
+          <div class="row" style="margin-top:6px;">
+            <div class="card" style="background:var(--bg2);">
+              <h3 style="font-size:13px;">Why Platform is first-class now</h3>
+              <p style="font-size:12px;">Tracking, postback formats, link macros, and reconciliation rules all vary by Platform. Treating it as a string field caused config drift. As an entity it owns its own status, supports +Add inline, and cascades INACTIVE safely.</p>
+            </div>
+            <div class="card" style="background:var(--bg2);">
+              <h3 style="font-size:13px;">Cascade-inactive example</h3>
+              <p style="font-size:12px;"><strong>Cellxpert</strong> shows CASCADE-INACTIVE because its parent NS "Old EU Network" was flipped INACTIVE. Reactivating the NS auto-restores Cellxpert. Soft flag — no row deletion.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 7: TAB 1 — BRAND ============ -->
+<div class="slide" id="s7">
+  <div class="slide-header">
+    <span class="num">T1.5</span>
+    <h2>Brand sub-page</h2>
+    <span class="sub">Promoted from buried-under-Program to first-class · matches Noa's mental model</span>
+    <span class="tabchip t1">Tab 1</span>
+  </div>
+  <div class="slide-body">
+    <div class="wf" style="flex:1;">
+      <div class="wf-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="url">amp.goldenlab.net/segment-management/brands/superbet</div></div>
+      <div class="wf-app">
+        <div class="wf-sidebar">
+          <div class="grp">BD Module</div>
+          <div class="item">📁 Segment Management</div>
+          <div class="item sub">— Network System</div>
+          <div class="item sub">— Program</div>
+          <div class="item sub">— Platform</div>
+          <div class="item sub active">— Brand</div>
+          <div class="item">➕ Create Deal</div>
+          <div class="item">📊 Deal Management</div>
+        </div>
+        <div class="wf-main">
+          <div class="crumb">Segment Management <span>›</span> Brands <span>›</span> <strong style="color:var(--tx2);">SuperBet</strong></div>
+          <h4 style="display:flex;align-items:center;gap:10px;">SuperBet <span class="pill act" style="font-size:11px;">ACTIVE</span></h4>
+          <div class="col-3">
+            <div class="wf-form-grp"><label>Vertical</label><div class="input filled">Casino + Sportsbook</div></div>
+            <div class="wf-form-grp"><label>Primary Country</label><div class="input filled">🇮🇹 Italy</div></div>
+            <div class="wf-form-grp"><label>License</label><div class="input filled">ADM (IT)</div></div>
+          </div>
+
+          <div class="wf-section">
+            <div class="lbl">Program Links — M:N</div>
+            <table class="wf-table" style="background:var(--bg);border-radius:4px;overflow:hidden;">
+              <thead><tr><th>Program</th><th>Account</th><th>Active Deals</th><th>Status</th><th>Link Start</th></tr></thead>
+              <tbody>
+                <tr><td>Fernando-Galaxy</td><td>Fernando-IT</td><td>3</td><td><span class="pill act">ACTIVE</span></td><td>2026-04-01</td></tr>
+                <tr><td>Julia-Galaxy</td><td>Julia-IT</td><td>2</td><td><span class="pill act">ACTIVE</span></td><td>2026-05-15</td></tr>
+                <tr><td>Oren-LottoTier</td><td>Oren-IT</td><td>1</td><td><span class="pill ina">INACTIVE</span></td><td>2026-02-10</td></tr>
+              </tbody>
+            </table>
+            <button class="btn" style="margin-top:8px;">+ Link to Program</button>
+          </div>
+
+          <div class="wf-section">
+            <div class="lbl">Open Deals (6)</div>
+            <p style="font-size:11.5px;color:var(--tx3);">View all → opens Deal Management filtered to this Brand.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="callout good" style="flex:0 0 auto;">
+      <span class="ico">✅</span>
+      <div><strong>Brand-first navigation, Program-first cascade.</strong> Brand has its own page (Noa's request). The Create Deal cascade still goes Program → Brand (locked per Landmine #3). Different problems, both solved.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 8: TAB 1 — INACTIVE CONFIRMATION ============ -->
+<div class="slide" id="s8">
+  <div class="slide-header">
+    <span class="num">T1.6</span>
+    <h2>INACTIVE confirmation pattern</h2>
+    <span class="sub">Reused across all 4 sub-pages · the cascade safety net</span>
+    <span class="tabchip t1">Tab 1</span>
+  </div>
+  <div class="slide-body">
+    <div class="row">
+      <div class="wf" style="max-width:560px;">
+        <div class="wf-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="url">⚠️ Confirm INACTIVE — SuperBet</div></div>
+        <div class="wf-main" style="background:var(--bg);">
+          <h4 style="color:var(--rd);font-size:15px;">⚠️ Flip SuperBet to INACTIVE?</h4>
+          <p style="font-size:12.5px;color:var(--tx2);">This will cascade-inactivate the following children:</p>
+
+          <div class="wf-section" style="background:var(--rdbg2);border-color:#FCA5A5;">
+            <div class="lbl" style="color:var(--rd);">Impact preview</div>
+            <ul style="font-size:12px;color:var(--tx2);list-style:none;line-height:1.8;">
+              <li>📦 <strong>14 Deals</strong> → all flip to CASCADE-INACTIVE</li>
+              <li>📢 <strong>6 live Campaigns</strong> → auto-pause within 60s</li>
+              <li>👥 <strong>23 CM allocations</strong> → freeze (no new traffic)</li>
+              <li>🔗 <strong>3 Program links</strong> → marked INACTIVE</li>
+              <li>📨 <strong>4 Affiliate Managers</strong> → email notification</li>
+            </ul>
+          </div>
+
+          <div class="wf-form-grp" style="margin-top:8px;">
+            <label>Type "SuperBet" to confirm</label>
+            <input type="text" class="input" style="background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:6px 8px;font-size:12px;width:100%;" placeholder="Type brand name here…">
+          </div>
+          <div class="wf-form-grp">
+            <label>Reason (optional but logged)</label>
+            <input type="text" class="input" style="background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:6px 8px;font-size:12px;width:100%;" placeholder="e.g., contract terminated, brand sold...">
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:10px;">
+            <button class="btn sec" style="flex:1;font-size:12px;padding:8px;">Cancel</button>
+            <button class="btn" style="flex:1;font-size:12px;padding:8px;background:var(--rd);">Confirm INACTIVE</button>
+          </div>
+        </div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
+        <div class="card">
+          <h3>The 4 safety rails</h3>
+          <ul class="bullets">
+            <li><strong>Impact preview before commit</strong> — never a blind flip.</li>
+            <li><strong>Type-to-confirm</strong> — muscle-memory click can't fire it.</li>
+            <li><strong>Soft flag, not hard cascade</strong> — children's <code>effectiveStatus</code> recomputes, no row deletion.</li>
+            <li><strong>One-click reversible</strong> — flip parent back, children come back instantly.</li>
+          </ul>
+        </div>
+        <div class="callout info">
+          <span class="ico">🔁</span>
+          <div><strong>Same modal, 4 entities:</strong> the pattern is identical for NS, Program, Platform, Brand, and Account. One component, reused. Pnina learns it once.</div>
+        </div>
+        <div class="callout warn">
+          <span class="ico">📨</span>
+          <div><strong>Audit + notification baked in:</strong> every flip writes a row to the audit log (who, when, why) AND fires an email to impacted Affiliate Managers. Compliance review-ready by default.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 9: TAB 2 DIVIDER ============ -->
+<div class="slide divider-slide" id="s9">
+  <div class="div-left">
+    <div class="eyebrow t2">Tab 2 / 3</div>
+    <div class="h1">Create Deal</div>
+    <div class="h2">The cascade Pnina lives in. Reshaped to Noa's flow, with +Add sidesheet on every step so she never loses the form.</div>
+    <div class="pages">
+      <div class="pg-item"><div class="pg-num">1.</div><div class="pg-tx">Form layout — cascade reshape (Program → Brand → Account → Country)</div></div>
+      <div class="pg-item"><div class="pg-num">2.</div><div class="pg-tx">"+ Add New" sidesheet pattern (inline create without losing state)</div></div>
+      <div class="pg-item"><div class="pg-num">3.</div><div class="pg-tx">Per-Country block with welcome offer + caps + allocation</div></div>
+    </div>
+  </div>
+  <div class="div-right t2">
+    <h3>Tab 2 at a glance</h3>
+    <div class="kr"><span class="k">Cascade</span><span class="v">Locked Program-first</span></div>
+    <div class="kr"><span class="k">Allocation grain</span><span class="v">(cmUser × Account)</span></div>
+    <div class="kr"><span class="k">+Add sidesheet</span><span class="v">All 4 entities</span></div>
+    <div class="kr"><span class="k">Deal Name</span><span class="v">5-seg auto-compose</span></div>
+    <div class="kr"><span class="k">Dev wave</span><span class="v">Wave 2 · ~6d</span></div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 10: TAB 2 — CASCADE FORM ============ -->
+<div class="slide" id="s10">
+  <div class="slide-header">
+    <span class="num">T2.1</span>
+    <h2>Create Deal — cascade reshape</h2>
+    <span class="sub">Program-first locked · Account grain wired in · 5-seg name auto-composed</span>
+    <span class="tabchip t2">Tab 2</span>
+  </div>
+  <div class="slide-body">
+    <div class="wf" style="flex:1;">
+      <div class="wf-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="url">amp.goldenlab.net/deals/new</div></div>
+      <div class="wf-app">
+        <div class="wf-sidebar">
+          <div class="grp">BD Module</div>
+          <div class="item">📁 Segment Management</div>
+          <div class="item active">➕ Create Deal</div>
+          <div class="item">📊 Deal Management</div>
+        </div>
+        <div class="wf-main">
+          <h4>Create Deal</h4>
+
+          <div class="wf-section">
+            <div class="lbl">Step 1 — Cascade <span class="badge">LOCKED PROGRAM-FIRST</span></div>
+            <div class="col-3">
+              <div class="wf-form-grp"><label>Program</label>
+                <select class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:5px 8px;font-size:11px;font-weight:600;color:var(--tx);"><option>Fernando-Galaxy ✓</option></select>
+                <div style="font-size:10px;color:var(--bl);margin-top:2px;">+ Add Program ↗</div>
+              </div>
+              <div class="wf-form-grp"><label>Brand</label>
+                <select class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:5px 8px;font-size:11px;font-weight:600;color:var(--tx);"><option>SuperBet ✓</option></select>
+                <div style="font-size:10px;color:var(--bl);margin-top:2px;">+ Add Brand ↗</div>
+              </div>
+              <div class="wf-form-grp"><label>Account</label>
+                <select class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:5px 8px;font-size:11px;font-weight:600;color:var(--tx);"><option>Fernando-IT ✓</option></select>
+                <div style="font-size:10px;color:var(--bl);margin-top:2px;">+ Add Account ↗</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="wf-section">
+            <div class="lbl">Step 2 — Countries (multi)</div>
+            <div style="display:flex;gap:5px;flex-wrap:wrap;font-size:11px;align-items:center;">
+              <span class="tag gn" style="padding:3px 9px;">🇮🇹 Italy ✓</span>
+              <span class="tag gn" style="padding:3px 9px;">🇪🇸 Spain ✓</span>
+              <span class="tag gn" style="padding:3px 9px;">🇵🇹 Portugal ✓</span>
+              <span class="tag gr" style="padding:3px 9px;">+ Add country</span>
+            </div>
+          </div>
+
+          <div class="wf-section">
+            <div class="lbl">Step 3 — Per-Country block <span class="badge" style="background:var(--ambg);color:var(--am);">SAME-AS-PREVIOUS TICK</span></div>
+            <div class="col-3" style="font-size:11px;">
+              <div class="wf-form-grp"><label>Welcome offer (IT)</label><div class="input filled">€50 + 100 spins</div></div>
+              <div class="wf-form-grp"><label>Currency</label><div class="input filled">EUR</div></div>
+              <div class="wf-form-grp"><label>CPA Type</label><div class="input filled">HYBRID</div></div>
+              <div class="wf-form-grp"><label>General Cap (IT)</label><div class="input filled">500/day</div></div>
+              <div class="wf-form-grp"><label>CPA Qual. criteria</label><div class="input filled">FTD ≥ €20, registered ≥ 7d</div></div>
+              <div class="wf-form-grp"><label>Channel (from Account)</label><div class="input filled">SMS (inherited)</div></div>
+            </div>
+            <div class="wf-section" style="background:var(--bg);border:1px solid var(--bd);margin-top:8px;">
+              <div class="lbl">Per-CM × Account allocation <span class="badge">NEW GRAIN</span></div>
+              <table class="wf-table" style="background:var(--bg);border-radius:4px;overflow:hidden;">
+                <thead><tr><th>CM</th><th>Account</th><th>Allocation</th><th>Consumption</th><th>Threshold Alert</th></tr></thead>
+                <tbody>
+                  <tr><td>Mario</td><td>Fernando-IT</td><td>300/day</td><td>40%</td><td>80%</td></tr>
+                  <tr><td>Luca</td><td>Fernando-IT</td><td>200/day</td><td>15%</td><td>80%</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="wf-section">
+            <div class="lbl">Step 4 — Auto-Generated Deal Name</div>
+            <div style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:8px 10px;font-family:monospace;font-size:13px;color:var(--tx);font-weight:600;">
+              FERNANDO-GALAXY_SUPERBET_SMS_IT_2026-07-01
+            </div>
+            <div style="font-size:11px;color:var(--tx3);margin-top:4px;">5 segments locked. <a style="color:var(--bl);">⚙️ Override manually</a> if needed.</div>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px;">
+            <button class="btn sec">Save as draft</button>
+            <button class="btn">Create Deal</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 11: TAB 2 — SIDESHEET ============ -->
+<div class="slide" id="s11">
+  <div class="slide-header">
+    <span class="num">T2.2</span>
+    <h2>"+ Add New" sidesheet pattern</h2>
+    <span class="sub">Inline create from inside the cascade · form state preserved on close</span>
+    <span class="tabchip t2">Tab 2</span>
+  </div>
+  <div class="slide-body">
+    <div class="wf wf-modal-shade" style="flex:1;">
+      <div class="wf-bar" style="position:absolute;top:0;left:0;right:0;z-index:2;"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="url">amp.goldenlab.net/deals/new + sidesheet:/brand/new</div></div>
+      <div class="wf-app" style="margin-top:33px;">
+        <div class="wf-sidebar" style="opacity:.55;">
+          <div class="grp">BD Module</div>
+          <div class="item">📁 Segment Management</div>
+          <div class="item active">➕ Create Deal</div>
+          <div class="item">📊 Deal Management</div>
+        </div>
+        <div class="wf-main" style="opacity:.5;">
+          <h4>Create Deal</h4>
+          <div class="wf-section">
+            <div class="lbl">Step 1 — Cascade</div>
+            <div class="col-3">
+              <div class="wf-form-grp"><label>Program</label><div class="input filled">Fernando-Galaxy ✓</div></div>
+              <div class="wf-form-grp"><label>Brand</label><div class="input empty">(creating new…)</div></div>
+              <div class="wf-form-grp"><label>Account</label><div class="input empty">—</div></div>
+            </div>
+          </div>
+          <div class="wf-section">
+            <div class="lbl">Step 2 — Countries</div>
+            <div style="font-size:11px;color:var(--tx4);">Waiting for Brand…</div>
+          </div>
+        </div>
+        <div class="wf-sidesheet">
+          <h5>+ Add Brand <span class="x">✕</span></h5>
+          <div class="wf-form-grp"><label>Brand Name *</label><input type="text" class="input filled" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:6px 8px;font-size:12px;" value="NewCasino IT"></div>
+          <div class="row">
+            <div class="wf-form-grp"><label>Vertical</label><select class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:6px 8px;font-size:12px;"><option>Casino</option></select></div>
+            <div class="wf-form-grp"><label>Primary Country</label><select class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:6px 8px;font-size:12px;"><option>🇮🇹 Italy</option></select></div>
+          </div>
+          <div class="wf-form-grp"><label>Platform</label><select class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:6px 8px;font-size:12px;"><option>Affilka</option></select></div>
+          <div class="wf-form-grp"><label>License</label><input type="text" class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:6px 8px;font-size:12px;" placeholder="e.g. ADM (IT)"></div>
+          <div class="callout info" style="font-size:11.5px;">
+            <span class="ico">🔗</span>
+            <div>This Brand will auto-link to <strong>Fernando-Galaxy</strong> on save (current cascade context).</div>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:6px;">
+            <button class="btn sec" style="flex:1;">Cancel</button>
+            <button class="btn" style="flex:1;">Save + Return to Deal</button>
+          </div>
+          <div style="font-size:10.5px;color:var(--tx4);margin-top:4px;text-align:center;font-style:italic;">Your Deal form state is preserved.</div>
+        </div>
+      </div>
+    </div>
+    <div class="callout good" style="flex:0 0 auto;">
+      <span class="ico">✅</span>
+      <div><strong>Same sidesheet, 4 reuse points:</strong> +Add Program · +Add Brand · +Add Account · +Add Platform. Each closes back to the Deal form with the new value pre-selected. <strong>No "Save and you'll lose your work" dialogs ever.</strong></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 12: TAB 3 DIVIDER ============ -->
+<div class="slide divider-slide" id="s12">
+  <div class="div-left">
+    <div class="eyebrow t3">Tab 3 / 3</div>
+    <div class="h1">Deal Management</div>
+    <div class="h2">The live book. Where Pnina manages 50+ deals without opening sub-pages. Priority sort, in-row CM reassign, bulk INACTIVE / REACTIVATE.</div>
+    <div class="pages">
+      <div class="pg-item"><div class="pg-num">1.</div><div class="pg-tx">List view with Priority column, status filters, bulk actions</div></div>
+      <div class="pg-item"><div class="pg-num">2.</div><div class="pg-tx">In-row CM reassign + bulk operations</div></div>
+    </div>
+  </div>
+  <div class="div-right t3">
+    <h3>Tab 3 at a glance</h3>
+    <div class="kr"><span class="k">Filter axes</span><span class="v">5 (NS/Prog/Brand/Country/Status)</span></div>
+    <div class="kr"><span class="k">In-row actions</span><span class="v">CM reassign · Priority flip</span></div>
+    <div class="kr"><span class="k">Bulk actions</span><span class="v">INACTIVE · REACTIVATE · CSV</span></div>
+    <div class="kr"><span class="k">Indicators</span><span class="v">Red ring + cascade amber</span></div>
+    <div class="kr"><span class="k">Dev wave</span><span class="v">Wave 3 · ~3d</span></div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 13: TAB 3 — DEAL MGMT LIST ============ -->
+<div class="slide" id="s13">
+  <div class="slide-header">
+    <span class="num">T3.1</span>
+    <h2>Deal Management — list view</h2>
+    <span class="sub">Priority column + filters + in-row CM reassign + bulk actions</span>
+    <span class="tabchip t3">Tab 3</span>
+  </div>
+  <div class="slide-body">
+    <div class="wf" style="flex:1;">
+      <div class="wf-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="url">amp.goldenlab.net/deals</div></div>
+      <div class="wf-app">
+        <div class="wf-sidebar">
+          <div class="grp">BD Module</div>
+          <div class="item">📁 Segment Management</div>
+          <div class="item">➕ Create Deal</div>
+          <div class="item active">📊 Deal Management</div>
+        </div>
+        <div class="wf-main">
+          <div class="crumb">Deal Management</div>
+          <h4>Deals · 47 total</h4>
+
+          <div class="wf-toolbar">
+            <input type="text" placeholder="🔍 Search deal name…" style="max-width:200px;">
+            <select class="input" style="background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:4px 8px;font-size:11px;"><option>All Programs</option></select>
+            <select class="input" style="background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:4px 8px;font-size:11px;"><option>All Brands</option></select>
+            <select class="input" style="background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:4px 8px;font-size:11px;"><option>All Countries</option></select>
+            <select class="input" style="background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:4px 8px;font-size:11px;"><option>Status: ACTIVE</option></select>
+            <button class="btn sec">↓ CSV</button>
+            <button class="btn" style="margin-left:auto;">+ Create Deal</button>
+          </div>
+
+          <div style="font-size:11px;color:var(--tx3);">
+            <strong>2 selected:</strong>
+            <button class="btn sec" style="font-size:10px;padding:3px 8px;">Mark INACTIVE</button>
+            <button class="btn sec" style="font-size:10px;padding:3px 8px;">Reassign CM</button>
+            <button class="btn sec" style="font-size:10px;padding:3px 8px;">Set Priority</button>
+          </div>
+
+          <table class="wf-table">
+            <thead><tr><th><input type="checkbox"></th><th>★</th><th>Deal Name</th><th>Brand</th><th>Account</th><th>Country</th><th>CM</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr style="background:var(--ambg2);">
+                <td><input type="checkbox" checked></td>
+                <td style="color:var(--am);font-size:14px;">⭐</td>
+                <td style="font-family:monospace;font-size:10.5px;"><strong>FERNANDO_SUPERBET_SMS_IT_07-01</strong></td>
+                <td>SuperBet</td><td>Fernando-IT</td><td>🇮🇹</td>
+                <td><select style="font-size:10.5px;background:var(--bg);border:1px solid var(--bd);border-radius:3px;padding:2px 4px;"><option>Mario</option><option>Luca</option></select></td>
+                <td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td>
+              </tr>
+              <tr style="box-shadow:inset 0 0 0 2px var(--rd);background:var(--rdbg2);">
+                <td><input type="checkbox"></td>
+                <td></td>
+                <td style="font-family:monospace;font-size:10.5px;"><strong>JULIA_CASINOX_WA_ES_06-15</strong></td>
+                <td>CasinoX</td><td>Julia-ES</td><td>🇪🇸</td>
+                <td>Sofia</td>
+                <td><span class="pill ina">INACTIVE</span></td><td style="color:var(--tx4);">⋯</td>
+              </tr>
+              <tr style="background:var(--ambg2);box-shadow:inset 0 0 0 2px var(--am);">
+                <td><input type="checkbox" checked></td>
+                <td></td>
+                <td style="font-family:monospace;font-size:10.5px;"><strong>OREN_LOTTOKING_EMAIL_PT_06-10</strong></td>
+                <td>LottoKing</td><td>Oren-PT</td><td>🇵🇹</td>
+                <td>Bruno</td>
+                <td><span class="pill cas">CASCADE-INACTIVE</span></td><td style="color:var(--tx4);">⋯</td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td><td></td>
+                <td style="font-family:monospace;font-size:10.5px;"><strong>FERNANDO_SUPERBET_SMS_ES_07-01</strong></td>
+                <td>SuperBet</td><td>Fernando-ES</td><td>🇪🇸</td>
+                <td>Luca</td>
+                <td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td><td></td>
+                <td style="font-family:monospace;font-size:10.5px;"><strong>JULIA_CASINOX_SMS_IT_06-28</strong></td>
+                <td>CasinoX</td><td>Julia-IT</td><td>🇮🇹</td>
+                <td>Mario</td>
+                <td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td><td></td>
+                <td style="font-family:monospace;font-size:10.5px;"><strong>FERNANDO_NEWCASINO_SMS_IT_06-25</strong></td>
+                <td>NewCasino</td><td>Fernando-IT</td><td>🇮🇹</td>
+                <td>Mario</td>
+                <td><span class="pill act">ACTIVE</span></td><td style="color:var(--tx4);">⋯</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="row" style="margin-top:8px;">
+            <div class="card" style="background:var(--bg2);">
+              <h3 style="font-size:13px;">Indicator legend</h3>
+              <ul style="font-size:11.5px;list-style:none;color:var(--tx2);line-height:1.7;">
+                <li>⭐ <strong>Top Priority</strong> — Pnina-set, sorts to top</li>
+                <li>🔴 Red ring — manually INACTIVE</li>
+                <li>🟠 Amber ring — CASCADE-INACTIVE (parent went down)</li>
+              </ul>
+            </div>
+            <div class="card" style="background:var(--bg2);">
+              <h3 style="font-size:13px;">In-row CM reassign</h3>
+              <p style="font-size:12px;">CM column is a dropdown. Click → pick new CM → auto-saves. Allocation freezes for outgoing CM, opens for new CM. Affiliate Manager email triggered.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 14: UX DECISIONS LOG ============ -->
+<div class="slide" id="s14">
+  <div class="slide-header">
+    <span class="num">FIN</span>
+    <h2>UX Decisions Log — for the record</h2>
+    <span class="sub">Every call made in this deck · reversible / partial / locked</span>
+  </div>
+  <div class="slide-body">
+    <table class="wf-table" style="font-size:12px;">
+      <thead><tr><th style="width:5%;">#</th><th style="width:22%;">Decision</th><th style="width:38%;">Resolution</th><th style="width:20%;">Reversibility</th><th style="width:15%;">Status</th></tr></thead>
+      <tbody>
+        <tr><td><strong>D1</strong></td><td>Sidebar IA — 3 top-level tabs</td><td>Segment Mgmt / Create Deal / Deal Mgmt — mirrors Noa's schema exactly</td><td>Config flag flip · zero schema</td><td><span class="tag gn">LOCKED</span></td></tr>
+        <tr><td><strong>D2</strong></td><td>Platform = first-class entity</td><td>Own sub-page, own status, own cascade. Was a string field.</td><td>Schema add only · forward-compat</td><td><span class="tag gn">LOCKED</span></td></tr>
+        <tr><td><strong>D3</strong></td><td>Brand promoted to sub-page</td><td>Top-level navigation. Cascade still Program-first.</td><td>UI only · always reversible</td><td><span class="tag gn">LOCKED</span></td></tr>
+        <tr><td><strong>D4</strong></td><td>Account grain (ProgramAccount)</td><td>Native day-one entity. Caps, postbacks, channel all keyed on Account.</td><td>Foundational · don't reverse</td><td><span class="tag gn">LOCKED</span></td></tr>
+        <tr><td><strong>D5</strong></td><td>INACTIVE = soft flag + Review queue</td><td>impact preview + type-to-confirm + audit + email</td><td>Reversible in 1 click</td><td><span class="tag gn">LOCKED</span></td></tr>
+        <tr><td><strong>D6</strong></td><td>Cascade direction: Program-first</td><td>Locked. Noa's drawing was about navigation, not cascade.</td><td>Inverting = ~2 dev-days rewrite</td><td><span class="tag gn">LOCKED</span></td></tr>
+        <tr><td><strong>D7</strong></td><td>"+ Add New" = sidesheet (not modal)</td><td>Preserves Deal form state. Closes back with new value pre-selected.</td><td>UI swap · 1 day to switch</td><td><span class="tag gn">LOCKED</span></td></tr>
+        <tr><td><strong>D8</strong></td><td>5-seg Deal Name format</td><td>{PROGRAM}_{BRAND}_{CHANNEL}_{COUNTRY}_{DATE} · channel slot locked</td><td>~3 days rework if dropped</td><td><span class="tag gn">LOCKED</span></td></tr>
+        <tr><td><strong>D9</strong></td><td>Channel lives on ProgramAccount</td><td>Option A · inherits to Deal. Different IT/ES/PT accounts can pick different channel.</td><td>Reversible · move to Deal field</td><td><span class="tag gn">LOCKED</span></td></tr>
+        <tr><td><strong>D10</strong></td><td>Welcome offer = per-Country</td><td>Inherits Deal default, country can override</td><td>UI only · 1 day either way</td><td><span class="tag gn">LOCKED</span></td></tr>
+        <tr><td><strong>D11</strong></td><td>Verticals = own page (not chip)</td><td>Lives in Segment Mgmt tab. Filter chips don't scale past 5 verticals.</td><td>Easy to swap</td><td><span class="tag gn">LOCKED</span></td></tr>
+        <tr><td><strong>D12</strong></td><td>Bank altitude: Program default + Account override</td><td>~90% inherit. Override badge for the 10%.</td><td>UI inheritance pattern · low risk</td><td><span class="tag gn">LOCKED</span></td></tr>
+        <tr><td><strong>D13</strong></td><td>Allocation grain: (cmUser × Account)</td><td>Drops the "Fernando-IT collapses with Fernando-ES" risk to zero.</td><td>Foundational · don't reverse</td><td><span class="tag gn">LOCKED</span></td></tr>
+        <tr><td><strong>D14</strong></td><td>Deal Mgmt tab — Priority sort + bulk</td><td>Pnina manages 50-deal book without opening sub-pages</td><td>Pure UI · always reversible</td><td><span class="tag gn">LOCKED</span></td></tr>
+      </tbody>
+    </table>
+    <div class="callout good">
+      <span class="ico">✅</span>
+      <div><strong>14 decisions, all locked, all reversible.</strong> Foundational decisions (D2, D4, D13) are the only ones expensive to undo — and those were the explicit goal of the rebuild. Everything else is a config flip away.</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<div class="nav" id="nav">
+  <button onclick="prev()" title="Previous (←)">&#8592;</button>
+  <div class="dots" id="dots"></div>
+  <span class="ctr" id="ctr">1 / 14</span>
+  <button onclick="next()" title="Next (→)">&#8594;</button>
+</div>
+
+<script>
+const N = 14;
+let cur = 1;
+function show(n) {
+  document.querySelectorAll('.slide').forEach((s, i) => s.classList.toggle('active', i + 1 === n));
+  document.querySelectorAll('.di').forEach((d, i) => d.classList.toggle('active', i + 1 === n));
+  document.getElementById('ctr').textContent = n + ' / ' + N;
+  cur = n;
+}
+function next() { if (cur < N) show(cur + 1); }
+function prev() { if (cur > 1) show(cur - 1); }
+
+const dotsEl = document.getElementById('dots');
+for (let i = 1; i <= N; i++) {
+  const d = document.createElement('div');
+  d.className = 'di' + (i === 1 ? ' active' : '');
+  d.onclick = () => show(i);
+  dotsEl.appendChild(d);
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); next(); }
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                    { e.preventDefault(); prev(); }
+});
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 50) dx < 0 ? next() : prev();
+});
+</script>
+</body>
+</html>
