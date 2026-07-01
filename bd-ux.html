@@ -870,8 +870,8 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
 <div class="slide" id="s11">
   <div class="slide-header">
     <span class="num">T2.1</span>
-    <h2>Create Deal — cascade reshape</h2>
-    <span class="sub">Program-first locked · Account grain wired in · 5-seg name auto-composed</span>
+    <h2>Create Deal — current page + the missing top strip</h2>
+    <span class="sub">Same form Pnina + Noa reviewed · added Mode toggle · Deal Name · naming preview · handoff preview · §6 bank/contact (Long mode)</span>
     <span class="tabchip t2">Tab 2</span>
   </div>
   <div class="slide-body">
@@ -887,66 +887,132 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', 
         <div class="wf-main">
           <h4>Create Deal</h4>
 
+          <!-- ── NEW top strip: Mode toggle (BD-12) ── -->
+          <div class="wf-section" style="border:1px solid var(--bd);">
+            <div class="lbl" style="text-transform:uppercase;letter-spacing:.4px;color:var(--tx3);">Affiliate Manager</div>
+            <div style="display:flex;gap:6px;">
+              <div style="flex:1;padding:6px 8px;border:1px solid var(--bd);border-radius:5px;font-size:11px;color:var(--tx3);text-align:center;">🔁 <strong>Short</strong> — already have bank + contact on file</div>
+              <div style="flex:1;padding:6px 8px;border:1.5px solid var(--pr);background:var(--pbg);border-radius:5px;font-size:11px;color:var(--pr);font-weight:600;text-align:center;">✨ <strong>Long</strong> — first-time set-up + share w/ Affiliate Manager ✓</div>
+            </div>
+          </div>
+
+          <!-- ── Deal Name + ⭐ Top Priority (BD-14 · moved up from removed §5) ── -->
+          <div class="wf-section" style="border:1px solid var(--bd);">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;">
+              <div class="lbl" style="text-transform:uppercase;letter-spacing:.4px;color:var(--tx3);">Deal Name <span style="color:var(--rd);">*</span></div>
+              <div style="font-size:10.5px;color:var(--bl);font-weight:600;">💡 Use naming convention</div>
+            </div>
+            <div class="input filled" style="font-family:monospace;font-size:12px;">GOLDENWIN_PANDIDO_IT_2026-07-01</div>
+            <label style="display:flex;gap:6px;align-items:center;margin-top:5px;font-size:11px;color:var(--tx2);">
+              <input type="checkbox" checked style="width:12px;height:12px;"/>
+              <span><strong>⭐ Top Priority</strong> · pin to inbox</span>
+            </label>
+          </div>
+
+          <!-- ── Naming convention amber banner (BD-10) + Handoff preview mini ── -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--ambg);border:1px solid var(--am);border-radius:5px;padding:6px 10px;font-size:11px;color:var(--am);">
+              <strong>Naming Convention</strong> (BD-10)<br>
+              <code style="background:var(--bg);padding:1px 4px;border-radius:3px;font-size:10.5px;">{PROGRAM}_{BRAND}_{COUNTRY}_{DATE}</code>
+            </div>
+            <div style="background:var(--bg);border:1px solid var(--bd);border-radius:5px;padding:6px 10px;font-size:10.5px;color:var(--tx3);">
+              <strong style="color:var(--tx);">Handoff preview</strong><br>
+              <span style="color:var(--bl);font-family:monospace;">track.gl/pandido-it?cm=…</span><br>
+              <span style="color:var(--pr);font-family:monospace;">postback.gl/goldenwin/…</span>
+            </div>
+          </div>
+
+          <!-- ── §1 Program × Brand × ASW (BD-2) — replaces Account grain ── -->
           <div class="wf-section">
-            <div class="lbl">Step 1 — Cascade <span class="badge">LOCKED PROGRAM-FIRST</span></div>
+            <div class="lbl"><span style="background:var(--pr);color:#fff;padding:1px 6px;border-radius:8px;font-size:9.5px;margin-right:4px;">1</span> Program × Brand × ASW <span class="badge">people-first per Galaxy</span></div>
             <div class="col-3">
-              <div class="wf-form-grp"><label>Program / Affiliate NW</label>
-                <select class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:5px 8px;font-size:11px;font-weight:600;color:var(--tx);"><option>GoldenWin ✓</option></select>
+              <div class="wf-form-grp"><label>Program *</label>
+                <div class="input filled">GoldenWin · MyAffiliates ✓</div>
                 <div style="font-size:10px;color:var(--bl);margin-top:2px;">+ Add Program ↗</div>
               </div>
-              <div class="wf-form-grp"><label>Brand</label>
-                <select class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:5px 8px;font-size:11px;font-weight:600;color:var(--tx);"><option>Pandido ✓</option></select>
+              <div class="wf-form-grp"><label>Brand *</label>
+                <div class="input filled">Pandido ✓</div>
                 <div style="font-size:10px;color:var(--bl);margin-top:2px;">+ Add Brand ↗</div>
               </div>
-              <div class="wf-form-grp"><label>Account (login on Program)</label>
-                <select class="input" style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:5px 8px;font-size:11px;font-weight:600;color:var(--tx);font-family:monospace;"><option>galaxygoldm-it (CM: Fernando) ✓</option></select>
-                <div style="font-size:10px;color:var(--bl);margin-top:2px;">+ Add Account ↗</div>
+              <div class="wf-form-grp"><label>ASW (Affiliate Software)</label>
+                <div class="input filled">MyAffiliates · primary ✓</div>
+                <div style="font-size:10px;color:var(--tx4);margin-top:2px;">One Program → many ASWs</div>
               </div>
             </div>
           </div>
 
+          <!-- ── §2 Campaign Managers (BD-1) — chip UI, multi-pick ── -->
           <div class="wf-section">
-            <div class="lbl">Step 2 — Countries (multi)</div>
+            <div class="lbl"><span style="background:var(--pr);color:#fff;padding:1px 6px;border-radius:8px;font-size:9.5px;margin-right:4px;">2</span> Campaign Managers <span class="badge">multi-pick · single default</span></div>
+            <div style="font-size:10.5px;color:var(--tx3);margin-bottom:4px;">Selected (2)</div>
+            <div style="display:flex;gap:5px;flex-wrap:wrap;font-size:11px;">
+              <span class="tag gn" style="padding:3px 9px;">Fernando ×</span>
+              <span class="tag gn" style="padding:3px 9px;">Julia ×</span>
+              <span class="tag gr" style="padding:3px 9px;">+ Add Campaign Manager ▾</span>
+            </div>
+          </div>
+
+          <!-- ── §3 Target Countries (BD-3) — KEEP AS-IS per Guy ── -->
+          <div class="wf-section">
+            <div class="lbl"><span style="background:var(--pr);color:#fff;padding:1px 6px;border-radius:8px;font-size:9.5px;margin-right:4px;">3</span> Target Countries <span class="badge">unchanged</span></div>
             <div style="display:flex;gap:5px;flex-wrap:wrap;font-size:11px;align-items:center;">
               <span class="tag gn" style="padding:3px 9px;">🇮🇹 Italy ✓</span>
               <span class="tag gn" style="padding:3px 9px;">🇪🇸 Spain ✓</span>
               <span class="tag gn" style="padding:3px 9px;">🇵🇹 Portugal ✓</span>
-              <span class="tag gr" style="padding:3px 9px;">+ Add country</span>
+              <span class="tag gr" style="padding:3px 9px;">+ Add country ▾</span>
             </div>
           </div>
 
+          <!-- ── §4 Per-Country Deal (BD-7) — KEEP shape · updated fields to match live ── -->
           <div class="wf-section">
-            <div class="lbl">Step 3 — Per-Country block <span class="badge" style="background:var(--ambg);color:var(--am);">SAME-AS-PREVIOUS TICK</span></div>
+            <div class="lbl"><span style="background:var(--pr);color:#fff;padding:1px 6px;border-radius:8px;font-size:9.5px;margin-right:4px;">4</span> Per-Country Deal · 🇮🇹 Italy <span class="badge" style="background:var(--ambg);color:var(--am);">same-as-previous tick avail on next country</span></div>
             <div class="col-3" style="font-size:11px;">
-              <div class="wf-form-grp"><label>Welcome offer (IT)</label><div class="input filled">€50 + 100 spins</div></div>
-              <div class="wf-form-grp"><label>Currency</label><div class="input filled">EUR</div></div>
-              <div class="wf-form-grp"><label>CPA Type</label><div class="input filled">HYBRID</div></div>
-              <div class="wf-form-grp"><label>General Cap (IT)</label><div class="input filled">500/day</div></div>
-              <div class="wf-form-grp"><label>CPA Qual. criteria</label><div class="input filled">FTD ≥ €20, registered ≥ 7d</div></div>
-              <div class="wf-form-grp"><label>Channel (from Account)</label><div class="input filled">SMS (inherited)</div></div>
+              <div class="wf-form-grp"><label>Pricing Model</label><div class="input filled">HYBRID</div></div>
+              <div class="wf-form-grp"><label>Currency</label><div class="input filled">€ EUR</div></div>
+              <div class="wf-form-grp"><label>Attribution Window</label><div class="input filled">90 days</div></div>
+              <div class="wf-form-grp"><label>💰 CPA Leg — Amount</label><div class="input filled">€150</div></div>
+              <div class="wf-form-grp"><label>💰 CPA Qual. criteria</label><div class="input filled">FTD ≥ €50 cum. deposit</div></div>
+              <div class="wf-form-grp"><label>📊 Rev-Share Leg</label><div class="input filled">30% of NGR · concurrent</div></div>
             </div>
             <div class="wf-section" style="background:var(--bg);border:1px solid var(--bd);margin-top:8px;">
-              <div class="lbl">Per-CM × Account allocation <span class="badge">NEW GRAIN</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div class="lbl" style="margin-bottom:2px;">Allocation between CMs · 🇮🇹 <span style="background:var(--sbg);color:var(--tx2);padding:1px 6px;border-radius:8px;font-size:9.5px;">500 total FTDs</span></div>
+                <div style="font-size:10px;color:var(--bl);font-weight:600;">+ Add CM</div>
+              </div>
+              <div style="display:flex;gap:12px;font-size:10.5px;color:var(--tx3);background:var(--sbg);padding:3px 6px;border-radius:3px;margin-bottom:4px;">
+                <span>Total: <strong>500</strong></span>
+                <span>Allocated: <strong>500</strong></span>
+                <span style="color:var(--pr);">Remaining: 0</span>
+              </div>
               <table class="wf-table" style="background:var(--bg);border-radius:4px;overflow:hidden;">
-                <thead><tr><th>CM</th><th>Account</th><th>Allocation</th><th>Consumption</th><th>Threshold Alert</th></tr></thead>
+                <thead><tr><th>CM</th><th>Allocation</th><th>Consumption</th><th>Threshold Alert %</th></tr></thead>
                 <tbody>
-                  <tr><td>Fernando</td><td style="font-family:monospace;font-size:10.5px;">galaxygoldm-it</td><td>300/day</td><td>40%</td><td>80%</td></tr>
-                  <tr><td>Julia</td><td style="font-family:monospace;font-size:10.5px;">julia-gloss-it</td><td>200/day</td><td>15%</td><td>80%</td></tr>
+                  <tr><td>Fernando</td><td>300 FTDs</td><td>0 / 300 (0%)</td><td>80</td></tr>
+                  <tr><td>Julia</td><td>200 FTDs</td><td>0 / 200 (0%)</td><td>80</td></tr>
                 </tbody>
               </table>
             </div>
           </div>
 
-          <div class="wf-section">
-            <div class="lbl">Step 4 — Auto-Generated Deal Name</div>
-            <div style="background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:8px 10px;font-family:monospace;font-size:13px;color:var(--tx);font-weight:600;">
-              GOLDENWIN_PANDIDO_SMS_IT_2026-07-01
+          <!-- ── §6 Affiliate Manager · Bank + Contact (BD-5 + BD-12) — conditional on Long mode ── -->
+          <div class="wf-section" style="border:1.5px solid var(--pr);background:var(--pbg);">
+            <div class="lbl"><span style="background:var(--pr);color:#fff;padding:1px 6px;border-radius:8px;font-size:9.5px;margin-right:4px;">6</span> Affiliate Manager · Bank + Contact <span class="badge" style="background:var(--pr);color:#fff;">shown because Long mode</span></div>
+            <div class="col-3" style="font-size:10.5px;">
+              <div class="wf-form-grp"><label>Contact Name</label><div class="input filled">Marco Bianchi</div></div>
+              <div class="wf-form-grp"><label>Contact Email</label><div class="input filled">marco@goldenwin.aff</div></div>
+              <div class="wf-form-grp"><label>Contact Phone</label><div class="input">+39 …</div></div>
+              <div class="wf-form-grp"><label>Bank IBAN</label><div class="input">IT60 X05 …</div></div>
+              <div class="wf-form-grp"><label>SWIFT / BIC</label><div class="input">BCITITMM</div></div>
+              <div class="wf-form-grp"><label>Tax ID / VAT</label><div class="input">IT-01234567890</div></div>
             </div>
-            <div style="font-size:11px;color:var(--tx3);margin-top:4px;">5 segments locked. <a style="color:var(--bl);">⚙️ Override manually</a> if needed.</div>
+            <div style="background:var(--bg);border:1px dashed var(--pr);border-radius:5px;padding:6px 10px;font-size:11px;color:var(--pr);margin-top:6px;">
+              <strong>✉️ Share with</strong> <span style="font-family:monospace;color:var(--tx);">marco@goldenwin.aff</span> — on save we email a magic link. Marco claims a scoped login to <strong>only this deal's edit form</strong>. No access to anything else.
+            </div>
           </div>
 
           <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px;">
-            <button class="btn sec">Save as draft</button>
+            <button class="btn sec">📝 Save as Draft</button>
+            <button class="btn sec">Cancel</button>
             <button class="btn">Create Deal</button>
           </div>
         </div>
