@@ -610,23 +610,39 @@ const USERS = {
 // 🟠 PLACEHOLDER amounts — actual per-BU revenue will be sourced from Moshik's monthly P&L Excel upload
 // Source: Galaxy_May26_PL.xlsx · Sheet "Revenue" · Rows 2-17
 const streams = [
-  { code: 'emailIH',   name: 'Email In-House',        rev: 385000, do: 105000, cost: 58000, mgmt: 26000 },
-  { code: 'tel23',     name: '23Telecom',             rev: 140000, do:  42000, cost: 22000, mgmt: 10000 },
-  { code: 'bf',        name: 'BF',                    rev:  45000, do:  12000, cost:  7000, mgmt:  3500 },
-  { code: 'galIH',     name: 'GalaxyIH',              rev: 320000, do:  92000, cost: 48000, mgmt: 22000 },
-  { code: 'galwIH',    name: 'galaxyW-IH',            rev:  55000, do:  16000, cost:  8500, mgmt:  4000 },
-  { code: 'karix',     name: 'Karix',                 rev: 115000, do:  33000, cost: 18000, mgmt:  8000 },
-  { code: 'smsIH',     name: 'SMS In-House',          rev: 155000, do:  44000, cost: 24000, mgmt: 11000 },
-  { code: 'tbih',      name: 'TBIH',                  rev: 105000, do:  30000, cost: 16000, mgmt:  7500 },
-  { code: 'emailm',    name: 'EMAILM',                rev:  50000, do:  14000, cost:  7500, mgmt:  3500 },
-  { code: 'esimproj',  name: 'Esimproj',              rev:  35000, do:   9000, cost:  5500, mgmt:  2500 },
-  { code: 'galauto',   name: 'Galaxyauto',            rev:  95000, do:  27000, cost: 14000, mgmt:  6500 },
-  { code: 'galjoin',   name: 'galaxyJoin',            rev:  40000, do:  11000, cost:  6000, mgmt:  2800 },
-  { code: 'seo',       name: 'SEO',                   rev: 260000, do:  62000, cost: 34000, mgmt: 18000 },
-  { code: 'globAff',   name: 'Globigo Affiliates',    rev: 220000, do:  72000, cost: 30000, mgmt: 15000 },
-  { code: 'globData',  name: 'Globigo Data Share',    rev:  60000, do:  18000, cost:  8500, mgmt:  4000 },
-  { code: 'ihBonus',   name: 'IH Bonus',              rev:  52000, do:  14000, cost:  7500, mgmt:  3500 }
+  { code: 'emailIH',   name: 'Email In-House',        rev: 385000, do: 105000, cost: 58000, mgmt: 26000, ftd: 180 },
+  { code: 'tel23',     name: '23Telecom',             rev: 140000, do:  42000, cost: 22000, mgmt: 10000, ftd:  65 },
+  { code: 'bf',        name: 'BF',                    rev:  45000, do:  12000, cost:  7000, mgmt:  3500, ftd:  20 },
+  { code: 'galIH',     name: 'GalaxyIH',              rev: 320000, do:  92000, cost: 48000, mgmt: 22000, ftd: 148 },
+  { code: 'galwIH',    name: 'galaxyW-IH',            rev:  55000, do:  16000, cost:  8500, mgmt:  4000, ftd:  25 },
+  { code: 'karix',     name: 'Karix',                 rev: 115000, do:  33000, cost: 18000, mgmt:  8000, ftd:  52 },
+  { code: 'smsIH',     name: 'SMS In-House',          rev: 155000, do:  44000, cost: 24000, mgmt: 11000, ftd:  72 },
+  { code: 'tbih',      name: 'TBIH',                  rev: 105000, do:  30000, cost: 16000, mgmt:  7500, ftd:  48 },
+  { code: 'emailm',    name: 'EMAILM',                rev:  50000, do:  14000, cost:  7500, mgmt:  3500, ftd:  22 },
+  { code: 'esimproj',  name: 'Esimproj',              rev:  35000, do:   9000, cost:  5500, mgmt:  2500, ftd:  15 },
+  { code: 'galauto',   name: 'Galaxyauto',            rev:  95000, do:  27000, cost: 14000, mgmt:  6500, ftd:  43 },
+  { code: 'galjoin',   name: 'galaxyJoin',            rev:  40000, do:  11000, cost:  6000, mgmt:  2800, ftd:  18 },
+  { code: 'seo',       name: 'SEO',                   rev: 260000, do:  62000, cost: 34000, mgmt: 18000, ftd: 320 },
+  { code: 'globAff',   name: 'Globigo Affiliates',    rev: 220000, do:  72000, cost: 30000, mgmt: 15000, ftd: 240 },
+  { code: 'globData',  name: 'Globigo Data Share',    rev:  60000, do:  18000, cost:  8500, mgmt:  4000, ftd:  55 },
+  { code: 'ihBonus',   name: 'IH Bonus',              rev:  52000, do:  14000, cost:  7500, mgmt:  3500, ftd:  24 }
 ];
+
+// ─── DATA PURCHASE COST ALLOCATION (Guy 2026-07-09) ────────────────────────
+// Total monthly data purchase cost is proportionally allocated to each BU
+// based on that BU's FTD share of total FTDs — EXCLUDING seo, globAff,
+// globData (these BUs don't consume purchased data lists, so they don't
+// receive an allocation and their FTDs don't count in the denominator).
+const TOTAL_DATA_PURCHASE_COST = 180000; // €K/month — placeholder until Moshik uploads real
+const DATA_ALLOC_EXCLUDED = new Set(['seo', 'globAff', 'globData']);
+function allocationEligibleFtds() {
+  return streams.filter(s => !DATA_ALLOC_EXCLUDED.has(s.code)).reduce((a, s) => a + s.ftd, 0);
+}
+function allocatedDataCost(bu) {
+  if (DATA_ALLOC_EXCLUDED.has(bu.code)) return 0;
+  const denom = allocationEligibleFtds();
+  return denom > 0 ? Math.round(TOTAL_DATA_PURCHASE_COST * bu.ftd / denom) : 0;
+}
 
 // 12-month historic time series per KPI (in €K)
 const history = {
@@ -2072,35 +2088,58 @@ function renderPL(view) {
   streamCard.className = 'card';
   streamCard.style.marginTop = '14px';
   const _fs = filteredStreams();
-  const _totalRev = _fs.reduce((a,x) => a + x.rev, 0);
-  const _totalDo  = _fs.reduce((a,x) => a + x.do,  0);
-  const _totalCost= _fs.reduce((a,x) => a + x.cost,0);
-  const _totalContrib = _totalRev - _totalDo - _totalCost;
+  const _totalRev  = _fs.reduce((a,x) => a + x.rev, 0);
+  const _totalDo   = _fs.reduce((a,x) => a + x.do,  0);
+  const _totalCost = _fs.reduce((a,x) => a + x.cost,0);
+  const _totalFtd  = _fs.reduce((a,x) => a + x.ftd, 0);
+  const _totalData = _fs.reduce((a,x) => a + allocatedDataCost(x), 0);
+  const _totalContrib = _totalRev - _totalDo - _totalCost - _totalData;
+  const _eligibleFtd  = allocationEligibleFtds();
   streamCard.innerHTML = `
-    <h3>Revenue by business unit · click to drill in
+    <h3>Per business-unit P&amp;L · click to drill in
       <span class="h-sub">${sourceChipHTML('bu-revenue')}</span>
     </h3>
     <div class="callout warn" style="margin-bottom: 10px;">
-      <strong>🟠 Placeholder amounts</strong> — actual per-business-unit revenue will be sourced from Moshik's monthly P&amp;L Excel upload.
+      <strong>🟠 Placeholder amounts</strong> — actual per-BU revenue + FTDs will be sourced from Moshik's monthly P&amp;L + Postbacks/FTDs uploads.
+    </div>
+    <div class="callout info" style="margin-bottom: 10px;">
+      <strong>Data purchase cost allocation:</strong> total <strong>€${(TOTAL_DATA_PURCHASE_COST/1000).toFixed(0)}K</strong> allocated pro-rata by each BU's FTD share of <strong>${_eligibleFtd} eligible FTDs</strong>.
+      <strong>SEO</strong>, <strong>Globigo Affiliates</strong>, <strong>Globigo Data Share</strong> are excluded from the allocation (they don't consume purchased data lists).
     </div>
     <table class="tbl">
-      <thead><tr><th>Business Unit</th><th class="num">Revenue</th><th class="num">DO</th><th class="num">Direct cost</th><th class="num">Contribution</th><th class="num">Margin %</th></tr></thead>
+      <thead><tr>
+        <th>Business Unit</th>
+        <th class="num">Revenue</th>
+        <th class="num">DO</th>
+        <th class="num">Other direct cost</th>
+        <th class="num">FTDs</th>
+        <th class="num">Data cost (alloc)</th>
+        <th class="num">Contribution</th>
+        <th class="num">Margin %</th>
+      </tr></thead>
       <tbody>
         ${_fs.map((s, i) => {
-          const contribution = s.rev - s.do - s.cost;
+          const dataAlloc = allocatedDataCost(s);
+          const contribution = s.rev - s.do - s.cost - dataAlloc;
+          const excluded = DATA_ALLOC_EXCLUDED.has(s.code);
+          const excludedTag = excluded ? '<span class="pill-cross" style="background:#F3F4F6;color:#6B7280;">excluded</span>' : '';
           return `<tr class="clickable" onclick="openStreamPanel('${s.code}')">
-            <td><strong>${s.name}</strong></td>
+            <td><strong>${s.name}</strong>${excludedTag}</td>
             <td class="num">€${(s.rev/1000).toFixed(0)}K</td>
             <td class="num">-€${(s.do/1000).toFixed(0)}K</td>
             <td class="num">-€${(s.cost/1000).toFixed(0)}K</td>
+            <td class="num">${s.ftd}</td>
+            <td class="num">${excluded ? '—' : '-€' + (dataAlloc/1000).toFixed(1) + 'K'}</td>
             <td class="num pos">€${(contribution/1000).toFixed(0)}K</td>
             <td class="num">${(contribution/s.rev*100).toFixed(1)}%</td>
           </tr>`;
         }).join('')}
-        <tr class="total"><td><strong>Total Revenue</strong></td>
+        <tr class="total"><td><strong>Total</strong></td>
           <td class="num"><strong>€${(_totalRev/1000).toFixed(0)}K</strong></td>
           <td class="num"><strong>-€${(_totalDo/1000).toFixed(0)}K</strong></td>
           <td class="num"><strong>-€${(_totalCost/1000).toFixed(0)}K</strong></td>
+          <td class="num"><strong>${_totalFtd}</strong></td>
+          <td class="num"><strong>-€${(_totalData/1000).toFixed(0)}K</strong></td>
           <td class="num pos"><strong>€${(_totalContrib/1000).toFixed(0)}K</strong></td>
           <td class="num"><strong>${(_totalContrib/_totalRev*100).toFixed(1)}%</strong></td>
         </tr>
@@ -2165,9 +2204,17 @@ function openPLPanel(idx) {
 
 function openStreamPanel(code) {
   const s = streams.find(x => x.code === code);
-  const contribution = s.rev - s.do - s.cost;
+  const dataAlloc  = allocatedDataCost(s);
+  const excluded   = DATA_ALLOC_EXCLUDED.has(s.code);
+  const eligibleFtd = allocationEligibleFtds();
+  const ftdShare   = excluded ? 0 : (s.ftd / eligibleFtd * 100);
+  const contribution = s.rev - s.do - s.cost - dataAlloc;
   const detail = placeholderDetail._streamDetailFor(code);
   const detailHTML = renderPlaceholderDetail(detail, 'stream');
+  const dataAllocRow = excluded
+    ? `<dt>Data cost (allocated)</dt><dd>— <span class="pill-cross" style="background:#F3F4F6;color:#6B7280;">excluded from allocation</span></dd>`
+    : `<dt>FTDs</dt><dd>${s.ftd} (${ftdShare.toFixed(1)}% of ${eligibleFtd} eligible)</dd>
+       <dt>Data cost (allocated)</dt><dd>-€${(dataAlloc/1000).toFixed(1)}K <span class="pill-cross">€${(TOTAL_DATA_PURCHASE_COST/1000).toFixed(0)}K × ${s.ftd}/${eligibleFtd}</span></dd>`;
   openPanel(`
     <div class="panel-head">
       <div class="panel-head-stack">
@@ -2179,8 +2226,9 @@ function openStreamPanel(code) {
     <dl class="panel-kv">
       <dt>Revenue</dt><dd>€${s.rev/1000}K</dd>
       <dt>DO payout</dt><dd>-€${s.do/1000}K (${(s.do/s.rev*100).toFixed(1)}%)</dd>
-      <dt>Direct cost</dt><dd>-€${s.cost/1000}K (${(s.cost/s.rev*100).toFixed(1)}%)</dd>
-      <dt>Contribution margin</dt><dd class="pos">€${contribution/1000}K (${(contribution/s.rev*100).toFixed(1)}%)</dd>
+      <dt>Other direct cost</dt><dd>-€${s.cost/1000}K (${(s.cost/s.rev*100).toFixed(1)}%)</dd>
+      ${dataAllocRow}
+      <dt>Contribution margin</dt><dd class="pos">€${(contribution/1000).toFixed(1)}K (${(contribution/s.rev*100).toFixed(1)}%)</dd>
       <dt>Mgmt allocation</dt><dd>-€${s.mgmt/1000}K</dd>
     </dl>
     ${detailHTML}
