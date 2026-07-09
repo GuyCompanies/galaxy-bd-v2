@@ -1,0 +1,1991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galaxy CFO Close — Demo Shell</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; min-height: 100vh; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #F3F4F6; color: #111827; }
+
+:root {
+  --bg: #FFFFFF; --bg2: #F9FAFB; --bg3: #F3F4F6;
+  --bd: #E5E7EB; --bd2: #D1D5DB; --bd3: #9CA3AF;
+  --tx: #111827; --tx2: #374151; --tx3: #6B7280; --tx4: #9CA3AF; --tx5: #D1D5DB;
+  --pr: #059669; --pr2: #047857; --prbg: #D1FAE5; --prbg2: #ECFDF5;
+  --rd: #DC2626; --rdbg: #FEE2E2; --rdbg2: #FEF2F2;
+  --am: #D97706; --ambg: #FEF3C7; --ambg2: #FFFBEB;
+  --bl: #2563EB; --blbg: #DBEAFE; --blbg2: #EFF6FF;
+  --pu: #7C3AED; --pubg: #EDE9FE;
+}
+
+/* ============ APP SHELL ============ */
+.app { display: flex; flex-direction: column; min-height: 100vh; }
+
+.topbar {
+  background: var(--bg); border-bottom: 1px solid var(--bd);
+  padding: 10px 24px; display: flex; align-items: center; gap: 20px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.03); flex: 0 0 auto;
+  position: sticky; top: 0; z-index: 50;
+}
+.brand { font-size: 15px; font-weight: 800; color: var(--tx); letter-spacing: -.01em; }
+.brand .b-ic { color: var(--pr); margin-right: 4px; }
+.period-pill {
+  background: var(--prbg2); border: 1px solid var(--prbg); color: var(--pr2);
+  padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.period-pill .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--am); }
+.top-spacer { flex: 1; }
+.demo-pill {
+  background: var(--ambg); color: var(--am); padding: 3px 10px; border-radius: 12px;
+  font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+}
+.user-menu { position: relative; }
+.user-btn {
+  display: flex; align-items: center; gap: 8px; padding: 4px 10px 4px 4px;
+  background: var(--bg2); border: 1px solid var(--bd); border-radius: 20px;
+  cursor: pointer; font-size: 12px; color: var(--tx2); font-weight: 600;
+}
+.user-btn:hover { border-color: var(--bd2); background: var(--bg3); }
+.user-btn .av {
+  width: 26px; height: 26px; border-radius: 50%; background: var(--pr);
+  color: white; font-weight: 700; display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+}
+.user-btn .role { color: var(--tx4); font-weight: 500; font-size: 11px; }
+.user-dropdown {
+  position: absolute; right: 0; top: 42px; background: var(--bg);
+  border: 1px solid var(--bd); border-radius: 8px; min-width: 260px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.12); z-index: 60; display: none;
+  overflow: hidden;
+}
+.user-dropdown.open { display: block; }
+.user-dropdown .u-item {
+  padding: 10px 14px; cursor: pointer; display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid var(--bd);
+}
+.user-dropdown .u-item:last-child { border-bottom: none; }
+.user-dropdown .u-item:hover { background: var(--bg2); }
+.user-dropdown .u-item .av-sm { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 11px; }
+.user-dropdown .u-item .u-name { font-size: 13px; color: var(--tx); font-weight: 600; }
+.user-dropdown .u-item .u-role { font-size: 11px; color: var(--tx3); }
+.user-dropdown .u-hd { padding: 8px 14px; font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: var(--tx4); font-weight: 700; background: var(--bg2); border-bottom: 1px solid var(--bd); }
+
+/* ============ MAIN LAYOUT ============ */
+.main { display: flex; flex: 1; min-height: 0; }
+
+.sidebar {
+  width: 220px; background: var(--bg); border-right: 1px solid var(--bd);
+  padding: 14px 0; display: flex; flex-direction: column; gap: 1px;
+  flex: 0 0 auto;
+}
+.sidebar .grp { padding: 10px 16px 4px; color: var(--tx4); font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; margin-top: 4px; }
+.sidebar .item {
+  padding: 8px 16px; color: var(--tx2); cursor: pointer; font-size: 13px;
+  border-left: 3px solid transparent; display: flex; align-items: center; gap: 8px;
+  transition: background .12s, color .12s;
+}
+.sidebar .item:hover { background: var(--bg2); }
+.sidebar .item.active {
+  background: var(--prbg2); color: var(--pr2); font-weight: 600;
+  border-left-color: var(--pr);
+}
+.sidebar .item .ic { font-size: 13px; width: 16px; display: inline-block; text-align: center; }
+
+.content { flex: 1; padding: 22px 28px 40px; overflow-y: auto; min-width: 0; }
+
+/* ============ HEADER / TOOLS ============ */
+.page-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 6px; }
+.page-head .num { font-size: 12px; color: var(--tx4); font-weight: 700; letter-spacing: .05em; }
+.page-head h1 { font-size: 22px; font-weight: 800; color: var(--tx); letter-spacing: -.01em; }
+.page-head .sub { font-size: 12px; color: var(--tx3); }
+
+.toolbar {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 12px 14px; background: var(--bg); border: 1px solid var(--bd);
+  border-radius: 8px; margin: 14px 0 16px;
+}
+.toolbar .lbl { font-size: 11px; color: var(--tx3); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.toolbar .sep { width: 1px; height: 22px; background: var(--bd); }
+
+.pill-group { display: flex; gap: 4px; background: var(--bg2); padding: 3px; border-radius: 8px; }
+.pill-btn {
+  padding: 5px 12px; font-size: 12px; font-weight: 600; color: var(--tx3);
+  border: none; background: transparent; border-radius: 6px; cursor: pointer;
+  transition: all .12s;
+}
+.pill-btn:hover { color: var(--tx); }
+.pill-btn.active { background: var(--bg); color: var(--pr2); box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+
+.chip {
+  padding: 4px 10px; font-size: 11px; font-weight: 600; border-radius: 14px;
+  border: 1px solid var(--bd); background: var(--bg); color: var(--tx2);
+  cursor: pointer; user-select: none; transition: all .12s;
+}
+.chip:hover { border-color: var(--bd2); }
+.chip.active { background: var(--pr); color: white; border-color: var(--pr); }
+
+.btn {
+  padding: 6px 12px; font-size: 12px; font-weight: 600; border-radius: 6px;
+  border: 1px solid var(--pr); background: var(--pr); color: white; cursor: pointer;
+  transition: all .12s;
+}
+.btn:hover { background: var(--pr2); }
+.btn.sec { background: var(--bg); color: var(--tx2); border-color: var(--bd); }
+.btn.sec:hover { border-color: var(--bd2); background: var(--bg2); }
+.btn.bl { background: var(--bl); border-color: var(--bl); }
+.btn.bl:hover { background: #1d4ed8; }
+.btn.lg { padding: 10px 20px; font-size: 14px; }
+
+/* ============ CARDS + KPIs ============ */
+.card { background: var(--bg); border: 1px solid var(--bd); border-radius: 8px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(0,0,0,.03); }
+.card h3 { font-size: 13px; font-weight: 700; color: var(--tx); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.card h3 .h-sub { color: var(--tx3); font-weight: 500; font-size: 11px; margin-left: auto; }
+
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.kpi { padding: 14px; background: var(--bg); border: 1px solid var(--bd); border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,.03); position: relative; }
+.kpi .k-lbl { font-size: 11px; color: var(--tx3); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.kpi .k-val { font-size: 22px; font-weight: 800; color: var(--tx); margin-top: 4px; letter-spacing: -.01em; }
+.kpi .k-delta { font-size: 11px; font-weight: 600; margin-top: 4px; display: inline-flex; align-items: center; gap: 4px; }
+.kpi .k-delta.up { color: var(--pr2); }
+.kpi .k-delta.dn { color: var(--rd); }
+.kpi .k-spark { margin-top: 8px; height: 34px; }
+
+/* ============ TABLES ============ */
+.tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.tbl th { background: var(--bg2); padding: 8px 12px; text-align: left; font-size: 10.5px; color: var(--tx3); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid var(--bd); }
+.tbl th.num, .tbl td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.tbl td { padding: 8px 12px; border-bottom: 1px solid var(--bd); color: var(--tx2); }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr.total td { background: var(--bg2); font-weight: 700; color: var(--tx); }
+.tbl tr.subtotal td { background: var(--prbg2); font-weight: 700; color: var(--pr2); }
+.tbl tr.clickable { cursor: pointer; }
+.tbl tr.clickable:hover td { background: var(--blbg2); }
+.tbl tr.clickable td:first-child::after { content: ' ›'; color: var(--tx4); font-weight: 500; }
+.tbl .pos { color: var(--pr2); }
+.tbl .neg { color: var(--rd); }
+
+/* ============ TAGS + CALLOUTS ============ */
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10.5px; font-weight: 700; letter-spacing: .02em; }
+.tag.gn { background: var(--prbg); color: var(--pr2); }
+.tag.rd { background: var(--rdbg); color: var(--rd); }
+.tag.am { background: var(--ambg); color: var(--am); }
+.tag.bl { background: var(--blbg); color: var(--bl); }
+.tag.gr { background: var(--bg3); color: var(--tx3); }
+.tag.pu { background: var(--pubg); color: var(--pu); }
+
+.callout { border-radius: 6px; padding: 10px 14px; font-size: 12.5px; line-height: 1.5; border-left: 3px solid; display: flex; gap: 10px; margin: 8px 0; }
+.callout.info { background: var(--blbg2); border-color: var(--bl); color: #1E3A8A; }
+.callout.warn { background: var(--ambg2); border-color: var(--am); color: #78350F; }
+.callout.good { background: var(--prbg2); border-color: var(--pr); color: #064E3B; }
+.callout.bad  { background: var(--rdbg2); border-color: var(--rd); color: #7F1D1D; }
+.callout strong { font-weight: 700; }
+
+/* ============ GATE CARDS (readiness) ============ */
+.gates { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.gate { position: relative; padding: 14px 16px; border-radius: 8px; border: 1px solid var(--bd); background: var(--bg); box-shadow: 0 1px 2px rgba(0,0,0,.03); cursor: pointer; transition: transform .12s, box-shadow .12s; }
+.gate:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+.gate.gn { border-left: 4px solid var(--pr); }
+.gate.am { border-left: 4px solid var(--am); }
+.gate.rd { border-left: 4px solid var(--rd); }
+.gate .g-lbl { font-size: 10.5px; color: var(--tx4); font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+.gate .g-title { font-size: 14px; font-weight: 700; color: var(--tx); margin-top: 4px; }
+.gate .g-sub { font-size: 11.5px; color: var(--tx3); margin-top: 3px; line-height: 1.4; }
+.gate .g-status { position: absolute; top: 12px; right: 14px; }
+
+/* ============ DROP ZONE ============ */
+.drop-zone {
+  border: 2px dashed var(--bd2); border-radius: 12px; padding: 40px 24px;
+  text-align: center; background: var(--bg2); cursor: pointer;
+  transition: all .18s; margin-bottom: 16px;
+}
+.drop-zone:hover, .drop-zone.hover { border-color: var(--pr); background: var(--prbg2); }
+.drop-zone .dz-ic { font-size: 32px; color: var(--tx4); margin-bottom: 8px; }
+.drop-zone .dz-title { font-size: 15px; font-weight: 700; color: var(--tx); }
+.drop-zone .dz-sub { font-size: 12px; color: var(--tx3); margin-top: 4px; }
+.drop-zone .dz-cta { margin-top: 12px; }
+
+.upload-progress {
+  margin-top: 16px; padding: 14px; background: var(--bg); border: 1px solid var(--bd);
+  border-radius: 8px; display: none;
+}
+.upload-progress.show { display: block; }
+.progress-bar { height: 8px; background: var(--bg3); border-radius: 4px; overflow: hidden; margin-top: 8px; }
+.progress-bar .p-fill { height: 100%; background: var(--pr); width: 0; transition: width .3s; }
+
+/* ============ WATERFALL / BRIDGE ============ */
+.waterfall-wrap { padding: 8px 4px 4px; }
+.wf-bars { display: flex; align-items: flex-end; gap: 8px; height: 260px; padding: 12px 0; border-bottom: 1px solid var(--bd); }
+.wf-bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; min-width: 0; }
+.wf-bar-col:hover .wf-bar { filter: brightness(1.08); }
+.wf-bar { width: 100%; border-radius: 3px 3px 0 0; transition: all .3s ease; min-height: 4px; }
+.wf-bar.start, .wf-bar.end { background: var(--tx2); }
+.wf-bar.pos { background: var(--pr); }
+.wf-bar.neg { background: var(--rd); }
+.wf-bar-col .wf-val { font-size: 10.5px; font-weight: 700; color: var(--tx); margin-bottom: 4px; font-variant-numeric: tabular-nums; }
+.wf-bar-col .wf-lbl { font-size: 10.5px; color: var(--tx3); margin-top: 6px; text-align: center; line-height: 1.3; max-width: 84px; }
+.wf-bar-col.selected .wf-bar { outline: 2px solid var(--bl); outline-offset: 2px; }
+
+/* ============ SLIDE PANEL (drilldown) ============ */
+.panel-shade {
+  position: fixed; inset: 0; background: rgba(17,24,39,.45); z-index: 100;
+  display: none; align-items: stretch; justify-content: flex-end;
+}
+.panel-shade.open { display: flex; }
+.slide-panel {
+  width: 520px; max-width: 92vw; background: var(--bg); height: 100vh;
+  padding: 20px 22px; overflow-y: auto; box-shadow: -8px 0 32px rgba(0,0,0,.2);
+  animation: slideIn .22s ease-out;
+}
+@keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+.panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--bd); }
+.panel-head h3 { font-size: 17px; font-weight: 800; color: var(--tx); }
+.panel-head .close { background: none; border: none; color: var(--tx3); font-size: 22px; cursor: pointer; padding: 0 4px; }
+.panel-head .close:hover { color: var(--tx); }
+.panel-kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; font-size: 12.5px; margin-bottom: 12px; }
+.panel-kv dt { color: var(--tx3); font-weight: 600; }
+.panel-kv dd { color: var(--tx); font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ============ WHAT-IF SLIDERS ============ */
+.slider-row { display: grid; grid-template-columns: 180px 1fr 80px; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--bd); }
+.slider-row:last-child { border-bottom: none; }
+.slider-row .s-lbl { font-size: 12.5px; color: var(--tx2); font-weight: 600; }
+.slider-row input[type=range] { width: 100%; accent-color: var(--pr); }
+.slider-row .s-val { font-size: 13px; font-weight: 700; color: var(--pr2); text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ============ LOGIN ============ */
+.login-view {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(180deg, #F9FAFB 0%, #F3F4F6 100%);
+  padding: 40px 20px;
+}
+.login-card {
+  background: var(--bg); border: 1px solid var(--bd); border-radius: 12px;
+  padding: 44px 40px; width: 100%; max-width: 460px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.08);
+  text-align: center;
+}
+.login-card .brand-big { font-size: 24px; font-weight: 800; color: var(--tx); letter-spacing: -.02em; }
+.login-card .brand-big .b-ic { color: var(--pr); margin-right: 6px; }
+.login-card .subtitle { font-size: 13.5px; color: var(--tx3); margin-top: 8px; line-height: 1.5; }
+.ms-btn {
+  margin-top: 28px; width: 100%; padding: 12px 18px;
+  background: var(--bl); border: none; border-radius: 8px;
+  color: white; font-size: 14px; font-weight: 600; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: background .12s;
+}
+.ms-btn:hover { background: #1d4ed8; }
+.login-card .foot { margin-top: 24px; font-size: 11.5px; color: var(--tx4); line-height: 1.5; }
+.login-card .foot strong { color: var(--tx3); }
+.ms-logo { width: 18px; height: 18px; display: inline-block; }
+
+/* ============ FILE LIST / RECON ============ */
+.stack-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 14px 0; }
+.stack-card { padding: 12px; border: 1px solid var(--bd); border-radius: 6px; background: var(--bg2); }
+.stack-card .l { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--tx4); }
+.stack-card .l.l1 { color: var(--bl); }
+.stack-card .l.l2 { color: var(--pu); }
+.stack-card .l.l3 { color: var(--pr2); }
+.stack-card .l.l4 { color: var(--am); }
+.stack-card .n { font-size: 13px; font-weight: 700; color: var(--tx); margin-top: 4px; }
+.stack-card .d { font-size: 11px; color: var(--tx3); margin-top: 4px; line-height: 1.4; }
+
+/* ============ FORECAST FAN ============ */
+.fan-legend { display: flex; gap: 14px; font-size: 11.5px; color: var(--tx3); margin-top: 8px; justify-content: center; }
+.fan-legend .lg-item { display: flex; align-items: center; gap: 6px; }
+.fan-legend .lg-swatch { width: 14px; height: 8px; border-radius: 2px; }
+
+/* ============ CHANNELS grid ============ */
+.channel-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 14px; }
+.channel-card {
+  padding: 14px; border: 1px solid var(--bd); border-radius: 8px;
+  background: var(--bg); cursor: pointer; transition: all .12s;
+}
+.channel-card:hover { border-color: var(--pr); background: var(--prbg2); }
+.channel-card .cc-ic { font-size: 20px; margin-bottom: 6px; }
+.channel-card .cc-name { font-size: 13px; font-weight: 700; color: var(--tx); }
+.channel-card .cc-desc { font-size: 11px; color: var(--tx3); margin-top: 3px; line-height: 1.4; }
+
+/* ============ HIDDEN / TRANSITIONS ============ */
+.hidden { display: none !important; }
+.route-view { animation: fade .18s ease-out; }
+@keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ============ RESTRICTED VIEW ============ */
+.restricted-notice {
+  background: var(--ambg2); border: 1px solid var(--ambg); border-radius: 8px;
+  padding: 14px 18px; margin-bottom: 16px; font-size: 12.5px; color: #78350F;
+  display: flex; align-items: center; gap: 12px;
+}
+.restricted-notice .r-ic { font-size: 20px; }
+
+/* ============ PRINT ============ */
+@media print {
+  .topbar, .sidebar, .toolbar, .panel-shade, .demo-pill { display: none !important; }
+  .content { padding: 0 !important; }
+  .app, .main { display: block !important; }
+  body { background: white !important; }
+  .card, .kpi, .gate { box-shadow: none !important; page-break-inside: avoid; }
+  .grid-4, .grid-3 { display: grid !important; }
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 900px) {
+  .sidebar { width: 60px; }
+  .sidebar .item { font-size: 0; padding: 10px 20px; }
+  .sidebar .item .ic { font-size: 16px; margin: 0; }
+  .sidebar .grp { display: none; }
+  .grid-4 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr; }
+  .gates { grid-template-columns: 1fr 1fr; }
+}
+
+/* Chart container sizing */
+.chart-wrap { position: relative; height: 260px; width: 100%; }
+.chart-sm { position: relative; height: 180px; width: 100%; }
+</style>
+</head>
+<body>
+
+<!-- ============================ LOGIN VIEW ============================ -->
+<div id="login-view" class="login-view hidden">
+  <div class="login-card">
+    <div class="brand-big"><span class="b-ic">◆</span>Galaxy CFO Close</div>
+    <div class="subtitle">Monthly close analysis · Restricted to Moshik, Oren, Guy</div>
+    <button class="ms-btn" onclick="handleLogin()">
+      <svg class="ms-logo" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg">
+        <rect x="1" y="1" width="9" height="9" fill="#F25022"/>
+        <rect x="11" y="1" width="9" height="9" fill="#7FBA00"/>
+        <rect x="1" y="11" width="9" height="9" fill="#00A4EF"/>
+        <rect x="11" y="11" width="9" height="9" fill="#FFB900"/>
+      </svg>
+      Sign in with Microsoft
+    </button>
+    <div class="foot">
+      <strong>cfo.goldenlab.net</strong><br>
+      Hosted in Azure · M365 SSO · Entra ID
+    </div>
+  </div>
+</div>
+
+<!-- ============================ APP VIEW ============================ -->
+<div id="app-view" class="app hidden">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="brand"><span class="b-ic">◆</span>Galaxy CFO Close</div>
+    <div class="period-pill">
+      <span class="status-dot"></span>
+      May 2026 · draft close
+    </div>
+    <div class="top-spacer"></div>
+    <div class="demo-pill">● Demo shell — fixture data</div>
+    <div class="user-menu">
+      <button class="user-btn" onclick="toggleUserMenu()">
+        <span class="av" id="user-av">MK</span>
+        <span>
+          <span id="user-name">Moshik</span>
+          <span class="role" id="user-role"> · CFO</span>
+        </span>
+        <span style="color: var(--tx4);">▾</span>
+      </button>
+      <div class="user-dropdown" id="user-dropdown">
+        <div class="u-hd">Switch demo user</div>
+        <div class="u-item" onclick="setUser('moshik')">
+          <div class="av-sm" style="background: var(--pr);">MK</div>
+          <div><div class="u-name">Moshik</div><div class="u-role">CFO · full access · moshik@galaxygroup.co</div></div>
+        </div>
+        <div class="u-item" onclick="setUser('oren')">
+          <div class="av-sm" style="background: var(--bl);">OK</div>
+          <div><div class="u-name">Oren</div><div class="u-role">Partner · full access</div></div>
+        </div>
+        <div class="u-item" onclick="setUser('guy')">
+          <div class="av-sm" style="background: var(--pu);">GG</div>
+          <div><div class="u-name">Guy</div><div class="u-role">Partner · full access</div></div>
+        </div>
+        <div class="u-item" onclick="setUser('malta')">
+          <div class="av-sm" style="background: var(--am);">MF</div>
+          <div><div class="u-name">Malta Finance Mgr</div><div class="u-role">Upload-only · /data-in access</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+      <div class="grp">Ingest</div>
+      <a class="item" data-route="/data-in" href="#/data-in"><span class="ic">📥</span>Data In</a>
+
+      <div class="grp">Close-readiness</div>
+      <a class="item" data-route="/" href="#/"><span class="ic">🎯</span>Readiness gates</a>
+
+      <div class="grp">Monthly summary</div>
+      <a class="item" data-route="/pl" href="#/pl"><span class="ic">§1</span>P&amp;L Summary</a>
+      <a class="item" data-route="/cf" href="#/cf"><span class="ic">§2</span>Cash Flow</a>
+      <a class="item" data-route="/collection" href="#/collection"><span class="ic">§3</span>Collection Aging</a>
+      <a class="item" data-route="/bridge" href="#/bridge"><span class="ic">§4</span>P&amp;L ↔ CF Bridge</a>
+      <a class="item" data-route="/unit-econ" href="#/unit-econ"><span class="ic">§5</span>Unit Economics</a>
+      <a class="item" data-route="/forecast" href="#/forecast"><span class="ic">§6</span>Forecast</a>
+      <a class="item" data-route="/anomaly" href="#/anomaly"><span class="ic">§7</span>Anomaly + DQ</a>
+
+      <div class="grp">Distribute</div>
+      <a class="item" data-route="/board-pack" href="#/board-pack"><span class="ic">📄</span>Board Pack</a>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content" id="content"></div>
+
+  </div>
+</div>
+
+<!-- ============================ SLIDE PANEL ============================ -->
+<div class="panel-shade" id="panel-shade" onclick="if(event.target===this)closePanel()">
+  <div class="slide-panel" id="slide-panel"></div>
+</div>
+
+<script>
+/* ================================================================
+   STATE + FIXTURE DATA (May 2026 close)
+================================================================ */
+const state = {
+  user: 'moshik',
+  route: '/',
+  timeSlice: 'MTD',
+  compareMode: 'MoM',
+  streamFilter: new Set(['IT','ES','FR','DE','UK','GR','Platform']),
+  drivers: { doPct: 26, msgCost: 0.031 }
+};
+
+const USERS = {
+  moshik: { name: 'Moshik', initials: 'MK', role: 'CFO', color: 'var(--pr)', email: 'moshik@galaxygroup.co' },
+  oren:   { name: 'Oren',   initials: 'OK', role: 'Partner', color: 'var(--bl)', email: 'oren@goldenlab.net' },
+  guy:    { name: 'Guy',    initials: 'GG', role: 'Partner', color: 'var(--pu)', email: 'guy@goldenlab.net' },
+  malta:  { name: 'Malta Finance', initials: 'MF', role: 'Malta upload', color: 'var(--am)', email: 'finance@galaxymalta.mt' }
+};
+
+// Revenue mix per stream (May 2026)
+const streams = [
+  { code: 'IT',       name: 'Galaxy IT',       rev: 640000, do: 178000, cost: 91000, mgmt: 42000 },
+  { code: 'ES',       name: 'Galaxy ES',       rev: 410000, do: 118000, cost: 62000, mgmt: 28000 },
+  { code: 'FR',       name: 'Galaxy FR',       rev: 285000, do:  82000, cost: 41000, mgmt: 19000 },
+  { code: 'DE',       name: 'Galaxy DE',       rev: 165000, do:  47000, cost: 24000, mgmt: 12000 },
+  { code: 'UK',       name: 'Galaxy UK',       rev: 340000, do:  95000, cost: 48000, mgmt: 22000 },
+  { code: 'GR',       name: 'Galaxy GR',       rev:  82000, do:  22000, cost: 12000, mgmt:  6500 },
+  { code: 'Platform', name: 'Platform / SaaS', rev: 210000, do:      0, cost: 18000, mgmt: 24000 }
+];
+
+// 12-month historic time series per KPI (in €K)
+const history = {
+  labels: ['Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May'],
+  revenue: [1650, 1720, 1610, 1780, 1840, 1920, 2040, 2010, 1930, 2050, 2080, 2132],
+  ebitda:  [ 380,  410,  345,  445,  475,  510,  560,  520,  495,  555,  580,  612],
+  cash:    [1050, 1120, 1090, 1180, 1240, 1310, 1400, 1360, 1330, 1385, 1420, 1998],
+  doPct:   [24.0, 24.5, 25.1, 25.8, 26.2, 26.5, 26.8, 27.0, 26.9, 26.6, 26.3, 25.9]
+};
+
+// P&L lines (May 2026 vs April 2026)
+const plLines = [
+  { key: 'gross-rev',   name: 'Gross Revenue',            may: 2132, apr: 2080, cat: 'rev' },
+  { key: 'refunds',     name: 'Refunds / adjustments',     may:  -18, apr:  -22, cat: 'rev' },
+  { key: 'net-rev',     name: 'Net Revenue',              may: 2114, apr: 2058, cat: 'subtotal' },
+  { key: 'do-payouts',  name: 'DO payouts',               may: -542, apr: -531, cat: 'cogs' },
+  { key: 'msg-cost',    name: 'Messaging cost',           may: -186, apr: -178, cat: 'cogs' },
+  { key: 'proxy-cost',  name: 'Proxy + SIM cost',         may:  -68, apr:  -71, cat: 'cogs' },
+  { key: 'ai-cost',     name: 'AI / API cost',            may:  -42, apr:  -38, cat: 'cogs' },
+  { key: 'gross-margin',name: 'Gross Margin',             may: 1276, apr: 1240, cat: 'subtotal' },
+  { key: 'salaries',    name: 'Salaries + contractors',   may: -412, apr: -408, cat: 'opex' },
+  { key: 'infra',       name: 'Infrastructure (Azure)',   may:  -84, apr:  -81, cat: 'opex' },
+  { key: 'tools',       name: 'Tools + SaaS',             may:  -38, apr:  -36, cat: 'opex' },
+  { key: 'legal',       name: 'Legal / compliance',       may:  -68, apr:  -42, cat: 'opex' },
+  { key: 'marketing',   name: 'Marketing',                may:  -22, apr:  -18, cat: 'opex' },
+  { key: 'other-opex',  name: 'Other opex',               may:  -40, apr:  -35, cat: 'opex' },
+  { key: 'ebitda',      name: 'EBITDA',                   may:  612, apr:  620, cat: 'subtotal' },
+  { key: 'da',          name: 'D&A',                      may:  -28, apr:  -28, cat: 'below' },
+  { key: 'tax',         name: 'Tax provision',            may: -122, apr: -124, cat: 'below' },
+  { key: 'net-income',  name: 'Net Income',               may:  462, apr:  468, cat: 'total' }
+];
+
+// Cash flow lines
+const cfLines = [
+  { name: 'Opening cash',                  may: 1420 },
+  { name: 'Cash from customers',           may: 2018 },
+  { name: 'DO settlement (T+30)',          may: -498 },
+  { name: 'Messaging providers (T+7)',     may: -172 },
+  { name: 'Proxy + SIM providers (T+0)',   may:  -68 },
+  { name: 'Payroll + contractors',         may: -412 },
+  { name: 'Azure invoice',                 may:  -84 },
+  { name: 'Tools + SaaS',                  may:  -38 },
+  { name: 'Legal / compliance',            may:  -68 },
+  { name: 'VAT settlement',                may: -102 },
+  { name: 'Closing cash',                  may: 1998 }
+];
+
+// Collection aging
+const aging = [
+  { bucket: '0-30 days',   amount: 512, pct: 68 },
+  { bucket: '31-60 days',  amount: 148, pct: 20 },
+  { bucket: '61-90 days',  amount:  62, pct:  8 },
+  { bucket: '91+ days',    amount:  28, pct:  4 }
+];
+
+// Anomalies
+const anomalies = [
+  { sev: 'red',  line: 'Legal / compliance', delta: '+62%', desc: 'One-off KYC review with counsel — approved by Oren 2026-05-18' },
+  { sev: 'amber', line: 'AI / API cost',      delta: '+11%', desc: 'Anthropic usage spiked around VCC campaign 5/12-5/16 (expected)' },
+  { sev: 'amber', line: 'Messaging cost',     delta: '+4.5%', desc: 'IT segment expansion — 380K → 420K sends' },
+  { sev: 'gn',   line: 'Proxy + SIM cost',   delta: '-4.2%', desc: 'SOAX bulk discount kicked in mid-month' }
+];
+
+// Data quality checks
+const dqChecks = [
+  { name: 'AMP-native P&L vs Malta P&L',      status: 'gn', delta: '€0.4K',   note: 'FX rounding on GR stream' },
+  { name: 'Malta P&L vs Bank feed (cash)',     status: 'gn', delta: '€1.1K',   note: 'Timing on last-day Azure autopay' },
+  { name: 'Postback revenue vs Bank collection', status: 'am', delta: '€8.2K', note: '2 postbacks 90+ days unpaid — chase' },
+  { name: 'Payroll roster vs bank debits',     status: 'gn', delta: '€0K',    note: 'Match' },
+  { name: 'VAT return vs Malta submission',    status: 'gn', delta: '€0K',    note: 'Filed 2026-06-15' }
+];
+
+// Uploaded files
+const uploadedFiles = [
+  { name: 'Malta_May2026_PL_v2.xlsx',   size: '48 KB',  time: '2026-06-08 09:12', rows: 84, status: 'gn' },
+  { name: 'Malta_May2026_Bank.xlsx',    size: '112 KB', time: '2026-06-08 09:14', rows: 231, status: 'gn' },
+  { name: 'Malta_May2026_Payroll.xlsx', size: '32 KB',  time: '2026-06-08 09:18', rows: 27, status: 'gn' },
+  { name: 'Malta_Apr2026_PL_v3.xlsx',   size: '46 KB',  time: '2026-05-09 14:22', rows: 82, status: 'gn' }
+];
+
+/* ================================================================
+   ROUTER
+================================================================ */
+function router() {
+  const hash = location.hash.slice(1) || '/';
+  state.route = hash;
+
+  // Auth wall
+  if (!state.authed) {
+    document.getElementById('login-view').classList.remove('hidden');
+    document.getElementById('app-view').classList.add('hidden');
+    return;
+  }
+  document.getElementById('login-view').classList.add('hidden');
+  document.getElementById('app-view').classList.remove('hidden');
+
+  // Malta user restricted
+  if (state.user === 'malta' && hash !== '/data-in') {
+    location.hash = '#/data-in';
+    return;
+  }
+
+  // Update sidebar
+  document.querySelectorAll('.sidebar .item').forEach(el => {
+    el.classList.toggle('active', el.dataset.route === hash);
+  });
+
+  // Render route
+  const content = document.getElementById('content');
+  content.innerHTML = '';
+  const view = document.createElement('div');
+  view.className = 'route-view';
+  content.appendChild(view);
+
+  const routes = {
+    '/':          renderReadiness,
+    '/data-in':   renderDataIn,
+    '/pl':        renderPL,
+    '/cf':        renderCF,
+    '/collection':renderCollection,
+    '/bridge':    renderBridge,
+    '/unit-econ': renderUnitEcon,
+    '/forecast':  renderForecast,
+    '/anomaly':   renderAnomaly,
+    '/board-pack':renderBoardPack
+  };
+  (routes[hash] || renderReadiness)(view);
+  window.scrollTo(0, 0);
+}
+
+window.addEventListener('hashchange', router);
+
+/* ================================================================
+   AUTH + USERS
+================================================================ */
+function handleLogin() {
+  state.authed = true;
+  state.user = 'moshik';
+  location.hash = '#/';
+  updateUserUI();
+  router();
+}
+function setUser(u) {
+  state.user = u;
+  toggleUserMenu();
+  updateUserUI();
+  if (u === 'malta') location.hash = '#/data-in';
+  else router();
+}
+function updateUserUI() {
+  const u = USERS[state.user];
+  document.getElementById('user-av').textContent = u.initials;
+  document.getElementById('user-av').style.background = u.color;
+  document.getElementById('user-name').textContent = u.name;
+  document.getElementById('user-role').textContent = ' · ' + u.role;
+}
+function toggleUserMenu() {
+  document.getElementById('user-dropdown').classList.toggle('open');
+}
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.user-menu')) {
+    document.getElementById('user-dropdown').classList.remove('open');
+  }
+});
+
+/* ================================================================
+   HELPERS
+================================================================ */
+const fmt = {
+  eur: (n) => (n < 0 ? '-' : '') + '€' + Math.abs(n).toLocaleString('en-US', { maximumFractionDigits: 0 }) + 'K',
+  eur0: (n) => '€' + n.toLocaleString('en-US', { maximumFractionDigits: 0 }),
+  pct: (n) => n.toFixed(1) + '%',
+  delta: (curr, prev) => {
+    const d = curr - prev;
+    const pct = prev !== 0 ? (d / Math.abs(prev)) * 100 : 0;
+    return { d, pct, dir: d >= 0 ? 'up' : 'dn', arrow: d >= 0 ? '▲' : '▼' };
+  }
+};
+
+function timeSliceMultiplier() {
+  const m = { 'MTD': 1.0, 'QTD': 2.85, 'YTD': 10.4, 'Custom': 1.0 };
+  return m[state.timeSlice] || 1.0;
+}
+
+function filteredStreams() {
+  return streams.filter(s => state.streamFilter.has(s.code));
+}
+
+function computeTotals() {
+  const s = filteredStreams();
+  const mult = timeSliceMultiplier();
+  const rev = s.reduce((a, x) => a + x.rev, 0) * mult;
+  const doP = s.reduce((a, x) => a + x.do, 0) * mult;
+  const cost = s.reduce((a, x) => a + x.cost, 0) * mult;
+  const mgmt = s.reduce((a, x) => a + x.mgmt, 0) * mult;
+  return { rev, doP, cost, mgmt, gm: rev - doP - cost, ebitda: rev - doP - cost - mgmt - 250000 * mult };
+}
+
+/* ================================================================
+   COMPONENTS: Toolbar with slicers
+================================================================ */
+function makeToolbar(view, opts = { time: true, streams: true, compare: true, extra: '' }) {
+  const t = document.createElement('div');
+  t.className = 'toolbar';
+  let html = '';
+
+  if (opts.time) {
+    html += `<span class="lbl">Period</span>
+      <div class="pill-group" data-role="time">
+        ${['MTD','QTD','YTD','Custom'].map(x =>
+          `<button class="pill-btn ${state.timeSlice===x?'active':''}" data-time="${x}">${x}</button>`
+        ).join('')}
+      </div>
+      <span class="sep"></span>`;
+  }
+
+  if (opts.streams) {
+    html += `<span class="lbl">Streams</span>`;
+    streams.forEach(s => {
+      html += `<span class="chip ${state.streamFilter.has(s.code)?'active':''}" data-stream="${s.code}">${s.code}</span>`;
+    });
+    html += `<span class="sep"></span>`;
+  }
+
+  if (opts.compare) {
+    html += `<span class="lbl">Compare</span>
+      <div class="pill-group" data-role="compare">
+        <button class="pill-btn ${state.compareMode==='MoM'?'active':''}" data-cmp="MoM">MoM</button>
+        <button class="pill-btn ${state.compareMode==='YoY'?'active':''}" data-cmp="YoY">YoY</button>
+      </div>`;
+  }
+
+  if (opts.extra) html += opts.extra;
+
+  t.innerHTML = html;
+  view.appendChild(t);
+
+  // Wire up
+  t.querySelectorAll('[data-time]').forEach(b => b.onclick = () => { state.timeSlice = b.dataset.time; router(); });
+  t.querySelectorAll('[data-cmp]').forEach(b => b.onclick = () => { state.compareMode = b.dataset.cmp; router(); });
+  t.querySelectorAll('[data-stream]').forEach(c => c.onclick = () => {
+    const code = c.dataset.stream;
+    if (state.streamFilter.has(code)) state.streamFilter.delete(code); else state.streamFilter.add(code);
+    if (state.streamFilter.size === 0) state.streamFilter.add(code);
+    router();
+  });
+
+  return t;
+}
+
+/* ================================================================
+   SPARKLINE (small canvas chart)
+================================================================ */
+const chartRefs = [];
+function destroyCharts() {
+  while (chartRefs.length) { try { chartRefs.pop().destroy(); } catch(e){} }
+}
+function makeSpark(canvasId, series, color) {
+  const el = document.getElementById(canvasId);
+  if (!el) return;
+  const c = new Chart(el, {
+    type: 'line',
+    data: {
+      labels: history.labels,
+      datasets: [{ data: series, borderColor: color, backgroundColor: color + '22', borderWidth: 1.5, fill: true, tension: 0.4, pointRadius: 0 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      scales: { x: { display: false }, y: { display: false } }
+    }
+  });
+  chartRefs.push(c);
+}
+
+/* ================================================================
+   PANEL (drilldown)
+================================================================ */
+function openPanel(html) {
+  document.getElementById('slide-panel').innerHTML = html;
+  document.getElementById('panel-shade').classList.add('open');
+}
+function closePanel() {
+  document.getElementById('panel-shade').classList.remove('open');
+  document.getElementById('slide-panel').innerHTML = '';
+}
+
+/* ================================================================
+   ROUTE: READINESS (landing / #/)
+================================================================ */
+function renderReadiness(view) {
+  destroyCharts();
+  const totals = computeTotals();
+
+  view.innerHTML = `
+    <div class="page-head">
+      <span class="num">CLOSE-READINESS</span>
+      <h1>May 2026 close · draft</h1>
+      <span class="sub">Target sign-off: 2026-06-12 · 4 gates green · 2 amber · 1 red</span>
+    </div>
+  `;
+
+  makeToolbar(view, { time: true, streams: false, compare: true });
+
+  // KPI row
+  const kpi = document.createElement('div');
+  kpi.className = 'grid-4';
+  kpi.style.marginBottom = '16px';
+  kpi.innerHTML = `
+    <div class="kpi">
+      <div class="k-lbl">Net Revenue</div>
+      <div class="k-val">${fmt.eur(totals.rev/1000)}</div>
+      <div class="k-delta up">▲ 2.7% MoM · vs Apr €2,058K</div>
+      <div class="k-spark"><canvas id="sp-rev"></canvas></div>
+    </div>
+    <div class="kpi">
+      <div class="k-lbl">EBITDA</div>
+      <div class="k-val">€612K</div>
+      <div class="k-delta dn">▼ 1.3% MoM · legal one-off</div>
+      <div class="k-spark"><canvas id="sp-ebitda"></canvas></div>
+    </div>
+    <div class="kpi">
+      <div class="k-lbl">Closing cash</div>
+      <div class="k-val">€1,998K</div>
+      <div class="k-delta up">▲ 40.7% MoM · VAT + payout timing</div>
+      <div class="k-spark"><canvas id="sp-cash"></canvas></div>
+    </div>
+    <div class="kpi">
+      <div class="k-lbl">DO % of revenue</div>
+      <div class="k-val">25.9%</div>
+      <div class="k-delta up">▼ 0.4pp MoM · SOAX bulk</div>
+      <div class="k-spark"><canvas id="sp-do"></canvas></div>
+    </div>
+  `;
+  view.appendChild(kpi);
+
+  // Gates
+  const gatesCard = document.createElement('div');
+  gatesCard.className = 'card';
+  gatesCard.innerHTML = `<h3>7 close-readiness gates <span class="h-sub">Click a gate to drill in</span></h3>`;
+  const gates = document.createElement('div');
+  gates.className = 'gates';
+  const gateData = [
+    { code: 'G1', title: 'Malta upload received',   sub: 'All 3 files uploaded 2026-06-08. 84 rows OK.', status: 'gn' },
+    { code: 'G2', title: 'AMP-native P&L calc',     sub: 'All 7 streams reconciled to Postgres facts.',  status: 'gn' },
+    { code: 'G3', title: 'Bank feed match',         sub: '€1.1K unmatched · Azure autopay timing.',       status: 'gn' },
+    { code: 'G4', title: 'DO payout schedule',      sub: 'T+30 settlements confirmed by BO + Twilio.',    status: 'gn' },
+    { code: 'G5', title: 'Postback reconciliation', sub: '2 postbacks 90+ days unpaid — need chase.',     status: 'am' },
+    { code: 'G6', title: 'VAT return submitted',    sub: 'Filed 2026-06-15 · Malta accepted.',            status: 'am' },
+    { code: 'G7', title: 'Legal / one-off review',  sub: '€26K KYC counsel review needs partner sign-off.', status: 'rd' }
+  ];
+  gateData.forEach(g => {
+    const el = document.createElement('div');
+    el.className = 'gate ' + g.status;
+    el.innerHTML = `
+      <div class="g-lbl">${g.code}</div>
+      <div class="g-title">${g.title}</div>
+      <div class="g-sub">${g.sub}</div>
+      <span class="g-status"><span class="tag ${g.status}">${g.status === 'gn' ? 'GREEN' : g.status === 'am' ? 'AMBER' : 'RED'}</span></span>
+    `;
+    el.onclick = () => openPanel(`
+      <div class="panel-head">
+        <h3>${g.code} · ${g.title}</h3>
+        <button class="close" onclick="closePanel()">×</button>
+      </div>
+      <div class="callout ${g.status==='gn'?'good':g.status==='am'?'warn':'bad'}">
+        <strong>Status:</strong> ${g.sub}
+      </div>
+      <dl class="panel-kv">
+        <dt>Owner</dt><dd>${g.code === 'G7' ? 'Oren' : 'Moshik'}</dd>
+        <dt>Blocker</dt><dd>${g.status === 'rd' ? 'Yes — sign-off needed' : 'No'}</dd>
+        <dt>Related lines</dt><dd>${g.code === 'G7' ? 'Legal / compliance' : g.code === 'G5' ? 'Postback revenue' : '—'}</dd>
+        <dt>Last check</dt><dd>2026-06-08 09:32 UTC</dd>
+      </dl>
+      <div class="card" style="margin-top: 14px;">
+        <h3>12-month trend</h3>
+        <div class="chart-sm"><canvas id="panel-chart"></canvas></div>
+      </div>
+    `);
+    if (el.onclick) {
+      const orig = el.onclick;
+      el.onclick = (e) => {
+        orig(e);
+        setTimeout(() => {
+          const c = new Chart(document.getElementById('panel-chart'), {
+            type: 'line',
+            data: { labels: history.labels, datasets: [{ label: g.title, data: history.revenue.map(v => v * 0.001), borderColor: '#059669', backgroundColor: '#05966922', fill: true, tension: 0.35, pointRadius: 2 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+          });
+          chartRefs.push(c);
+        }, 50);
+      };
+    }
+    gates.appendChild(el);
+  });
+  gatesCard.appendChild(gates);
+  view.appendChild(gatesCard);
+
+  // Bottom summary row
+  const bottom = document.createElement('div');
+  bottom.className = 'grid-2';
+  bottom.style.marginTop = '14px';
+  bottom.innerHTML = `
+    <div class="card">
+      <h3>Revenue trajectory · 12 months</h3>
+      <div class="chart-sm"><canvas id="chart-trend"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>What needs Moshik's attention</h3>
+      <div class="callout bad"><strong>G7 · Legal:</strong> €26K KYC counsel review needs Oren sign-off before close.</div>
+      <div class="callout warn"><strong>G5 · Postbacks:</strong> Chase 2 accounts (€8.2K, 90+ days). Assign to Nadav.</div>
+      <div class="callout warn"><strong>G6 · VAT:</strong> Malta submitted 2026-06-15 — confirmation email pending.</div>
+    </div>
+  `;
+  view.appendChild(bottom);
+
+  // Charts
+  setTimeout(() => {
+    makeSpark('sp-rev', history.revenue, '#059669');
+    makeSpark('sp-ebitda', history.ebitda, '#2563EB');
+    makeSpark('sp-cash', history.cash, '#7C3AED');
+    makeSpark('sp-do', history.doPct, '#D97706');
+    const c = new Chart(document.getElementById('chart-trend'), {
+      type: 'line',
+      data: { labels: history.labels, datasets: [
+        { label: 'Revenue (€K)', data: history.revenue, borderColor: '#059669', backgroundColor: '#05966922', fill: true, tension: 0.35 },
+        { label: 'EBITDA (€K)',  data: history.ebitda,  borderColor: '#2563EB', backgroundColor: '#2563EB22', fill: false, tension: 0.35 }
+      ] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+    });
+    chartRefs.push(c);
+  }, 30);
+}
+
+/* ================================================================
+   ROUTE: DATA IN
+================================================================ */
+function renderDataIn(view) {
+  destroyCharts();
+  const restricted = state.user === 'malta';
+
+  view.innerHTML = `
+    <div class="page-head">
+      <span class="num">INGEST</span>
+      <h1>Data In · Malta upload flow</h1>
+      <span class="sub">SharePoint → Azure Function parser → Azure SQL fact table → Malta manual UI</span>
+    </div>
+    ${restricted ? `<div class="restricted-notice"><span class="r-ic">🔒</span><div><strong>Restricted view.</strong> As Malta Finance Manager, you can upload files and see reconciliation status. Full CFO views are hidden.</div></div>` : ''}
+  `;
+
+  // Drop zone
+  const dz = document.createElement('div');
+  dz.className = 'drop-zone';
+  dz.innerHTML = `
+    <div class="dz-ic">📥</div>
+    <div class="dz-title">Drop Malta Excel here — or click to browse</div>
+    <div class="dz-sub">Accepted: .xlsx / .xls · Malta P&amp;L · Bank feed · Payroll roster</div>
+    <div class="dz-cta"><button class="btn">Browse files</button></div>
+    <input type="file" id="file-input" style="display: none;" accept=".xlsx,.xls" multiple>
+  `;
+  view.appendChild(dz);
+
+  // Progress
+  const prog = document.createElement('div');
+  prog.className = 'upload-progress';
+  prog.id = 'upload-progress';
+  prog.innerHTML = `
+    <div style="display: flex; justify-content: space-between; font-size: 12.5px;">
+      <span id="up-name">Uploading…</span>
+      <span id="up-pct">0%</span>
+    </div>
+    <div class="progress-bar"><div class="p-fill" id="p-fill"></div></div>
+    <div id="up-status" style="font-size: 12px; color: var(--tx3); margin-top: 6px;"></div>
+  `;
+  view.appendChild(prog);
+
+  // Wire drop zone
+  const fi = dz.querySelector('#file-input');
+  dz.onclick = (e) => { if (e.target.tagName !== 'INPUT') fi.click(); };
+  fi.onchange = (e) => handleUpload(e.target.files);
+  dz.ondragover = (e) => { e.preventDefault(); dz.classList.add('hover'); };
+  dz.ondragleave = () => dz.classList.remove('hover');
+  dz.ondrop = (e) => { e.preventDefault(); dz.classList.remove('hover'); handleUpload(e.dataTransfer.files); };
+
+  // 4-layer stack
+  const stackCard = document.createElement('div');
+  stackCard.className = 'card';
+  stackCard.innerHTML = `
+    <h3>Ingest architecture · 4 layers</h3>
+    <div class="stack-4">
+      <div class="stack-card"><div class="l l1">L1 · Storage</div><div class="n">SharePoint Doc Library</div><div class="d">Malta drops files here monthly. Retained 7 years.</div></div>
+      <div class="stack-card"><div class="l l2">L2 · Parser</div><div class="n">Azure Function (Node)</div><div class="d">Reads XLSX → normalizes columns → writes to SQL. Failures → dead-letter.</div></div>
+      <div class="stack-card"><div class="l l3">L3 · Fact table</div><div class="n">Azure SQL Malta.MonthlyFacts</div><div class="d">Star schema · joins to AMP tenants + streams. Row-versioned.</div></div>
+      <div class="stack-card"><div class="l l4">L4 · Manual UI</div><div class="n">Malta manual entry</div><div class="d">For edge cases: FX overrides, journal entries, reclassification.</div></div>
+    </div>
+  `;
+  view.appendChild(stackCard);
+
+  // Uploaded files table
+  const filesCard = document.createElement('div');
+  filesCard.className = 'card';
+  filesCard.style.marginTop = '14px';
+  filesCard.innerHTML = `
+    <h3>Uploaded files</h3>
+    <table class="tbl">
+      <thead><tr><th>File</th><th>Size</th><th>Uploaded</th><th class="num">Rows</th><th>Status</th></tr></thead>
+      <tbody id="files-tbody">
+        ${uploadedFiles.map(f => `
+          <tr>
+            <td><strong>${f.name}</strong></td>
+            <td>${f.size}</td>
+            <td>${f.time}</td>
+            <td class="num">${f.rows}</td>
+            <td><span class="tag ${f.status}">Parsed OK</span></td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+  view.appendChild(filesCard);
+
+  // Cross-source reconciliation
+  if (!restricted) {
+    const reconCard = document.createElement('div');
+    reconCard.className = 'card';
+    reconCard.style.marginTop = '14px';
+    reconCard.innerHTML = `
+      <h3>Cross-source reconciliation <span class="h-sub">3 sources must agree before close</span></h3>
+      <table class="tbl">
+        <thead>
+          <tr><th>Line</th><th class="num">AMP-native</th><th class="num">Malta P&L</th><th class="num">Bank feed</th><th class="num">Δ</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr class="clickable" onclick="openReconPanel('rev')">
+            <td>Total revenue</td>
+            <td class="num">€2,132.0K</td>
+            <td class="num">€2,131.6K</td>
+            <td class="num">€2,131.6K</td>
+            <td class="num">€0.4K</td>
+            <td><span class="tag gn">Match (FX)</span></td>
+          </tr>
+          <tr class="clickable" onclick="openReconPanel('cost')">
+            <td>Total direct cost</td>
+            <td class="num">-€838.0K</td>
+            <td class="num">-€838.0K</td>
+            <td class="num">-€838.0K</td>
+            <td class="num">€0K</td>
+            <td><span class="tag gn">Match</span></td>
+          </tr>
+          <tr class="clickable" onclick="openReconPanel('cash')">
+            <td>Closing cash</td>
+            <td class="num">€1,998.4K</td>
+            <td class="num">€1,997.3K</td>
+            <td class="num">€1,997.3K</td>
+            <td class="num">€1.1K</td>
+            <td><span class="tag am">Timing</span></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    view.appendChild(reconCard);
+  }
+}
+
+function openReconPanel(kind) {
+  openPanel(`
+    <div class="panel-head">
+      <h3>Reconciliation drilldown · ${kind === 'rev' ? 'Revenue' : kind === 'cost' ? 'Direct cost' : 'Closing cash'}</h3>
+      <button class="close" onclick="closePanel()">×</button>
+    </div>
+    <div class="callout ${kind === 'cash' ? 'warn' : 'good'}">
+      <strong>${kind === 'cash' ? 'Timing diff' : 'Match within tolerance'}:</strong>
+      ${kind === 'cash' ? '€1.1K variance driven by Azure autopay hitting bank 2026-06-01 but recorded in AMP as May 31 accrual.' : 'FX rounding on GR stream — €0.4K on €82K base (0.5bp). Within €5K tolerance.'}
+    </div>
+    <table class="tbl">
+      <thead><tr><th>Sub-line</th><th class="num">AMP</th><th class="num">Malta</th><th class="num">Bank</th></tr></thead>
+      <tbody>
+        <tr><td>IT stream</td><td class="num">€640K</td><td class="num">€640K</td><td class="num">€640K</td></tr>
+        <tr><td>ES stream</td><td class="num">€410K</td><td class="num">€410K</td><td class="num">€410K</td></tr>
+        <tr><td>FR stream</td><td class="num">€285K</td><td class="num">€285K</td><td class="num">€285K</td></tr>
+        <tr><td>GR stream</td><td class="num">€82K</td><td class="num">€81.6K</td><td class="num">€81.6K</td></tr>
+      </tbody>
+    </table>
+  `);
+}
+
+let uploadTimer = null;
+function handleUpload(files) {
+  if (!files || !files.length) return;
+  const f = files[0];
+  const prog = document.getElementById('upload-progress');
+  prog.classList.add('show');
+  document.getElementById('up-name').textContent = 'Uploading ' + f.name;
+  document.getElementById('up-status').textContent = 'Transferring to SharePoint…';
+  document.getElementById('p-fill').style.width = '0%';
+  document.getElementById('up-pct').textContent = '0%';
+  let p = 0;
+  clearInterval(uploadTimer);
+  uploadTimer = setInterval(() => {
+    p += Math.random() * 14 + 3;
+    if (p >= 100) {
+      p = 100;
+      clearInterval(uploadTimer);
+      document.getElementById('up-status').innerHTML = '<span style="color: var(--pr2); font-weight: 700;">✓ Uploaded! 84 rows parsed. 0 errors.</span> · Azure Function fired at 09:47:22 UTC · Fact table updated.';
+      // Add to files table
+      const tb = document.getElementById('files-tbody');
+      if (tb) {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td><strong>${f.name}</strong></td><td>${Math.round(f.size/1024)} KB</td><td>Just now</td><td class="num">84</td><td><span class="tag gn">Parsed OK</span></td>`;
+        tb.insertBefore(row, tb.firstChild);
+      }
+    }
+    document.getElementById('p-fill').style.width = p + '%';
+    document.getElementById('up-pct').textContent = Math.floor(p) + '%';
+    if (p >= 30 && p < 70) document.getElementById('up-status').textContent = 'Parsing XLSX in Azure Function…';
+    else if (p >= 70 && p < 100) document.getElementById('up-status').textContent = 'Writing to fact table…';
+  }, 180);
+}
+
+/* ================================================================
+   ROUTE: P&L (#/pl)
+================================================================ */
+function renderPL(view) {
+  destroyCharts();
+  view.innerHTML = `
+    <div class="page-head">
+      <span class="num">§1</span>
+      <h1>P&amp;L Summary</h1>
+      <span class="sub">${state.timeSlice} · ${state.compareMode} comparison · ${state.streamFilter.size}/7 streams</span>
+    </div>
+  `;
+  makeToolbar(view);
+
+  // KPI row responds to slicers
+  const t = computeTotals();
+  const kpi = document.createElement('div');
+  kpi.className = 'grid-4';
+  kpi.style.marginBottom = '16px';
+  kpi.innerHTML = `
+    <div class="kpi"><div class="k-lbl">Filtered revenue</div><div class="k-val">${fmt.eur(t.rev/1000)}</div><div class="k-delta up">▲ ${(2.7 * (state.compareMode==='YoY'?4.8:1)).toFixed(1)}% ${state.compareMode}</div></div>
+    <div class="kpi"><div class="k-lbl">DO payouts</div><div class="k-val">${fmt.eur(t.doP/1000)}</div><div class="k-delta up">${(t.doP/t.rev*100).toFixed(1)}% of rev</div></div>
+    <div class="kpi"><div class="k-lbl">Gross margin</div><div class="k-val">${fmt.eur(t.gm/1000)}</div><div class="k-delta up">${(t.gm/t.rev*100).toFixed(1)}% margin</div></div>
+    <div class="kpi"><div class="k-lbl">EBITDA (imputed)</div><div class="k-val">${fmt.eur(t.ebitda/1000)}</div><div class="k-delta ${t.ebitda>0?'up':'dn'}">${(t.ebitda/t.rev*100).toFixed(1)}% margin</div></div>
+  `;
+  view.appendChild(kpi);
+
+  // P&L table
+  const plCard = document.createElement('div');
+  plCard.className = 'card';
+  const compareLabel = state.compareMode;
+  plCard.innerHTML = `
+    <h3>P&amp;L lines · click any line to drill down <span class="h-sub">All figures €K</span></h3>
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Line</th>
+          <th class="num">May 2026</th>
+          <th class="num">${state.compareMode === 'MoM' ? 'Apr 2026' : 'May 2025'}</th>
+          <th class="num">Δ</th>
+          <th class="num">Δ %</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${plLines.map((l, i) => {
+          const prev = state.compareMode === 'MoM' ? l.apr : Math.round(l.apr * 0.82);
+          const d = fmt.delta(l.may, prev);
+          const rowClass = l.cat === 'subtotal' ? 'subtotal' : l.cat === 'total' ? 'total' : 'clickable';
+          return `<tr class="${rowClass}" onclick="openPLPanel(${i})">
+            <td>${l.name}</td>
+            <td class="num">${l.may >= 0 ? '' : '-'}€${Math.abs(l.may)}</td>
+            <td class="num">${prev >= 0 ? '' : '-'}€${Math.abs(prev)}</td>
+            <td class="num ${d.d>=0?'pos':'neg'}">${d.arrow} €${Math.abs(d.d)}</td>
+            <td class="num ${d.d>=0?'pos':'neg'}">${d.pct.toFixed(1)}%</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+  `;
+  view.appendChild(plCard);
+
+  // Per-stream breakdown
+  const streamCard = document.createElement('div');
+  streamCard.className = 'card';
+  streamCard.style.marginTop = '14px';
+  streamCard.innerHTML = `
+    <h3>Revenue by stream · click to drill in</h3>
+    <table class="tbl">
+      <thead><tr><th>Stream</th><th class="num">Revenue</th><th class="num">DO</th><th class="num">Direct cost</th><th class="num">Contribution</th><th class="num">Margin %</th></tr></thead>
+      <tbody>
+        ${filteredStreams().map((s, i) => {
+          const contribution = s.rev - s.do - s.cost;
+          return `<tr class="clickable" onclick="openStreamPanel('${s.code}')">
+            <td><strong>${s.name}</strong></td>
+            <td class="num">€${s.rev/1000}K</td>
+            <td class="num">-€${s.do/1000}K</td>
+            <td class="num">-€${s.cost/1000}K</td>
+            <td class="num pos">€${contribution/1000}K</td>
+            <td class="num">${(contribution/s.rev*100).toFixed(1)}%</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+  `;
+  view.appendChild(streamCard);
+}
+
+function openPLPanel(idx) {
+  const l = plLines[idx];
+  if (l.cat === 'subtotal' || l.cat === 'total') return;
+  openPanel(`
+    <div class="panel-head">
+      <h3>P&amp;L drilldown · ${l.name}</h3>
+      <button class="close" onclick="closePanel()">×</button>
+    </div>
+    <dl class="panel-kv">
+      <dt>May 2026</dt><dd>${l.may >= 0 ? '' : '-'}€${Math.abs(l.may)}K</dd>
+      <dt>April 2026</dt><dd>${l.apr >= 0 ? '' : '-'}€${Math.abs(l.apr)}K</dd>
+      <dt>Δ MoM</dt><dd>${(l.may - l.apr) >= 0 ? '+' : ''}€${l.may - l.apr}K</dd>
+      <dt>Category</dt><dd>${l.cat.toUpperCase()}</dd>
+    </dl>
+    <div class="card" style="margin-top: 14px;">
+      <h3>Level 2 · Sub-lines</h3>
+      <table class="tbl">
+        <tbody>
+          <tr><td>IT stream contribution</td><td class="num">${Math.round(l.may * 0.30)}K</td></tr>
+          <tr><td>ES stream contribution</td><td class="num">${Math.round(l.may * 0.19)}K</td></tr>
+          <tr><td>UK stream contribution</td><td class="num">${Math.round(l.may * 0.16)}K</td></tr>
+          <tr><td>Other streams</td><td class="num">${Math.round(l.may * 0.35)}K</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card" style="margin-top: 14px;">
+      <h3>Level 3 · 12-month trend</h3>
+      <div class="chart-sm"><canvas id="panel-chart"></canvas></div>
+    </div>
+  `);
+  setTimeout(() => {
+    const c = new Chart(document.getElementById('panel-chart'), {
+      type: 'bar',
+      data: { labels: history.labels, datasets: [{ label: l.name, data: history.labels.map((_, i) => Math.round(l.may * (0.75 + i * 0.02))), backgroundColor: l.may >= 0 ? '#059669' : '#DC2626' }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+    });
+    chartRefs.push(c);
+  }, 50);
+}
+
+function openStreamPanel(code) {
+  const s = streams.find(x => x.code === code);
+  const contribution = s.rev - s.do - s.cost;
+  openPanel(`
+    <div class="panel-head">
+      <h3>Stream · ${s.name}</h3>
+      <button class="close" onclick="closePanel()">×</button>
+    </div>
+    <dl class="panel-kv">
+      <dt>Revenue</dt><dd>€${s.rev/1000}K</dd>
+      <dt>DO payout</dt><dd>-€${s.do/1000}K (${(s.do/s.rev*100).toFixed(1)}%)</dd>
+      <dt>Direct cost</dt><dd>-€${s.cost/1000}K (${(s.cost/s.rev*100).toFixed(1)}%)</dd>
+      <dt>Contribution margin</dt><dd class="pos">€${contribution/1000}K (${(contribution/s.rev*100).toFixed(1)}%)</dd>
+      <dt>Mgmt allocation</dt><dd>-€${s.mgmt/1000}K</dd>
+    </dl>
+    <div class="card" style="margin-top: 14px;">
+      <h3>Revenue trend · 12 months</h3>
+      <div class="chart-sm"><canvas id="panel-chart"></canvas></div>
+    </div>
+  `);
+  setTimeout(() => {
+    const share = s.rev / streams.reduce((a, x) => a + x.rev, 0);
+    const trend = history.revenue.map(v => Math.round(v * share));
+    const c = new Chart(document.getElementById('panel-chart'), {
+      type: 'line',
+      data: { labels: history.labels, datasets: [{ label: s.code, data: trend, borderColor: '#059669', backgroundColor: '#05966922', fill: true, tension: 0.35, pointRadius: 3 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+    });
+    chartRefs.push(c);
+  }, 50);
+}
+
+/* ================================================================
+   ROUTE: CASH FLOW (#/cf)
+================================================================ */
+function renderCF(view) {
+  destroyCharts();
+  view.innerHTML = `
+    <div class="page-head">
+      <span class="num">§2</span>
+      <h1>Cash Flow</h1>
+      <span class="sub">Direct method · opening €1,420K → closing €1,998K · +€578K net</span>
+    </div>
+  `;
+  makeToolbar(view, { time: true, streams: false, compare: true });
+
+  const grid = document.createElement('div');
+  grid.className = 'grid-4';
+  grid.style.marginBottom = '16px';
+  grid.innerHTML = `
+    <div class="kpi"><div class="k-lbl">Opening cash</div><div class="k-val">€1,420K</div><div class="k-delta up">Apr 30 close</div></div>
+    <div class="kpi"><div class="k-lbl">Inflows</div><div class="k-val">€2,018K</div><div class="k-delta up">▲ 3.1% MoM</div></div>
+    <div class="kpi"><div class="k-lbl">Outflows</div><div class="k-val">-€1,440K</div><div class="k-delta dn">▲ 2.8% MoM</div></div>
+    <div class="kpi"><div class="k-lbl">Closing cash</div><div class="k-val">€1,998K</div><div class="k-delta up">▲ €578K net</div></div>
+  `;
+  view.appendChild(grid);
+
+  const two = document.createElement('div');
+  two.className = 'grid-2';
+  two.innerHTML = `
+    <div class="card">
+      <h3>Cash flow lines · click to drill</h3>
+      <table class="tbl">
+        <thead><tr><th>Line</th><th class="num">Amount</th></tr></thead>
+        <tbody>
+          ${cfLines.map((l, i) => {
+            const isTotal = i === 0 || i === cfLines.length - 1;
+            return `<tr class="${isTotal ? 'total' : 'clickable'}" onclick="openCFPanel(${i})">
+              <td>${l.name}</td>
+              <td class="num ${l.may >= 0 ? 'pos' : 'neg'}">${l.may >= 0 ? '€' : '-€'}${Math.abs(l.may)}K</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3>Cash trajectory · 12 months</h3>
+      <div class="chart-wrap"><canvas id="cf-chart"></canvas></div>
+    </div>
+  `;
+  view.appendChild(two);
+
+  setTimeout(() => {
+    const c = new Chart(document.getElementById('cf-chart'), {
+      type: 'line',
+      data: { labels: history.labels, datasets: [{ label: 'Cash (€K)', data: history.cash, borderColor: '#7C3AED', backgroundColor: '#7C3AED22', fill: true, tension: 0.35, pointRadius: 3 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+    });
+    chartRefs.push(c);
+  }, 50);
+}
+
+function openCFPanel(idx) {
+  const l = cfLines[idx];
+  openPanel(`
+    <div class="panel-head">
+      <h3>Cash flow · ${l.name}</h3>
+      <button class="close" onclick="closePanel()">×</button>
+    </div>
+    <dl class="panel-kv">
+      <dt>May 2026 amount</dt><dd>${l.may >= 0 ? '€' : '-€'}${Math.abs(l.may)}K</dd>
+      <dt>Timing</dt><dd>${l.name.includes('T+') ? l.name.match(/T\+\d+/)[0] : 'Same-day'}</dd>
+    </dl>
+    <div class="card" style="margin-top: 14px;">
+      <h3>Trend · 12 months</h3>
+      <div class="chart-sm"><canvas id="panel-chart"></canvas></div>
+    </div>
+  `);
+  setTimeout(() => {
+    const c = new Chart(document.getElementById('panel-chart'), {
+      type: 'bar',
+      data: { labels: history.labels, datasets: [{ label: l.name, data: history.labels.map((_, i) => Math.round(l.may * (0.8 + Math.random() * 0.4))), backgroundColor: l.may >= 0 ? '#059669' : '#DC2626' }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+    });
+    chartRefs.push(c);
+  }, 50);
+}
+
+/* ================================================================
+   ROUTE: COLLECTION AGING (#/collection)
+================================================================ */
+function renderCollection(view) {
+  destroyCharts();
+  view.innerHTML = `
+    <div class="page-head">
+      <span class="num">§3</span>
+      <h1>Collection Aging</h1>
+      <span class="sub">€750K receivable outstanding · 68% current · 4% at risk (91+ days)</span>
+    </div>
+  `;
+  makeToolbar(view, { time: true, streams: true, compare: true });
+
+  const two = document.createElement('div');
+  two.className = 'grid-2';
+  two.innerHTML = `
+    <div class="card">
+      <h3>Aging buckets</h3>
+      <table class="tbl">
+        <thead><tr><th>Bucket</th><th class="num">Amount</th><th class="num">% of AR</th><th>Status</th></tr></thead>
+        <tbody>
+          ${aging.map(a => `<tr class="clickable" onclick="openAgingPanel('${a.bucket}')">
+            <td>${a.bucket}</td>
+            <td class="num">€${a.amount}K</td>
+            <td class="num">${a.pct}%</td>
+            <td><span class="tag ${a.bucket === '91+ days' ? 'rd' : a.bucket === '61-90 days' ? 'am' : 'gn'}">${a.bucket === '91+ days' ? 'AT RISK' : a.bucket === '61-90 days' ? 'CHASE' : 'OK'}</span></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3>Aging distribution</h3>
+      <div class="chart-wrap"><canvas id="aging-chart"></canvas></div>
+    </div>
+  `;
+  view.appendChild(two);
+
+  // Detail table
+  const detail = document.createElement('div');
+  detail.className = 'card';
+  detail.style.marginTop = '14px';
+  detail.innerHTML = `
+    <h3>Overdue accounts (61+ days) · chase list</h3>
+    <table class="tbl">
+      <thead><tr><th>Postback / Account</th><th>Stream</th><th class="num">Amount</th><th class="num">Days overdue</th><th>Owner</th><th></th></tr></thead>
+      <tbody>
+        <tr><td>Postback GG-Milano-042</td><td>IT</td><td class="num">€6.2K</td><td class="num">128</td><td>Nadav</td><td><button class="btn sec">Send reminder</button></td></tr>
+        <tr><td>Postback CasinoES-Madrid-018</td><td>ES</td><td class="num">€2.0K</td><td class="num">94</td><td>Nadav</td><td><button class="btn sec">Send reminder</button></td></tr>
+        <tr><td>Postback UK-Leeds-051</td><td>UK</td><td class="num">€8.4K</td><td class="num">82</td><td>Nadav</td><td><button class="btn sec">Send reminder</button></td></tr>
+        <tr><td>Postback FR-Lyon-023</td><td>FR</td><td class="num">€4.8K</td><td class="num">71</td><td>Idan</td><td><button class="btn sec">Send reminder</button></td></tr>
+      </tbody>
+    </table>
+  `;
+  view.appendChild(detail);
+
+  setTimeout(() => {
+    const c = new Chart(document.getElementById('aging-chart'), {
+      type: 'doughnut',
+      data: { labels: aging.map(a => a.bucket), datasets: [{ data: aging.map(a => a.amount), backgroundColor: ['#059669', '#2563EB', '#D97706', '#DC2626'] }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+    });
+    chartRefs.push(c);
+  }, 50);
+}
+
+function openAgingPanel(bucket) {
+  const a = aging.find(x => x.bucket === bucket);
+  openPanel(`
+    <div class="panel-head">
+      <h3>Aging bucket · ${bucket}</h3>
+      <button class="close" onclick="closePanel()">×</button>
+    </div>
+    <dl class="panel-kv">
+      <dt>Total</dt><dd>€${a.amount}K</dd>
+      <dt>% of AR</dt><dd>${a.pct}%</dd>
+      <dt>Accounts in bucket</dt><dd>${bucket === '0-30 days' ? 42 : bucket === '31-60 days' ? 18 : bucket === '61-90 days' ? 6 : 3}</dd>
+    </dl>
+    <div class="callout ${bucket === '91+ days' ? 'bad' : bucket === '61-90 days' ? 'warn' : 'good'}">
+      ${bucket === '91+ days' ? '<strong>At risk:</strong> Provision at 50% for CFO close.' : bucket === '61-90 days' ? '<strong>Chase:</strong> Send reminders + escalate to legal after 90 days.' : '<strong>Healthy:</strong> No action needed.'}
+    </div>
+  `);
+}
+
+/* ================================================================
+   ROUTE: BRIDGE (#/bridge)
+================================================================ */
+function renderBridge(view) {
+  destroyCharts();
+  view.innerHTML = `
+    <div class="page-head">
+      <span class="num">§4</span>
+      <h1>P&amp;L ↔ Cash Flow Bridge</h1>
+      <span class="sub">Waterfall from May EBITDA €612K → Closing cash €1,998K · click any step to drill</span>
+    </div>
+  `;
+  makeToolbar(view, { time: true, streams: false, compare: false });
+
+  // Waterfall data
+  const wf = [
+    { name: 'Opening cash',         val: 1420, type: 'start' },
+    { name: 'EBITDA',               val:  612, type: 'pos' },
+    { name: '+ D&A back',           val:   28, type: 'pos' },
+    { name: 'ΔWorking capital',     val:  148, type: 'pos' },
+    { name: '- Tax paid',           val: -122, type: 'neg' },
+    { name: '- VAT settlement',     val: -102, type: 'neg' },
+    { name: '- Capex',              val:  -18, type: 'neg' },
+    { name: '+ Interest income',    val:   30, type: 'pos' },
+    { name: 'Closing cash',         val: 1998, type: 'end' }
+  ];
+
+  const bridgeCard = document.createElement('div');
+  bridgeCard.className = 'card';
+  bridgeCard.innerHTML = `
+    <h3>Waterfall · P&L → Cash</h3>
+    <div class="waterfall-wrap">
+      <div class="wf-bars" id="wf-bars"></div>
+      <div style="text-align: center; padding: 12px 0 4px; font-size: 12px; color: var(--tx3);">
+        Bars in <span style="color: var(--pr2); font-weight: 700;">green</span> = additions,
+        <span style="color: var(--rd); font-weight: 700;">red</span> = subtractions,
+        <span style="color: var(--tx); font-weight: 700;">dark</span> = totals
+      </div>
+    </div>
+  `;
+  view.appendChild(bridgeCard);
+
+  const bars = bridgeCard.querySelector('#wf-bars');
+  const maxVal = 2200;
+  let running = 0;
+  wf.forEach((step, i) => {
+    const col = document.createElement('div');
+    col.className = 'wf-bar-col';
+    let barHeight, barBottom, barVal;
+    if (step.type === 'start' || step.type === 'end') {
+      barHeight = (step.val / maxVal) * 100;
+      running = step.val;
+      barVal = step.val;
+    } else {
+      barHeight = (Math.abs(step.val) / maxVal) * 100;
+      running += step.val;
+      barVal = step.val;
+    }
+    col.innerHTML = `
+      <div class="wf-val">${step.val >= 0 ? '' : '-'}€${Math.abs(step.val)}K</div>
+      <div class="wf-bar ${step.type}" style="height: ${barHeight}%;"></div>
+      <div class="wf-lbl">${step.name}</div>
+    `;
+    col.onclick = () => {
+      document.querySelectorAll('.wf-bar-col').forEach(c => c.classList.remove('selected'));
+      col.classList.add('selected');
+      openPanel(`
+        <div class="panel-head">
+          <h3>Bridge step · ${step.name}</h3>
+          <button class="close" onclick="closePanel()">×</button>
+        </div>
+        <dl class="panel-kv">
+          <dt>Amount</dt><dd>${step.val >= 0 ? '€' : '-€'}${Math.abs(step.val)}K</dd>
+          <dt>Running cash</dt><dd>€${running}K</dd>
+          <dt>Sign</dt><dd>${step.type === 'pos' ? 'Addition to cash' : step.type === 'neg' ? 'Subtraction from cash' : 'Running total'}</dd>
+        </dl>
+        <div class="callout info">
+          <strong>Reconciliation note:</strong> ${step.name} on P&L is €${step.val >= 0 ? '' : '-'}${Math.abs(step.val)}K.
+          ${step.name === 'ΔWorking capital' ? 'Movement in AR / AP / accrued costs. €148K positive means we collected faster than we paid this month.' :
+            step.name === 'Tax paid' ? 'Cash tax paid ≠ P&L tax accrual. €122K sent to Malta tax authority 2026-05-25.' :
+            step.name === 'VAT settlement' ? 'Q1 VAT return paid 2026-05-15. Not on P&L.' :
+            step.name === 'EBITDA' ? 'From §1 P&L Summary. Non-cash items (D&A) added back below.' :
+            'This bridge step reconciles P&L to actual cash movement.'}
+        </div>
+      `);
+    };
+    bars.appendChild(col);
+  });
+
+  // 12-month cash + EBITDA
+  const trendCard = document.createElement('div');
+  trendCard.className = 'card';
+  trendCard.style.marginTop = '14px';
+  trendCard.innerHTML = `
+    <h3>Cash vs EBITDA · 12 months</h3>
+    <div class="chart-wrap"><canvas id="bridge-trend"></canvas></div>
+  `;
+  view.appendChild(trendCard);
+
+  setTimeout(() => {
+    const c = new Chart(document.getElementById('bridge-trend'), {
+      type: 'line',
+      data: { labels: history.labels, datasets: [
+        { label: 'Cash (€K)',   data: history.cash,   borderColor: '#7C3AED', backgroundColor: '#7C3AED22', fill: true, tension: 0.35 },
+        { label: 'EBITDA (€K)', data: history.ebitda, borderColor: '#059669', backgroundColor: '#05966922', fill: false, tension: 0.35 }
+      ] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+    });
+    chartRefs.push(c);
+  }, 50);
+}
+
+/* ================================================================
+   ROUTE: UNIT ECON (#/unit-econ)
+================================================================ */
+function renderUnitEcon(view) {
+  destroyCharts();
+  view.innerHTML = `
+    <div class="page-head">
+      <span class="num">§5</span>
+      <h1>Per-Stream Unit Economics</h1>
+      <span class="sub">Revenue per lead · cost per send · contribution per stream</span>
+    </div>
+  `;
+  makeToolbar(view, { time: true, streams: true, compare: true });
+
+  const kpiRow = document.createElement('div');
+  kpiRow.className = 'grid-4';
+  kpiRow.style.marginBottom = '16px';
+  kpiRow.innerHTML = `
+    <div class="kpi"><div class="k-lbl">Cost per send</div><div class="k-val">€0.031</div><div class="k-delta dn">▼ 4.2% MoM</div></div>
+    <div class="kpi"><div class="k-lbl">Revenue per lead</div><div class="k-val">€12.40</div><div class="k-delta up">▲ 2.8% MoM</div></div>
+    <div class="kpi"><div class="k-lbl">LTV / CAC</div><div class="k-val">4.2x</div><div class="k-delta up">Target ≥3.0x</div></div>
+    <div class="kpi"><div class="k-lbl">Blended margin</div><div class="k-val">60.4%</div><div class="k-delta up">▲ 0.7pp MoM</div></div>
+  `;
+  view.appendChild(kpiRow);
+
+  const perStream = document.createElement('div');
+  perStream.className = 'card';
+  perStream.innerHTML = `
+    <h3>Per-stream unit economics</h3>
+    <table class="tbl">
+      <thead><tr>
+        <th>Stream</th>
+        <th class="num">Sends (K)</th>
+        <th class="num">Rev / lead</th>
+        <th class="num">Cost / send</th>
+        <th class="num">Contribution / send</th>
+        <th class="num">Contribution %</th>
+      </tr></thead>
+      <tbody>
+        ${filteredStreams().map(s => {
+          const sends = Math.round(s.rev / 12 / 1000);
+          const revLead = 12.4 + (Math.random() - 0.5) * 2;
+          const costSend = 0.031 + (Math.random() - 0.5) * 0.008;
+          const contribSend = revLead * 0.5 - costSend;
+          const contribPct = (s.rev - s.do - s.cost) / s.rev * 100;
+          return `<tr class="clickable" onclick="openStreamPanel('${s.code}')">
+            <td><strong>${s.name}</strong></td>
+            <td class="num">${sends}</td>
+            <td class="num">€${revLead.toFixed(2)}</td>
+            <td class="num">€${costSend.toFixed(3)}</td>
+            <td class="num pos">€${contribSend.toFixed(2)}</td>
+            <td class="num">${contribPct.toFixed(1)}%</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+  `;
+  view.appendChild(perStream);
+
+  const chartCard = document.createElement('div');
+  chartCard.className = 'card';
+  chartCard.style.marginTop = '14px';
+  chartCard.innerHTML = `
+    <h3>Contribution margin by stream</h3>
+    <div class="chart-wrap"><canvas id="ue-chart"></canvas></div>
+  `;
+  view.appendChild(chartCard);
+
+  setTimeout(() => {
+    const s = filteredStreams();
+    const c = new Chart(document.getElementById('ue-chart'), {
+      type: 'bar',
+      data: { labels: s.map(x => x.code), datasets: [
+        { label: 'Revenue (€K)',   data: s.map(x => x.rev / 1000),                                  backgroundColor: '#059669' },
+        { label: 'DO + cost (€K)', data: s.map(x => (x.do + x.cost) / 1000),                          backgroundColor: '#DC2626' },
+        { label: 'Contribution',   data: s.map(x => (x.rev - x.do - x.cost) / 1000),                 backgroundColor: '#2563EB' }
+      ] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+    });
+    chartRefs.push(c);
+  }, 50);
+}
+
+/* ================================================================
+   ROUTE: FORECAST (#/forecast) — What-if drivers
+================================================================ */
+function renderForecast(view) {
+  destroyCharts();
+  view.innerHTML = `
+    <div class="page-head">
+      <span class="num">§6</span>
+      <h1>Forward Forecast</h1>
+      <span class="sub">Rolling 5-month · Jun → Oct 2026 · driver-based bottom-up</span>
+    </div>
+  `;
+  makeToolbar(view, { time: false, streams: true, compare: false });
+
+  // Drivers card
+  const drivers = document.createElement('div');
+  drivers.className = 'card';
+  drivers.innerHTML = `
+    <h3>What-if drivers · move sliders to recalculate EBITDA + closing cash</h3>
+    <div class="slider-row">
+      <span class="s-lbl">DO % of revenue</span>
+      <input type="range" min="20" max="35" step="0.5" value="${state.drivers.doPct}" id="drv-do">
+      <span class="s-val" id="drv-do-val">${state.drivers.doPct}%</span>
+    </div>
+    <div class="slider-row">
+      <span class="s-lbl">Messaging cost / send (€)</span>
+      <input type="range" min="0.020" max="0.060" step="0.001" value="${state.drivers.msgCost}" id="drv-msg">
+      <span class="s-val" id="drv-msg-val">€${state.drivers.msgCost.toFixed(3)}</span>
+    </div>
+    <div class="slider-row">
+      <span class="s-lbl">Sends growth MoM</span>
+      <input type="range" min="0" max="15" step="0.5" value="4" id="drv-grow">
+      <span class="s-val" id="drv-grow-val">4.0%</span>
+    </div>
+  `;
+  view.appendChild(drivers);
+
+  // KPIs
+  const kpiRow = document.createElement('div');
+  kpiRow.className = 'grid-4';
+  kpiRow.style.margin = '14px 0';
+  kpiRow.innerHTML = `
+    <div class="kpi"><div class="k-lbl">Oct 2026 EBITDA</div><div class="k-val" id="fc-ebitda">€680K</div><div class="k-delta up" id="fc-ebitda-d">▲ 11.1% vs May</div></div>
+    <div class="kpi"><div class="k-lbl">Oct 2026 cash</div><div class="k-val" id="fc-cash">€2,480K</div><div class="k-delta up" id="fc-cash-d">▲ 24% vs May</div></div>
+    <div class="kpi"><div class="k-lbl">5-mo cumulative EBITDA</div><div class="k-val" id="fc-cum">€3,240K</div><div class="k-delta up">P50 scenario</div></div>
+    <div class="kpi"><div class="k-lbl">Runway (at burn -€200K/mo)</div><div class="k-val" id="fc-runway">10.0 mo</div><div class="k-delta up">Above 6mo floor</div></div>
+  `;
+  view.appendChild(kpiRow);
+
+  // Forecast chart (fan)
+  const chartCard = document.createElement('div');
+  chartCard.className = 'card';
+  chartCard.innerHTML = `
+    <h3>EBITDA fan chart · Jun → Oct 2026</h3>
+    <div class="chart-wrap"><canvas id="fc-chart"></canvas></div>
+    <div class="fan-legend">
+      <div class="lg-item"><div class="lg-swatch" style="background: #05966955;"></div>P90 (bull case)</div>
+      <div class="lg-item"><div class="lg-swatch" style="background: #059669;"></div>P50 (base)</div>
+      <div class="lg-item"><div class="lg-swatch" style="background: #05966955;"></div>P10 (bear)</div>
+      <div class="lg-item"><div class="lg-swatch" style="background: #6B7280;"></div>Historic</div>
+    </div>
+  `;
+  view.appendChild(chartCard);
+
+  // Wire drivers
+  const drvDo   = document.getElementById('drv-do');
+  const drvMsg  = document.getElementById('drv-msg');
+  const drvGrow = document.getElementById('drv-grow');
+  let fcChart;
+
+  function recalc() {
+    const doPct = parseFloat(drvDo.value);
+    const msg   = parseFloat(drvMsg.value);
+    const grow  = parseFloat(drvGrow.value) / 100;
+    document.getElementById('drv-do-val').textContent = doPct + '%';
+    document.getElementById('drv-msg-val').textContent = '€' + msg.toFixed(3);
+    document.getElementById('drv-grow-val').textContent = grow.toFixed(3).replace('0.0', '') + (grow * 100).toFixed(1) + '%';
+    document.getElementById('drv-grow-val').textContent = (grow * 100).toFixed(1) + '%';
+
+    // Base May
+    const rev0 = 2132;
+    const ebitda0 = rev0 - (doPct/100 * rev0) - msg / 0.031 * 186 - 682;
+    const proj = [];
+    const projLow = [];
+    const projHigh = [];
+    for (let i = 1; i <= 5; i++) {
+      const r = rev0 * Math.pow(1 + grow, i);
+      const e = r - (doPct/100 * r) - msg / 0.031 * 186 * Math.pow(1 + grow, i) - 682;
+      proj.push(Math.round(e));
+      projLow.push(Math.round(e * 0.82));
+      projHigh.push(Math.round(e * 1.18));
+    }
+    const octEbitda = proj[proj.length - 1];
+    document.getElementById('fc-ebitda').textContent = '€' + octEbitda + 'K';
+    document.getElementById('fc-ebitda-d').textContent = '▲ ' + ((octEbitda - 612) / 612 * 100).toFixed(1) + '% vs May';
+    const octCash = 1998 + proj.reduce((a, b) => a + b, 0) - 5 * 130;
+    document.getElementById('fc-cash').textContent = '€' + Math.round(octCash) + 'K';
+    document.getElementById('fc-cash-d').textContent = '▲ ' + ((octCash - 1998) / 1998 * 100).toFixed(1) + '% vs May';
+    document.getElementById('fc-cum').textContent = '€' + proj.reduce((a, b) => a + b, 0) + 'K';
+    document.getElementById('fc-runway').textContent = (octCash / 200).toFixed(1) + ' mo';
+
+    // Chart
+    const labels = ['Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct'];
+    const hist = [495, 555, 580, 612, null, null, null, null, null];
+    const p50  = [null, null, null, 612, ...proj];
+    const p90  = [null, null, null, 612, ...projHigh];
+    const p10  = [null, null, null, 612, ...projLow];
+
+    if (fcChart) fcChart.destroy();
+    fcChart = new Chart(document.getElementById('fc-chart'), {
+      type: 'line',
+      data: { labels, datasets: [
+        { label: 'P90 (bull)',  data: p90, borderColor: '#059669', backgroundColor: '#05966922', fill: '+2', tension: 0.35, borderDash: [4, 4] },
+        { label: 'P50 (base)',  data: p50, borderColor: '#059669', backgroundColor: 'transparent', fill: false, tension: 0.35, borderWidth: 2, pointRadius: 3 },
+        { label: 'P10 (bear)',  data: p10, borderColor: '#059669', backgroundColor: '#05966922', fill: false, tension: 0.35, borderDash: [4, 4] },
+        { label: 'Historic',    data: hist, borderColor: '#6B7280', backgroundColor: 'transparent', fill: false, tension: 0.35, borderWidth: 2, pointRadius: 3 }
+      ] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+    });
+    chartRefs.push(fcChart);
+  }
+  drvDo.oninput = recalc;
+  drvMsg.oninput = recalc;
+  drvGrow.oninput = recalc;
+  setTimeout(recalc, 50);
+}
+
+/* ================================================================
+   ROUTE: ANOMALY (#/anomaly)
+================================================================ */
+function renderAnomaly(view) {
+  destroyCharts();
+  view.innerHTML = `
+    <div class="page-head">
+      <span class="num">§7</span>
+      <h1>Anomaly + Data Quality</h1>
+      <span class="sub">Auto-flagged variance &gt; 10% · plus 5 cross-source DQ checks</span>
+    </div>
+  `;
+  makeToolbar(view, { time: true, streams: true, compare: true });
+
+  const anomCard = document.createElement('div');
+  anomCard.className = 'card';
+  anomCard.innerHTML = `
+    <h3>Flagged anomalies (May 2026 vs Apr 2026)</h3>
+    <table class="tbl">
+      <thead><tr><th>Severity</th><th>Line</th><th class="num">Δ</th><th>Explanation</th><th></th></tr></thead>
+      <tbody>
+        ${anomalies.map((a, i) => `<tr class="clickable" onclick="openAnomalyPanel(${i})">
+          <td><span class="tag ${a.sev === 'red' ? 'rd' : a.sev}">${a.sev === 'red' ? 'RED' : a.sev.toUpperCase()}</span></td>
+          <td><strong>${a.line}</strong></td>
+          <td class="num">${a.delta}</td>
+          <td>${a.desc}</td>
+          <td><button class="btn sec">Explain</button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  `;
+  view.appendChild(anomCard);
+
+  const dqCard = document.createElement('div');
+  dqCard.className = 'card';
+  dqCard.style.marginTop = '14px';
+  dqCard.innerHTML = `
+    <h3>Data quality · cross-source checks</h3>
+    <table class="tbl">
+      <thead><tr><th>Check</th><th>Δ</th><th>Note</th><th>Status</th></tr></thead>
+      <tbody>
+        ${dqChecks.map(d => `<tr>
+          <td><strong>${d.name}</strong></td>
+          <td>${d.delta}</td>
+          <td>${d.note}</td>
+          <td><span class="tag ${d.status}">${d.status === 'gn' ? 'PASS' : d.status === 'am' ? 'WATCH' : 'FAIL'}</span></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  `;
+  view.appendChild(dqCard);
+
+  const trendCard = document.createElement('div');
+  trendCard.className = 'card';
+  trendCard.style.marginTop = '14px';
+  trendCard.innerHTML = `
+    <h3>Variance heatmap · 12 months</h3>
+    <div class="chart-wrap"><canvas id="anom-chart"></canvas></div>
+  `;
+  view.appendChild(trendCard);
+
+  setTimeout(() => {
+    const c = new Chart(document.getElementById('anom-chart'), {
+      type: 'bar',
+      data: { labels: history.labels, datasets: [
+        { label: 'Legal one-offs (€K)',  data: [12, 8, 15, 22, 18, 25, 30, 28, 24, 30, 42, 68], backgroundColor: '#DC2626' },
+        { label: 'AI / API cost (€K)',    data: [22, 24, 25, 27, 30, 32, 33, 34, 35, 36, 38, 42], backgroundColor: '#D97706' },
+        { label: 'Messaging cost (€K)',   data: [140, 148, 155, 160, 165, 168, 172, 174, 176, 178, 178, 186], backgroundColor: '#2563EB' }
+      ] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+    });
+    chartRefs.push(c);
+  }, 50);
+}
+
+function openAnomalyPanel(idx) {
+  const a = anomalies[idx];
+  openPanel(`
+    <div class="panel-head">
+      <h3>Anomaly · ${a.line}</h3>
+      <button class="close" onclick="closePanel()">×</button>
+    </div>
+    <div class="callout ${a.sev === 'red' ? 'bad' : a.sev === 'amber' ? 'warn' : 'good'}">
+      <strong>${a.sev.toUpperCase()} · ${a.delta}:</strong> ${a.desc}
+    </div>
+    <dl class="panel-kv">
+      <dt>Variance rule</dt><dd>${Math.abs(parseFloat(a.delta))}% &gt; 10% threshold</dd>
+      <dt>Approver</dt><dd>${a.sev === 'red' ? 'Oren (partner)' : 'Moshik (CFO)'}</dd>
+      <dt>Status</dt><dd>${a.sev === 'red' ? 'Awaiting sign-off' : 'Auto-cleared'}</dd>
+    </dl>
+    <div class="card" style="margin-top: 14px;">
+      <h3>Line trend · 12 months</h3>
+      <div class="chart-sm"><canvas id="panel-chart"></canvas></div>
+    </div>
+  `);
+  setTimeout(() => {
+    const c = new Chart(document.getElementById('panel-chart'), {
+      type: 'line',
+      data: { labels: history.labels, datasets: [{ label: a.line, data: history.labels.map((_, i) => 30 + i * 3 + (i === 11 ? 30 : 0)), borderColor: '#DC2626', backgroundColor: '#DC262622', fill: true, tension: 0.35, pointRadius: 3 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+    });
+    chartRefs.push(c);
+  }, 50);
+}
+
+/* ================================================================
+   ROUTE: BOARD PACK (#/board-pack)
+================================================================ */
+function renderBoardPack(view) {
+  destroyCharts();
+  view.innerHTML = `
+    <div class="page-head">
+      <span class="num">DISTRIBUTE</span>
+      <h1>Board Pack export</h1>
+      <span class="sub">Package the May 2026 close for Galaxy board of directors</span>
+    </div>
+  `;
+
+  const heroCard = document.createElement('div');
+  heroCard.className = 'card';
+  heroCard.style.textAlign = 'center';
+  heroCard.style.padding = '40px 24px';
+  heroCard.innerHTML = `
+    <h3 style="justify-content: center; font-size: 15px;">Board pack · May 2026</h3>
+    <div style="font-size: 14px; color: var(--tx3); margin: 6px 0 20px; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.5;">
+      Contains: 7 close-readiness gates · P&L summary · Cash flow · Collection aging · P&L↔CF bridge · Per-stream unit economics · 5-month forecast · Anomaly log.
+    </div>
+    <button class="btn lg" id="gen-pack-btn" onclick="generatePack()">📄 Generate Board Pack</button>
+    <div id="gen-status" style="margin-top: 20px; font-size: 13px; color: var(--tx3); min-height: 24px;"></div>
+    <div id="gen-result" style="margin-top: 12px;"></div>
+  `;
+  view.appendChild(heroCard);
+
+  const channelCard = document.createElement('div');
+  channelCard.className = 'card';
+  channelCard.style.marginTop = '14px';
+  channelCard.innerHTML = `
+    <h3>Distribution channels</h3>
+    <div class="channel-grid">
+      <div class="channel-card">
+        <div class="cc-ic">📊</div>
+        <div class="cc-name">Board deck</div>
+        <div class="cc-desc">22-page PDF · Executive summary + charts</div>
+      </div>
+      <div class="channel-card">
+        <div class="cc-ic">📝</div>
+        <div class="cc-name">CFO memo</div>
+        <div class="cc-desc">2-page narrative · Highlights + concerns</div>
+      </div>
+      <div class="channel-card">
+        <div class="cc-ic">💼</div>
+        <div class="cc-name">Investor summary</div>
+        <div class="cc-desc">1-pager · KPI dashboard · Runway</div>
+      </div>
+      <div class="channel-card">
+        <div class="cc-ic">🗄️</div>
+        <div class="cc-name">Malta archive</div>
+        <div class="cc-desc">SharePoint · 7yr retention · Audit-ready</div>
+      </div>
+    </div>
+  `;
+  view.appendChild(channelCard);
+
+  const historyCard = document.createElement('div');
+  historyCard.className = 'card';
+  historyCard.style.marginTop = '14px';
+  historyCard.innerHTML = `
+    <h3>Recently generated packs</h3>
+    <table class="tbl">
+      <thead><tr><th>Period</th><th>Generated</th><th>Pages</th><th>Size</th><th>Distributed to</th><th></th></tr></thead>
+      <tbody>
+        <tr><td><strong>Apr 2026 close</strong></td><td>2026-05-10 14:22</td><td>21</td><td>4.1 MB</td><td>Board (4) · Oren · Guy</td><td><button class="btn sec">Download</button></td></tr>
+        <tr><td><strong>Mar 2026 close</strong></td><td>2026-04-09 16:38</td><td>20</td><td>3.8 MB</td><td>Board (4) · Oren · Guy</td><td><button class="btn sec">Download</button></td></tr>
+        <tr><td><strong>Feb 2026 close</strong></td><td>2026-03-08 11:15</td><td>19</td><td>3.6 MB</td><td>Board (4) · Oren · Guy</td><td><button class="btn sec">Download</button></td></tr>
+      </tbody>
+    </table>
+  `;
+  view.appendChild(historyCard);
+}
+
+function generatePack() {
+  const btn = document.getElementById('gen-pack-btn');
+  const status = document.getElementById('gen-status');
+  const result = document.getElementById('gen-result');
+  btn.disabled = true;
+  btn.textContent = '⏳ Generating…';
+  result.innerHTML = '';
+  const steps = [
+    'Assembling P&L summary…',
+    'Rendering waterfall bridge…',
+    'Compiling per-stream detail…',
+    'Adding forecast fan charts…',
+    'Attaching anomaly + DQ log…',
+    'Rendering PDF (22 pages)…'
+  ];
+  let i = 0;
+  const t = setInterval(() => {
+    status.textContent = steps[i];
+    i++;
+    if (i >= steps.length) {
+      clearInterval(t);
+      setTimeout(() => {
+        status.textContent = '';
+        btn.disabled = false;
+        btn.textContent = '📄 Generate Board Pack';
+        result.innerHTML = `
+          <div class="callout good" style="justify-content: center; text-align: left; max-width: 640px; margin: 0 auto;">
+            <div>
+              <strong>✓ PDF generated · 22 pages · 4.2MB</strong><br>
+              Ready to distribute to Board of Directors (4 members) · Oren · Guy.<br>
+              <div style="margin-top: 10px;">
+                <button class="btn bl">📥 Download PDF</button>
+                <button class="btn sec">📧 Email to Board</button>
+                <button class="btn sec">🗄️ Archive to SharePoint</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }, 400);
+    }
+  }, 550);
+}
+
+/* ================================================================
+   BOOT
+================================================================ */
+(function boot() {
+  // Start at login unless already authed in this session
+  state.authed = false;
+  location.hash = '';
+  updateUserUI();
+  router();
+})();
+</script>
+
+</body>
+</html>
