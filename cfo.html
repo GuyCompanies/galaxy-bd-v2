@@ -345,7 +345,7 @@ html, body { width: 100%; min-height: 100vh; font-family: 'Inter', -apple-system
 
 /* ============ PRINT ============ */
 @media print {
-  .topbar, .sidebar, .toolbar, .panel-shade, .demo-pill { display: none !important; }
+  .topbar, .sidebar, .toolbar, .panel-shade, .demo-pill, .demo-banner { display: none !important; }
   .content { padding: 0 !important; }
   .app, .main { display: block !important; }
   body { background: white !important; }
@@ -367,6 +367,100 @@ html, body { width: 100%; min-height: 100vh; font-family: 'Inter', -apple-system
 /* Chart container sizing */
 .chart-wrap { position: relative; height: 260px; width: 100%; }
 .chart-sm { position: relative; height: 180px; width: 100%; }
+
+/* ============ DEMO BANNER (placeholder-fields notice) ============ */
+.demo-banner {
+  background: var(--ambg2); border-bottom: 1px solid var(--ambg);
+  color: #78350F; font-size: 12.5px; font-weight: 600;
+  padding: 8px 22px; display: flex; align-items: center; gap: 10px;
+  line-height: 1.4; position: sticky; top: 50px; z-index: 49;
+}
+.demo-banner .db-ic { flex: 0 0 auto; font-size: 14px; }
+.demo-banner .db-msg { flex: 1; font-weight: 500; color: #78350F; }
+.demo-banner .db-msg strong { font-weight: 700; }
+.demo-banner .db-close {
+  background: none; border: none; color: var(--am); cursor: pointer;
+  font-size: 18px; font-weight: 700; padding: 0 6px; line-height: 1;
+  border-radius: 4px;
+}
+.demo-banner .db-close:hover { background: var(--ambg); color: #78350F; }
+.demo-banner.hidden { display: none !important; }
+
+/* ============ FIELD MAPPING (Data In) ============ */
+.fm-wrap { display: grid; grid-template-columns: 1fr 40px 1fr; gap: 14px; margin-top: 10px; align-items: start; }
+.fm-col-hd { font-size: 10.5px; font-weight: 700; color: var(--tx4); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; padding: 0 4px; }
+.fm-file {
+  background: var(--bg2); border: 1px solid var(--bd); border-radius: 8px;
+  padding: 10px 12px; margin-bottom: 10px;
+}
+.fm-file .fm-file-hd { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700; color: var(--tx); }
+.fm-file .fm-file-hd .fm-file-ic { color: var(--pr2); }
+.fm-file .fm-file-sub { font-size: 10.5px; color: var(--tx3); margin-top: 2px; font-weight: 500; }
+.fm-col-list { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+.fm-col-chip {
+  display: flex; align-items: center; justify-content: space-between; gap: 6px;
+  padding: 5px 8px; background: var(--bg); border: 1px solid var(--bd);
+  border-radius: 4px; font-size: 11.5px; color: var(--tx2);
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+}
+.fm-col-chip .fm-col-name { color: var(--tx); font-weight: 600; }
+.fm-col-chip.mapped { border-left: 3px solid var(--pr); }
+.fm-col-chip.review { border-left: 3px solid var(--am); }
+.fm-col-chip.unmapped { border-left: 3px solid var(--bd2); color: var(--tx4); }
+.fm-status { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 3px; letter-spacing: .02em; white-space: nowrap; }
+.fm-status.mapped { background: var(--prbg); color: var(--pr2); }
+.fm-status.review { background: var(--ambg); color: var(--am); }
+.fm-status.unmapped { background: var(--bg3); color: var(--tx4); }
+.fm-arrow-col { display: flex; flex-direction: column; align-items: center; padding-top: 30px; color: var(--tx4); font-size: 18px; font-weight: 700; gap: 40px; user-select: none; }
+.fm-section-card {
+  background: var(--bg); border: 1px solid var(--bd); border-radius: 6px;
+  padding: 8px 10px; margin-bottom: 6px; font-size: 12px; color: var(--tx2);
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+}
+.fm-section-card .fm-sec-name { font-weight: 600; color: var(--tx); }
+.fm-section-card .fm-sec-src { font-size: 10.5px; color: var(--tx3); margin-top: 2px; font-family: 'SF Mono', Menlo, Consolas, monospace; }
+.fm-section-card.mapped { border-left: 3px solid var(--pr); }
+.fm-section-card.review { border-left: 3px solid var(--am); }
+.fm-section-card.unmapped { border-left: 3px solid var(--bd2); }
+.fm-cta-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.fm-callout {
+  margin-top: 14px; padding: 14px 18px; background: var(--blbg2);
+  border: 1px solid var(--blbg); border-radius: 8px; color: #1E3A8A;
+  font-size: 12.5px; line-height: 1.5;
+}
+.fm-callout strong { color: #1E3A8A; font-weight: 700; }
+
+/* ============ LINEAGE SOURCE CHIP (drilldown) ============ */
+.source-chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 9px;
+  background: var(--blbg2); border: 1px solid var(--blbg); color: #1E40AF;
+  border-radius: 12px; font-size: 10.5px; font-weight: 600;
+  font-family: 'SF Mono', Menlo, Consolas, monospace; letter-spacing: -.01em;
+  max-width: 360px; line-height: 1.35;
+}
+.source-chip .sc-ic { color: var(--bl); font-size: 10px; }
+.panel-head-stack { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; }
+.panel-head-stack h3 { margin: 0; }
+
+/* ============ SIDEBAR CUSTOMIZE CARD ============ */
+.sidebar-spacer { flex: 1 1 auto; }
+.sidebar-custom {
+  margin: 12px 12px 8px; padding: 12px 12px 10px;
+  background: #ECFEFF; border: 1px solid #A5F3FC; border-radius: 8px;
+  color: #155E75; line-height: 1.4;
+}
+.sidebar-custom .sc-hd { font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+.sidebar-custom .sc-body { font-size: 11px; color: #0E7490; margin-top: 4px; font-weight: 500; }
+.sidebar-custom .sc-cta {
+  margin-top: 8px; display: inline-block; padding: 5px 10px;
+  background: #0891B2; color: white; border: none; border-radius: 5px;
+  font-size: 11px; font-weight: 600; cursor: pointer; text-decoration: none;
+}
+.sidebar-custom .sc-cta:hover { background: #0E7490; }
+.sidebar-foot {
+  padding: 10px 16px 4px; font-size: 10px; color: var(--tx4);
+  font-weight: 500; line-height: 1.4;
+}
 </style>
 </head>
 <body>
@@ -435,6 +529,13 @@ html, body { width: 100%; min-height: 100vh; font-family: 'Inter', -apple-system
     </div>
   </div>
 
+  <!-- DEMO BANNER (placeholder-fields notice, dismissable) -->
+  <div class="demo-banner" id="demo-banner">
+    <span class="db-ic">🟠</span>
+    <span class="db-msg"><strong>Demo shell</strong> — fields shown are placeholders. In production, every line derives from YOUR uploaded files (Excel/CSV) with YOUR exact field names.</span>
+    <button class="db-close" onclick="dismissDemoBanner()" title="Dismiss">×</button>
+  </div>
+
   <!-- MAIN -->
   <div class="main">
 
@@ -457,6 +558,15 @@ html, body { width: 100%; min-height: 100vh; font-family: 'Inter', -apple-system
 
       <div class="grp">Distribute</div>
       <a class="item" data-route="/board-pack" href="#/board-pack"><span class="ic">📄</span>Board Pack</a>
+
+      <div class="sidebar-spacer"></div>
+
+      <div class="sidebar-custom">
+        <div class="sc-hd">🎨 Customize your close</div>
+        <div class="sc-body">Moshik can add / remove / rename sections to match his own monthly deck.</div>
+        <a class="sc-cta" href="#/data-in">Design my dashboard →</a>
+      </div>
+      <div class="sidebar-foot">Demo shell · fixture data · v0.4</div>
     </div>
 
     <!-- CONTENT -->
@@ -1239,6 +1349,47 @@ function closePanel() {
   document.getElementById('slide-panel').innerHTML = '';
 }
 
+/* Global demo banner (dismissable) */
+function dismissDemoBanner() {
+  const b = document.getElementById('demo-banner');
+  if (b) b.classList.add('hidden');
+}
+
+/* Field-mapping mocked buttons on /data-in */
+function fmDemoClick(ev, kind) {
+  ev.preventDefault();
+  const map = {
+    'add-section':  'Demo · would open the "add a new dashboard section" builder.',
+    'add-rule':     'Demo · would open the "add mapping rule" editor.',
+    'save-template':'Demo · wiring saved as template · next month\'s upload will re-use it.'
+  };
+  const btn = ev.currentTarget;
+  const original = btn.textContent;
+  btn.textContent = '✓ ' + (kind === 'save-template' ? 'Template saved' : 'Noted');
+  btn.disabled = true;
+  setTimeout(() => { btn.textContent = original; btn.disabled = false; }, 1400);
+  console.info('[fm]', map[kind]);
+}
+
+/* Lineage source-chip generator — cycles placeholder file/column/row per drilldown */
+const SOURCE_FIXTURES = [
+  { file: 'Galaxy_May26_PL.xlsx',      col: 'Amount May 26',   rows: '1-84' },
+  { file: 'Galaxy_May26_PL.xlsx',      col: 'Category',        rows: '1-84' },
+  { file: 'Galaxy_May26_CF.xlsx',      col: 'Amount EUR',      rows: '1-231' },
+  { file: 'Galaxy_May26_CF.xlsx',      col: 'Counterparty',    rows: '1-231' },
+  { file: 'Galaxy_May26_Payroll.xlsx', col: 'Base Salary',     rows: '1-15' },
+  { file: 'Galaxy_May26_Payroll.xlsx', col: 'Bonus',           rows: '1-15' },
+  { file: 'Galaxy_May26_Payroll.xlsx', col: 'Employer Cost',   rows: '1-27' }
+];
+function sourceChipHTML(key) {
+  // Deterministic pick so the same line always shows the same source
+  const k = String(key || '');
+  let h = 0;
+  for (let i = 0; i < k.length; i++) h = (h * 31 + k.charCodeAt(i)) >>> 0;
+  const s = SOURCE_FIXTURES[h % SOURCE_FIXTURES.length];
+  return `<span class="source-chip" title="Every number is traceable to a specific cell in a specific file"><span class="sc-ic">📎</span>Source: ${s.file} · Column "${s.col}" · Row ${s.rows}</span>`;
+}
+
 /* ================================================================
    ROUTE: READINESS (landing / #/)
 ================================================================ */
@@ -1400,6 +1551,11 @@ function renderDataIn(view) {
       <span class="sub">SharePoint → Azure Function parser → Azure SQL fact table → Malta manual UI</span>
     </div>
     ${restricted ? `<div class="restricted-notice"><span class="r-ic">🔒</span><div><strong>Restricted view.</strong> As Malta Finance Manager, you can upload files and see reconciliation status. Full CFO views are hidden.</div></div>` : ''}
+    <div class="callout warn" style="margin: 4px 0 14px;">
+      <div>
+        <strong>🟠 Malta drops files here.</strong> She uploads whatever monthly artifacts she already produces — payroll journal, P&amp;L export, bank statement, VAT recon. The tool learns YOUR field names and rebuilds Moshik's dashboard around them. Zero schema forced from us.
+      </div>
+    </div>
   `;
 
   // Drop zone
@@ -1473,6 +1629,150 @@ function renderDataIn(view) {
   `;
   view.appendChild(filesCard);
 
+  // Field-mapping matrix (drives home: dashboard sections derive from YOUR columns)
+  const fmCard = document.createElement('div');
+  fmCard.className = 'card';
+  fmCard.style.marginTop = '14px';
+  fmCard.innerHTML = `
+    <h3>Field Mapping — how your columns become dashboard sections
+      <span class="h-sub">Detected columns · Moshik chooses the wiring · save as monthly template</span>
+    </h3>
+
+    <div class="fm-wrap">
+      <!-- LEFT: uploaded files + their detected columns -->
+      <div>
+        <div class="fm-col-hd">Your uploaded files · detected columns</div>
+
+        <div class="fm-file">
+          <div class="fm-file-hd"><span class="fm-file-ic">📗</span>Galaxy_May26_PL.xlsx</div>
+          <div class="fm-file-sub">Sheet: "P&amp;L May 26" · 84 rows · 12 columns detected</div>
+          <div class="fm-col-list">
+            <div class="fm-col-chip mapped"><span class="fm-col-name">[Column: Account Name]</span><span class="fm-status mapped">✓ Mapped</span></div>
+            <div class="fm-col-chip mapped"><span class="fm-col-name">[Column: Category]</span><span class="fm-status mapped">✓ Mapped</span></div>
+            <div class="fm-col-chip mapped"><span class="fm-col-name">[Column: Amount May 26]</span><span class="fm-status mapped">✓ Mapped</span></div>
+            <div class="fm-col-chip mapped"><span class="fm-col-name">[Column: Amount Apr 26]</span><span class="fm-status mapped">✓ Mapped</span></div>
+            <div class="fm-col-chip review"><span class="fm-col-name">[Column: Amount Mar 26]</span><span class="fm-status review">⚠ Needs review</span></div>
+            <div class="fm-col-chip mapped"><span class="fm-col-name">[Column: Cost Center]</span><span class="fm-status mapped">✓ Mapped</span></div>
+            <div class="fm-col-chip mapped"><span class="fm-col-name">[Column: GL Code]</span><span class="fm-status mapped">✓ Mapped</span></div>
+            <div class="fm-col-chip review"><span class="fm-col-name">[Column: Notes]</span><span class="fm-status review">⚠ Needs review</span></div>
+            <div class="fm-col-chip unmapped"><span class="fm-col-name">[Column: Prior Year]</span><span class="fm-status unmapped">— Unmapped</span></div>
+          </div>
+        </div>
+
+        <div class="fm-file">
+          <div class="fm-file-hd"><span class="fm-file-ic">📘</span>Galaxy_May26_CF.xlsx</div>
+          <div class="fm-file-sub">Sheet: "Cash Movement" · 231 rows · 10 columns detected</div>
+          <div class="fm-col-list">
+            <div class="fm-col-chip mapped"><span class="fm-col-name">[Column: Transaction Date]</span><span class="fm-status mapped">✓ Mapped</span></div>
+            <div class="fm-col-chip mapped"><span class="fm-col-name">[Column: Counterparty]</span><span class="fm-status mapped">✓ Mapped</span></div>
+            <div class="fm-col-chip mapped"><span class="fm-col-name">[Column: Amount EUR]</span><span class="fm-status mapped">✓ Mapped</span></div>
+            <div class="fm-col-chip mapped"><span class="fm-col-name">[Column: Bank Account]</span><span class="fm-status mapped">✓ Mapped</span></div>
+            <div class="fm-col-chip mapped"><span class="fm-col-name">[Column: Category]</span><span class="fm-status mapped">✓ Mapped</span></div>
+            <div class="fm-col-chip review"><span class="fm-col-name">[Column: FX Rate]</span><span class="fm-status review">⚠ Needs review</span></div>
+            <div class="fm-col-chip unmapped"><span class="fm-col-name">[Column: Reference]</span><span class="fm-status unmapped">— Unmapped</span></div>
+            <div class="fm-col-chip unmapped"><span class="fm-col-name">[Column: Memo]</span><span class="fm-status unmapped">— Unmapped</span></div>
+          </div>
+        </div>
+
+        <div class="fm-file">
+          <div class="fm-file-hd"><span class="fm-file-ic">📙</span>Galaxy_May26_Payroll.xlsx</div>
+          <div class="fm-file-sub">Sheet: "Payroll May 26" · 27 rows · 11 columns detected</div>
+          <div class="fm-col-list">
+            <div class="fm-col-chip mapped"><span class="fm-col-name">[Column: Employee ID]</span><span class="fm-status mapped">✓ Mapped</span></div>
+            <div class="fm-col-chip mapped"><span class="fm-col-name">[Column: Employee Name]</span><span class="fm-status mapped">✓ Mapped</span></div>
+            <div class="fm-col-chip mapped"><span class="fm-col-name">[Column: Base Salary]</span><span class="fm-status mapped">✓ Mapped</span></div>
+            <div class="fm-col-chip mapped"><span class="fm-col-name">[Column: Bonus]</span><span class="fm-status mapped">✓ Mapped</span></div>
+            <div class="fm-col-chip mapped"><span class="fm-col-name">[Column: Employer Cost]</span><span class="fm-status mapped">✓ Mapped</span></div>
+            <div class="fm-col-chip mapped"><span class="fm-col-name">[Column: Department]</span><span class="fm-status mapped">✓ Mapped</span></div>
+            <div class="fm-col-chip review"><span class="fm-col-name">[Column: Contract Type]</span><span class="fm-status review">⚠ Needs review</span></div>
+            <div class="fm-col-chip unmapped"><span class="fm-col-name">[Column: Hire Date]</span><span class="fm-status unmapped">— Unmapped</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MIDDLE: arrow column -->
+      <div class="fm-arrow-col">
+        <div>→</div>
+        <div>→</div>
+        <div>→</div>
+        <div>→</div>
+        <div>→</div>
+        <div>→</div>
+      </div>
+
+      <!-- RIGHT: dashboard sections receiving those columns -->
+      <div>
+        <div class="fm-col-hd">Your dashboard sections · where columns land</div>
+
+        <div class="fm-section-card mapped">
+          <div>
+            <div class="fm-sec-name">§1 P&amp;L → Direct costs</div>
+            <div class="fm-sec-src">← Galaxy_May26_PL.xlsx · [Category] + [Amount May 26]</div>
+          </div>
+          <span class="fm-status mapped">✓ Mapped</span>
+        </div>
+
+        <div class="fm-section-card mapped">
+          <div>
+            <div class="fm-sec-name">§1 P&amp;L → Opex → Salaries</div>
+            <div class="fm-sec-src">← Galaxy_May26_Payroll.xlsx · [Base Salary] + [Bonus]</div>
+          </div>
+          <span class="fm-status mapped">✓ Mapped</span>
+        </div>
+
+        <div class="fm-section-card mapped">
+          <div>
+            <div class="fm-sec-name">§1 P&amp;L → Opex → Other</div>
+            <div class="fm-sec-src">← Galaxy_May26_PL.xlsx · [Cost Center] + [Amount May 26]</div>
+          </div>
+          <span class="fm-status mapped">✓ Mapped</span>
+        </div>
+
+        <div class="fm-section-card mapped">
+          <div>
+            <div class="fm-sec-name">§2 Cash Flow → Operating</div>
+            <div class="fm-sec-src">← Galaxy_May26_CF.xlsx · [Category] + [Amount EUR]</div>
+          </div>
+          <span class="fm-status mapped">✓ Mapped</span>
+        </div>
+
+        <div class="fm-section-card review">
+          <div>
+            <div class="fm-sec-name">§2 Cash Flow → FX adjustments</div>
+            <div class="fm-sec-src">← Galaxy_May26_CF.xlsx · [FX Rate] — confirm column semantics</div>
+          </div>
+          <span class="fm-status review">⚠ Needs review</span>
+        </div>
+
+        <div class="fm-section-card mapped">
+          <div>
+            <div class="fm-sec-name">§3 Collection Aging → Counterparties</div>
+            <div class="fm-sec-src">← Galaxy_May26_CF.xlsx · [Counterparty] + [Transaction Date]</div>
+          </div>
+          <span class="fm-status mapped">✓ Mapped</span>
+        </div>
+
+        <div class="fm-section-card unmapped">
+          <div>
+            <div class="fm-sec-name">§4 P&amp;L ↔ CF Bridge → memo lines</div>
+            <div class="fm-sec-src">no column mapped yet — drag [Memo] or [Notes] here</div>
+          </div>
+          <span class="fm-status unmapped">— Unmapped</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="fm-callout">
+      📋 <strong>You control the taxonomy.</strong> Add / remove / rename dashboard sections. Change how columns map. Save the wiring as a template so next month's close reuses it automatically.
+      <div class="fm-cta-row">
+        <button class="btn sec" onclick="fmDemoClick(event, 'add-section')">+ Add dashboard section</button>
+        <button class="btn sec" onclick="fmDemoClick(event, 'add-rule')">+ Add mapping rule</button>
+        <button class="btn" onclick="fmDemoClick(event, 'save-template')">Save as monthly template</button>
+      </div>
+    </div>
+  `;
+  view.appendChild(fmCard);
+
   // Cross-source reconciliation
   if (!restricted) {
     const reconCard = document.createElement('div');
@@ -1519,7 +1819,10 @@ function renderDataIn(view) {
 function openReconPanel(kind) {
   openPanel(`
     <div class="panel-head">
-      <h3>Reconciliation drilldown · ${kind === 'rev' ? 'Revenue' : kind === 'cost' ? 'Direct cost' : 'Closing cash'}</h3>
+      <div class="panel-head-stack">
+        <h3>Reconciliation drilldown · ${kind === 'rev' ? 'Revenue' : kind === 'cost' ? 'Direct cost' : 'Closing cash'}</h3>
+        ${sourceChipHTML('recon-' + kind)}
+      </div>
       <button class="close" onclick="closePanel()">×</button>
     </div>
     <div class="callout ${kind === 'cash' ? 'warn' : 'good'}">
@@ -1665,7 +1968,10 @@ function openPLPanel(idx) {
   const detailHTML = renderPlaceholderDetail(detail, 'pl');
   openPanel(`
     <div class="panel-head">
-      <h3>P&amp;L drilldown · ${l.name}</h3>
+      <div class="panel-head-stack">
+        <h3>P&amp;L drilldown · ${l.name}</h3>
+        ${sourceChipHTML('pl-' + l.key)}
+      </div>
       <button class="close" onclick="closePanel()">×</button>
     </div>
     <dl class="panel-kv">
@@ -1709,7 +2015,10 @@ function openStreamPanel(code) {
   const detailHTML = renderPlaceholderDetail(detail, 'stream');
   openPanel(`
     <div class="panel-head">
-      <h3>Stream · ${s.name}</h3>
+      <div class="panel-head-stack">
+        <h3>Stream · ${s.name}</h3>
+        ${sourceChipHTML('stream-' + code)}
+      </div>
       <button class="close" onclick="closePanel()">×</button>
     </div>
     <dl class="panel-kv">
@@ -1805,7 +2114,10 @@ function openCFPanel(idx) {
   const detailHTML = renderPlaceholderDetail(detail, 'cf');
   openPanel(`
     <div class="panel-head">
-      <h3>Cash flow · ${l.name}</h3>
+      <div class="panel-head-stack">
+        <h3>Cash flow · ${l.name}</h3>
+        ${sourceChipHTML('cf-' + idx)}
+      </div>
       <button class="close" onclick="closePanel()">×</button>
     </div>
     <dl class="panel-kv">
@@ -1899,7 +2211,10 @@ function openAgingPanel(bucket) {
   const a = aging.find(x => x.bucket === bucket);
   openPanel(`
     <div class="panel-head">
-      <h3>Aging bucket · ${bucket}</h3>
+      <div class="panel-head-stack">
+        <h3>Aging bucket · ${bucket}</h3>
+        ${sourceChipHTML('aging-' + bucket)}
+      </div>
       <button class="close" onclick="closePanel()">×</button>
     </div>
     <dl class="panel-kv">
@@ -1981,7 +2296,10 @@ function renderBridge(view) {
       col.classList.add('selected');
       openPanel(`
         <div class="panel-head">
-          <h3>Bridge step · ${step.name}</h3>
+          <div class="panel-head-stack">
+            <h3>Bridge step · ${step.name}</h3>
+            ${sourceChipHTML('bridge-' + step.name)}
+          </div>
           <button class="close" onclick="closePanel()">×</button>
         </div>
         <dl class="panel-kv">
@@ -2317,7 +2635,10 @@ function openAnomalyPanel(idx) {
   const detailHTML = renderPlaceholderDetail(detail, 'anom');
   openPanel(`
     <div class="panel-head">
-      <h3>Anomaly · ${a.line}</h3>
+      <div class="panel-head-stack">
+        <h3>Anomaly · ${a.line}</h3>
+        ${sourceChipHTML('anom-' + a.line)}
+      </div>
       <button class="close" onclick="closePanel()">×</button>
     </div>
     <div class="callout ${a.sev === 'red' ? 'bad' : a.sev === 'amber' ? 'warn' : 'good'}">
