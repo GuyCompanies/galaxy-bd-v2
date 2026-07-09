@@ -532,7 +532,7 @@ html, body { width: 100%; min-height: 100vh; font-family: 'Inter', -apple-system
   <!-- DEMO BANNER (placeholder-fields notice, dismissable) -->
   <div class="demo-banner" id="demo-banner">
     <span class="db-ic">🟠</span>
-    <span class="db-msg"><strong>Demo shell</strong> — fields shown are placeholders. In production, every line derives from YOUR uploaded files (Excel/CSV) with YOUR exact field names.</span>
+    <span class="db-msg"><strong>🟠 Demo shell</strong> — segmentation, line items, and totals are placeholders. In production, every field derives from YOUR uploaded files with YOUR taxonomy (business units, categories, labels).</span>
     <button class="db-close" onclick="dismissDemoBanner()" title="Dismiss">×</button>
   </div>
 
@@ -589,7 +589,7 @@ const state = {
   route: '/',
   timeSlice: 'MTD',
   compareMode: 'MoM',
-  streamFilter: new Set(['IT','ES','FR','DE','UK','GR','Platform']),
+  streamFilter: new Set(['emailIH','tel23','bf','galIH','galwIH','karix','smsIH','tbih','emailm','esimproj','galauto','galjoin','seo','globAff','globData','ihBonus']),
   drivers: { doPct: 26, msgCost: 0.031 }
 };
 
@@ -600,15 +600,26 @@ const USERS = {
   malta:  { name: 'Malta Finance', initials: 'MF', role: 'Malta upload', color: 'var(--am)', email: 'finance@galaxymalta.mt' }
 };
 
-// Revenue mix per stream (May 2026)
+// Revenue mix per Galaxy business unit (May 2026)
+// 🟠 PLACEHOLDER amounts — actual per-BU revenue will be sourced from Moshik's monthly P&L Excel upload
+// Source: Galaxy_May26_PL.xlsx · Sheet "Revenue" · Rows 2-17
 const streams = [
-  { code: 'IT',       name: 'Galaxy IT',       rev: 640000, do: 178000, cost: 91000, mgmt: 42000 },
-  { code: 'ES',       name: 'Galaxy ES',       rev: 410000, do: 118000, cost: 62000, mgmt: 28000 },
-  { code: 'FR',       name: 'Galaxy FR',       rev: 285000, do:  82000, cost: 41000, mgmt: 19000 },
-  { code: 'DE',       name: 'Galaxy DE',       rev: 165000, do:  47000, cost: 24000, mgmt: 12000 },
-  { code: 'UK',       name: 'Galaxy UK',       rev: 340000, do:  95000, cost: 48000, mgmt: 22000 },
-  { code: 'GR',       name: 'Galaxy GR',       rev:  82000, do:  22000, cost: 12000, mgmt:  6500 },
-  { code: 'Platform', name: 'Platform / SaaS', rev: 210000, do:      0, cost: 18000, mgmt: 24000 }
+  { code: 'emailIH',   name: 'Email In-House',        rev: 385000, do: 105000, cost: 58000, mgmt: 26000 },
+  { code: 'tel23',     name: '23Telecom',             rev: 140000, do:  42000, cost: 22000, mgmt: 10000 },
+  { code: 'bf',        name: 'BF',                    rev:  45000, do:  12000, cost:  7000, mgmt:  3500 },
+  { code: 'galIH',     name: 'GalaxyIH',              rev: 320000, do:  92000, cost: 48000, mgmt: 22000 },
+  { code: 'galwIH',    name: 'galaxyW-IH',            rev:  55000, do:  16000, cost:  8500, mgmt:  4000 },
+  { code: 'karix',     name: 'Karix',                 rev: 115000, do:  33000, cost: 18000, mgmt:  8000 },
+  { code: 'smsIH',     name: 'SMS In-House',          rev: 155000, do:  44000, cost: 24000, mgmt: 11000 },
+  { code: 'tbih',      name: 'TBIH',                  rev: 105000, do:  30000, cost: 16000, mgmt:  7500 },
+  { code: 'emailm',    name: 'EMAILM',                rev:  50000, do:  14000, cost:  7500, mgmt:  3500 },
+  { code: 'esimproj',  name: 'Esimproj',              rev:  35000, do:   9000, cost:  5500, mgmt:  2500 },
+  { code: 'galauto',   name: 'Galaxyauto',            rev:  95000, do:  27000, cost: 14000, mgmt:  6500 },
+  { code: 'galjoin',   name: 'galaxyJoin',            rev:  40000, do:  11000, cost:  6000, mgmt:  2800 },
+  { code: 'seo',       name: 'SEO',                   rev: 260000, do:  62000, cost: 34000, mgmt: 18000 },
+  { code: 'globAff',   name: 'Globigo Affiliates',    rev: 220000, do:  72000, cost: 30000, mgmt: 15000 },
+  { code: 'globData',  name: 'Globigo Data Share',    rev:  60000, do:  18000, cost:  8500, mgmt:  4000 },
+  { code: 'ihBonus',   name: 'IH Bonus',              rev:  52000, do:  14000, cost:  7500, mgmt:  3500 }
 ];
 
 // 12-month historic time series per KPI (in €K)
@@ -669,13 +680,13 @@ const aging = [
 const anomalies = [
   { sev: 'red',  line: 'Legal / compliance', delta: '+62%', desc: 'One-off KYC review with counsel — approved by Oren 2026-05-18' },
   { sev: 'amber', line: 'AI / API cost',      delta: '+11%', desc: 'Anthropic usage spiked around VCC campaign 5/12-5/16 (expected)' },
-  { sev: 'amber', line: 'Messaging cost',     delta: '+4.5%', desc: 'IT segment expansion — 380K → 420K sends' },
+  { sev: 'amber', line: 'Messaging cost',     delta: '+4.5%', desc: 'SMS In-House BU expansion — 380K → 420K sends' },
   { sev: 'gn',   line: 'Proxy + SIM cost',   delta: '-4.2%', desc: 'SOAX bulk discount kicked in mid-month' }
 ];
 
 // Data quality checks
 const dqChecks = [
-  { name: 'AMP-native P&L vs Malta P&L',      status: 'gn', delta: '€0.4K',   note: 'FX rounding on GR stream' },
+  { name: 'AMP-native P&L vs Malta P&L',      status: 'gn', delta: '€0.4K',   note: 'FX rounding on Globigo Data Share BU' },
   { name: 'Malta P&L vs Bank feed (cash)',     status: 'gn', delta: '€1.1K',   note: 'Timing on last-day Azure autopay' },
   { name: 'Postback revenue vs Bank collection', status: 'am', delta: '€8.2K', note: '2 postbacks 90+ days unpaid — chase' },
   { name: 'Payroll roster vs bank debits',     status: 'gn', delta: '€0K',    note: 'Match' },
@@ -968,25 +979,27 @@ const placeholderDetail = {
       { label: 'Category 07 · Insurance',              curr:  2500, prev:  500 }
     ]
   },
-  // ============ STREAM (Unit Econ) drilldowns — per code ============
-  // stream detail = DO payable + Direct cost provider mix + top-3 campaigns
+  // ============ BUSINESS UNIT (Unit Econ) drilldowns — per code ============
+  // BU detail = DO payable + Direct cost provider mix + top-3 campaigns
   _streamDetailFor: function(code) {
+    const s = (typeof streams !== 'undefined') ? streams.find(x => x.code === code) : null;
+    const label = s ? s.name : code;
     return {
-      source: "Malta's DO ledger + provider invoices + campaign log",
+      source: "Galaxy_May26_PL.xlsx · Sheet \"Revenue\" · Rows 2-17",
       itemLabel: 'Line item',
       rows: [
         // DO payable
-        { label: `${code} · Data Owner 01`,      curr: 42000, prev: 40000 },
-        { label: `${code} · Data Owner 02`,      curr: 35000, prev: 33000 },
-        { label: `${code} · Data Owner 03`,      curr: 22000, prev: 24000 },
+        { label: `${label} · Data Owner 01`,      curr: 42000, prev: 40000 },
+        { label: `${label} · Data Owner 02`,      curr: 35000, prev: 33000 },
+        { label: `${label} · Data Owner 03`,      curr: 22000, prev: 24000 },
         // Direct cost by provider
-        { label: `${code} · Provider A messaging`, curr: 18000, prev: 16000 },
-        { label: `${code} · Provider B messaging`, curr: 12000, prev: 12000 },
-        { label: `${code} · Vendor 01 proxy`,       curr:  6500, prev:  7000 },
+        { label: `${label} · Provider A messaging`, curr: 18000, prev: 16000 },
+        { label: `${label} · Provider B messaging`, curr: 12000, prev: 12000 },
+        { label: `${label} · Vendor 01 proxy`,       curr:  6500, prev:  7000 },
         // Top campaigns
-        { label: `${code} · Campaign 01`,           curr:  8000, prev:  6500 },
-        { label: `${code} · Campaign 02`,           curr:  5000, prev:  5000 },
-        { label: `${code} · Campaign 03`,           curr:  3000, prev:  3500 }
+        { label: `${label} · Campaign 01`,           curr:  8000, prev:  6500 },
+        { label: `${label} · Campaign 02`,           curr:  5000, prev:  5000 },
+        { label: `${label} · Campaign 03`,           curr:  3000, prev:  3500 }
       ]
     };
   },
@@ -1116,8 +1129,36 @@ function renderDetailSparks(detail, canvasPrefix) {
   });
 }
 
+// Build a "revenue by business unit" placeholder detail block from the streams fixture
+// Emits deterministic prev values by seeding off curr
+function _buRevenueDetail(sign) {
+  return {
+    source: "Galaxy_May26_PL.xlsx · Sheet \"Revenue\" · Rows 2-17",
+    itemLabel: 'Business Unit',
+    rows: streams.map((s, i) => {
+      const seed = [0.94, 0.97, 1.02, 0.99, 1.05, 0.96, 1.01, 0.98, 1.03, 0.95, 1.04, 0.99, 1.02, 0.98, 1.01, 0.96][i] || 0.98;
+      const curr = Math.round(s.rev * sign);
+      const prev = Math.round(s.rev * seed * sign);
+      return { label: s.name, curr, prev };
+    })
+  };
+}
+placeholderDetail['gross-rev'] = _buRevenueDetail(1);
+placeholderDetail['net-rev']   = _buRevenueDetail(1);
+placeholderDetail['refunds']   = {
+  source: "Galaxy_May26_PL.xlsx · Sheet \"Revenue\" · Rows 2-17",
+  itemLabel: 'Business Unit',
+  rows: streams.map((s, i) => {
+    // Refunds run ~0.8% of revenue with variation
+    const rate = 0.006 + (i % 5) * 0.001;
+    const curr = -Math.round(s.rev * rate);
+    const prev = -Math.round(s.rev * rate * (0.95 + (i % 3) * 0.05));
+    return { label: s.name, curr, prev };
+  })
+};
+
 // Which P&L line keys have a placeholder detail?
-const PL_DETAIL_KEYS = new Set(['do-payouts','msg-cost','proxy-cost','ai-cost','salaries','infra','tools','legal','marketing','other-opex']);
+const PL_DETAIL_KEYS = new Set(['gross-rev','refunds','net-rev','do-payouts','msg-cost','proxy-cost','ai-cost','salaries','infra','tools','legal','marketing','other-opex']);
 
 // Map CF line index → placeholder detail key (cfLines order)
 // 0: Opening, 1: Cash from customers, 2: DO settlement, 3: Messaging, 4: Proxy+SIM,
@@ -1279,9 +1320,9 @@ function makeToolbar(view, opts = { time: true, streams: true, compare: true, ex
   }
 
   if (opts.streams) {
-    html += `<span class="lbl">Streams</span>`;
+    html += `<span class="lbl">Business units</span>`;
     streams.forEach(s => {
-      html += `<span class="chip ${state.streamFilter.has(s.code)?'active':''}" data-stream="${s.code}">${s.code}</span>`;
+      html += `<span class="chip ${state.streamFilter.has(s.code)?'active':''}" data-stream="${s.code}" title="${s.name}">${s.name}</span>`;
     });
     html += `<span class="sep"></span>`;
   }
@@ -1447,7 +1488,7 @@ function renderReadiness(view) {
   gates.className = 'gates';
   const gateData = [
     { code: 'G1', title: 'Malta upload received',   sub: 'All 3 files uploaded 2026-06-08. 84 rows OK.', status: 'gn' },
-    { code: 'G2', title: 'AMP-native P&L calc',     sub: 'All 7 streams reconciled to Postgres facts.',  status: 'gn' },
+    { code: 'G2', title: 'AMP-native P&L calc',     sub: 'All 16 business units reconciled to Postgres facts.', status: 'gn' },
     { code: 'G3', title: 'Bank feed match',         sub: '€1.1K unmatched · Azure autopay timing.',       status: 'gn' },
     { code: 'G4', title: 'DO payout schedule',      sub: 'T+30 settlements confirmed by BO + Twilio.',    status: 'gn' },
     { code: 'G5', title: 'Postback reconciliation', sub: '2 postbacks 90+ days unpaid — need chase.',     status: 'am' },
@@ -1600,7 +1641,7 @@ function renderDataIn(view) {
     <div class="stack-4">
       <div class="stack-card"><div class="l l1">L1 · Storage</div><div class="n">SharePoint Doc Library</div><div class="d">Malta drops files here monthly. Retained 7 years.</div></div>
       <div class="stack-card"><div class="l l2">L2 · Parser</div><div class="n">Azure Function (Node)</div><div class="d">Reads XLSX → normalizes columns → writes to SQL. Failures → dead-letter.</div></div>
-      <div class="stack-card"><div class="l l3">L3 · Fact table</div><div class="n">Azure SQL Malta.MonthlyFacts</div><div class="d">Star schema · joins to AMP tenants + streams. Row-versioned.</div></div>
+      <div class="stack-card"><div class="l l3">L3 · Fact table</div><div class="n">Azure SQL Malta.MonthlyFacts</div><div class="d">Star schema · joins to AMP tenants + business units. Row-versioned.</div></div>
       <div class="stack-card"><div class="l l4">L4 · Manual UI</div><div class="n">Malta manual entry</div><div class="d">For edge cases: FX overrides, journal entries, reclassification.</div></div>
     </div>
   `;
@@ -1827,15 +1868,15 @@ function openReconPanel(kind) {
     </div>
     <div class="callout ${kind === 'cash' ? 'warn' : 'good'}">
       <strong>${kind === 'cash' ? 'Timing diff' : 'Match within tolerance'}:</strong>
-      ${kind === 'cash' ? '€1.1K variance driven by Azure autopay hitting bank 2026-06-01 but recorded in AMP as May 31 accrual.' : 'FX rounding on GR stream — €0.4K on €82K base (0.5bp). Within €5K tolerance.'}
+      ${kind === 'cash' ? '€1.1K variance driven by Azure autopay hitting bank 2026-06-01 but recorded in AMP as May 31 accrual.' : 'FX rounding on Globigo Data Share BU — €0.4K on €60K base (0.7bp). Within €5K tolerance.'}
     </div>
     <table class="tbl">
       <thead><tr><th>Sub-line</th><th class="num">AMP</th><th class="num">Malta</th><th class="num">Bank</th></tr></thead>
       <tbody>
-        <tr><td>IT stream</td><td class="num">€640K</td><td class="num">€640K</td><td class="num">€640K</td></tr>
-        <tr><td>ES stream</td><td class="num">€410K</td><td class="num">€410K</td><td class="num">€410K</td></tr>
-        <tr><td>FR stream</td><td class="num">€285K</td><td class="num">€285K</td><td class="num">€285K</td></tr>
-        <tr><td>GR stream</td><td class="num">€82K</td><td class="num">€81.6K</td><td class="num">€81.6K</td></tr>
+        <tr><td>Email In-House</td><td class="num">€385K</td><td class="num">€385K</td><td class="num">€385K</td></tr>
+        <tr><td>GalaxyIH</td><td class="num">€320K</td><td class="num">€320K</td><td class="num">€320K</td></tr>
+        <tr><td>SEO</td><td class="num">€260K</td><td class="num">€260K</td><td class="num">€260K</td></tr>
+        <tr><td>Globigo Data Share</td><td class="num">€60K</td><td class="num">€59.6K</td><td class="num">€59.6K</td></tr>
       </tbody>
     </table>
   `);
@@ -1883,7 +1924,7 @@ function renderPL(view) {
     <div class="page-head">
       <span class="num">§1</span>
       <h1>P&amp;L Summary</h1>
-      <span class="sub">${state.timeSlice} · ${state.compareMode} comparison · ${state.streamFilter.size}/7 streams</span>
+      <span class="sub">${state.timeSlice} · ${state.compareMode} comparison · ${state.streamFilter.size}/16 business units</span>
     </div>
   `;
   makeToolbar(view);
@@ -1935,26 +1976,43 @@ function renderPL(view) {
   `;
   view.appendChild(plCard);
 
-  // Per-stream breakdown
+  // Per-business-unit breakdown
   const streamCard = document.createElement('div');
   streamCard.className = 'card';
   streamCard.style.marginTop = '14px';
+  const _fs = filteredStreams();
+  const _totalRev = _fs.reduce((a,x) => a + x.rev, 0);
+  const _totalDo  = _fs.reduce((a,x) => a + x.do,  0);
+  const _totalCost= _fs.reduce((a,x) => a + x.cost,0);
+  const _totalContrib = _totalRev - _totalDo - _totalCost;
   streamCard.innerHTML = `
-    <h3>Revenue by stream · click to drill in</h3>
+    <h3>Revenue by business unit · click to drill in
+      <span class="h-sub">${sourceChipHTML('bu-revenue')}</span>
+    </h3>
+    <div class="callout warn" style="margin-bottom: 10px;">
+      <strong>🟠 Placeholder amounts</strong> — actual per-business-unit revenue will be sourced from Moshik's monthly P&amp;L Excel upload.
+    </div>
     <table class="tbl">
-      <thead><tr><th>Stream</th><th class="num">Revenue</th><th class="num">DO</th><th class="num">Direct cost</th><th class="num">Contribution</th><th class="num">Margin %</th></tr></thead>
+      <thead><tr><th>Business Unit</th><th class="num">Revenue</th><th class="num">DO</th><th class="num">Direct cost</th><th class="num">Contribution</th><th class="num">Margin %</th></tr></thead>
       <tbody>
-        ${filteredStreams().map((s, i) => {
+        ${_fs.map((s, i) => {
           const contribution = s.rev - s.do - s.cost;
           return `<tr class="clickable" onclick="openStreamPanel('${s.code}')">
             <td><strong>${s.name}</strong></td>
-            <td class="num">€${s.rev/1000}K</td>
-            <td class="num">-€${s.do/1000}K</td>
-            <td class="num">-€${s.cost/1000}K</td>
-            <td class="num pos">€${contribution/1000}K</td>
+            <td class="num">€${(s.rev/1000).toFixed(0)}K</td>
+            <td class="num">-€${(s.do/1000).toFixed(0)}K</td>
+            <td class="num">-€${(s.cost/1000).toFixed(0)}K</td>
+            <td class="num pos">€${(contribution/1000).toFixed(0)}K</td>
             <td class="num">${(contribution/s.rev*100).toFixed(1)}%</td>
           </tr>`;
         }).join('')}
+        <tr class="total"><td><strong>Total Revenue</strong></td>
+          <td class="num"><strong>€${(_totalRev/1000).toFixed(0)}K</strong></td>
+          <td class="num"><strong>-€${(_totalDo/1000).toFixed(0)}K</strong></td>
+          <td class="num"><strong>-€${(_totalCost/1000).toFixed(0)}K</strong></td>
+          <td class="num pos"><strong>€${(_totalContrib/1000).toFixed(0)}K</strong></td>
+          <td class="num"><strong>${(_totalContrib/_totalRev*100).toFixed(1)}%</strong></td>
+        </tr>
       </tbody>
     </table>
   `;
@@ -1963,7 +2021,10 @@ function renderPL(view) {
 
 function openPLPanel(idx) {
   const l = plLines[idx];
-  if (l.cat === 'subtotal' || l.cat === 'total') return;
+  // Allow drill for revenue subtotal (net-rev) so business-unit detail shows.
+  // Skip only bottom-line totals + non-net-rev subtotals.
+  if (l.cat === 'total') return;
+  if (l.cat === 'subtotal' && l.key !== 'net-rev') return;
   const detail = PL_DETAIL_KEYS.has(l.key) ? placeholderDetail[l.key] : null;
   const detailHTML = renderPlaceholderDetail(detail, 'pl');
   openPanel(`
@@ -1981,13 +2042,14 @@ function openPLPanel(idx) {
       <dt>Category</dt><dd>${l.cat.toUpperCase()}</dd>
     </dl>
     <div class="card" style="margin-top: 14px;">
-      <h3>Level 2 · Sub-lines</h3>
+      <h3>Level 2 · Top business-unit contributors</h3>
       <table class="tbl">
         <tbody>
-          <tr><td>IT stream contribution</td><td class="num">${Math.round(l.may * 0.30)}K</td></tr>
-          <tr><td>ES stream contribution</td><td class="num">${Math.round(l.may * 0.19)}K</td></tr>
-          <tr><td>UK stream contribution</td><td class="num">${Math.round(l.may * 0.16)}K</td></tr>
-          <tr><td>Other streams</td><td class="num">${Math.round(l.may * 0.35)}K</td></tr>
+          <tr><td>Email In-House contribution</td><td class="num">${Math.round(l.may * 0.18)}K</td></tr>
+          <tr><td>GalaxyIH contribution</td><td class="num">${Math.round(l.may * 0.15)}K</td></tr>
+          <tr><td>SEO contribution</td><td class="num">${Math.round(l.may * 0.12)}K</td></tr>
+          <tr><td>Globigo Affiliates contribution</td><td class="num">${Math.round(l.may * 0.10)}K</td></tr>
+          <tr><td>Other 12 business units</td><td class="num">${Math.round(l.may * 0.45)}K</td></tr>
         </tbody>
       </table>
     </div>
@@ -2016,8 +2078,8 @@ function openStreamPanel(code) {
   openPanel(`
     <div class="panel-head">
       <div class="panel-head-stack">
-        <h3>Stream · ${s.name}</h3>
-        ${sourceChipHTML('stream-' + code)}
+        <h3>Business unit · ${s.name}</h3>
+        ${sourceChipHTML('bu-' + code)}
       </div>
       <button class="close" onclick="closePanel()">×</button>
     </div>
@@ -2186,12 +2248,12 @@ function renderCollection(view) {
   detail.innerHTML = `
     <h3>Overdue accounts (61+ days) · chase list</h3>
     <table class="tbl">
-      <thead><tr><th>Postback / Account</th><th>Stream</th><th class="num">Amount</th><th class="num">Days overdue</th><th>Owner</th><th></th></tr></thead>
+      <thead><tr><th>Postback / Account</th><th>Business Unit</th><th class="num">Amount</th><th class="num">Days overdue</th><th>Owner</th><th></th></tr></thead>
       <tbody>
-        <tr><td>Postback GG-Milano-042</td><td>IT</td><td class="num">€6.2K</td><td class="num">128</td><td>Nadav</td><td><button class="btn sec">Send reminder</button></td></tr>
-        <tr><td>Postback CasinoES-Madrid-018</td><td>ES</td><td class="num">€2.0K</td><td class="num">94</td><td>Nadav</td><td><button class="btn sec">Send reminder</button></td></tr>
-        <tr><td>Postback UK-Leeds-051</td><td>UK</td><td class="num">€8.4K</td><td class="num">82</td><td>Nadav</td><td><button class="btn sec">Send reminder</button></td></tr>
-        <tr><td>Postback FR-Lyon-023</td><td>FR</td><td class="num">€4.8K</td><td class="num">71</td><td>Idan</td><td><button class="btn sec">Send reminder</button></td></tr>
+        <tr><td>Postback GG-042</td><td>Email In-House</td><td class="num">€6.2K</td><td class="num">128</td><td>Nadav</td><td><button class="btn sec">Send reminder</button></td></tr>
+        <tr><td>Postback CAS-018</td><td>GalaxyIH</td><td class="num">€2.0K</td><td class="num">94</td><td>Nadav</td><td><button class="btn sec">Send reminder</button></td></tr>
+        <tr><td>Postback SEO-051</td><td>SEO</td><td class="num">€8.4K</td><td class="num">82</td><td>Nadav</td><td><button class="btn sec">Send reminder</button></td></tr>
+        <tr><td>Postback AFF-023</td><td>Globigo Affiliates</td><td class="num">€4.8K</td><td class="num">71</td><td>Idan</td><td><button class="btn sec">Send reminder</button></td></tr>
       </tbody>
     </table>
   `;
@@ -2351,8 +2413,13 @@ function renderUnitEcon(view) {
   view.innerHTML = `
     <div class="page-head">
       <span class="num">§5</span>
-      <h1>Per-Stream Unit Economics</h1>
-      <span class="sub">Revenue per lead · cost per send · contribution per stream</span>
+      <h1>Per-Business-Unit Unit Economics</h1>
+      <span class="sub">Revenue per lead · cost per send · contribution per business unit</span>
+    </div>
+    <div class="callout warn" style="margin: 8px 0 4px;">
+      <div>
+        <strong>🟠 16 Galaxy business units</strong> — grouping and labels come from Moshik's Revenue Excel. Change the taxonomy and the dashboard follows.
+      </div>
     </div>
   `;
   makeToolbar(view, { time: true, streams: true, compare: true });
@@ -2370,33 +2437,54 @@ function renderUnitEcon(view) {
 
   const perStream = document.createElement('div');
   perStream.className = 'card';
+  const _ueRows = filteredStreams();
+  const _ueRev  = _ueRows.reduce((a,x) => a + x.rev, 0);
+  const _ueDo   = _ueRows.reduce((a,x) => a + x.do,  0);
+  const _ueCost = _ueRows.reduce((a,x) => a + x.cost,0);
+  const _ueContrib = _ueRev - _ueDo - _ueCost;
+  const _ueMaxMargin = Math.max(..._ueRows.map(s => (s.rev - s.do - s.cost) / s.rev * 100));
   perStream.innerHTML = `
-    <h3>Per-stream unit economics</h3>
+    <h3>Per-business-unit unit economics
+      <span class="h-sub">${sourceChipHTML('bu-uecon')}</span>
+    </h3>
     <table class="tbl">
       <thead><tr>
-        <th>Stream</th>
-        <th class="num">Sends (K)</th>
-        <th class="num">Rev / lead</th>
-        <th class="num">Cost / send</th>
-        <th class="num">Contribution / send</th>
-        <th class="num">Contribution %</th>
+        <th>Business Unit</th>
+        <th class="num">Revenue (May)</th>
+        <th class="num">DO Payable</th>
+        <th class="num">Direct cost</th>
+        <th class="num">Contribution</th>
+        <th class="num">Margin %</th>
       </tr></thead>
       <tbody>
-        ${filteredStreams().map(s => {
-          const sends = Math.round(s.rev / 12 / 1000);
-          const revLead = 12.4 + (Math.random() - 0.5) * 2;
-          const costSend = 0.031 + (Math.random() - 0.5) * 0.008;
-          const contribSend = revLead * 0.5 - costSend;
-          const contribPct = (s.rev - s.do - s.cost) / s.rev * 100;
+        ${_ueRows.map(s => {
+          const contrib = s.rev - s.do - s.cost;
+          const marginPct = contrib / s.rev * 100;
+          const barPct = _ueMaxMargin > 0 ? (marginPct / _ueMaxMargin * 100) : 0;
           return `<tr class="clickable" onclick="openStreamPanel('${s.code}')">
             <td><strong>${s.name}</strong></td>
-            <td class="num">${sends}</td>
-            <td class="num">€${revLead.toFixed(2)}</td>
-            <td class="num">€${costSend.toFixed(3)}</td>
-            <td class="num pos">€${contribSend.toFixed(2)}</td>
-            <td class="num">${contribPct.toFixed(1)}%</td>
+            <td class="num">€${(s.rev/1000).toFixed(0)}K</td>
+            <td class="num">-€${(s.do/1000).toFixed(0)}K</td>
+            <td class="num">-€${(s.cost/1000).toFixed(0)}K</td>
+            <td class="num pos">€${(contrib/1000).toFixed(0)}K</td>
+            <td class="num">
+              <div style="display: inline-flex; align-items: center; gap: 6px; justify-content: flex-end; width: 100%;">
+                <div style="flex: 1; max-width: 60px; height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden;">
+                  <div style="width: ${barPct.toFixed(1)}%; height: 100%; background: var(--pr);"></div>
+                </div>
+                <span style="min-width: 42px; text-align: right;">${marginPct.toFixed(1)}%</span>
+              </div>
+            </td>
           </tr>`;
         }).join('')}
+        <tr class="total">
+          <td><strong>Total Revenue</strong></td>
+          <td class="num"><strong>€${(_ueRev/1000).toFixed(0)}K</strong></td>
+          <td class="num"><strong>-€${(_ueDo/1000).toFixed(0)}K</strong></td>
+          <td class="num"><strong>-€${(_ueCost/1000).toFixed(0)}K</strong></td>
+          <td class="num pos"><strong>€${(_ueContrib/1000).toFixed(0)}K</strong></td>
+          <td class="num"><strong>${(_ueContrib/_ueRev*100).toFixed(1)}%</strong></td>
+        </tr>
       </tbody>
     </table>
   `;
@@ -2406,7 +2494,7 @@ function renderUnitEcon(view) {
   chartCard.className = 'card';
   chartCard.style.marginTop = '14px';
   chartCard.innerHTML = `
-    <h3>Contribution margin by stream</h3>
+    <h3>Contribution margin by business unit</h3>
     <div class="chart-wrap"><canvas id="ue-chart"></canvas></div>
   `;
   view.appendChild(chartCard);
@@ -2415,12 +2503,16 @@ function renderUnitEcon(view) {
     const s = filteredStreams();
     const c = new Chart(document.getElementById('ue-chart'), {
       type: 'bar',
-      data: { labels: s.map(x => x.code), datasets: [
+      data: { labels: s.map(x => x.name), datasets: [
         { label: 'Revenue (€K)',   data: s.map(x => x.rev / 1000),                                  backgroundColor: '#059669' },
         { label: 'DO + cost (€K)', data: s.map(x => (x.do + x.cost) / 1000),                          backgroundColor: '#DC2626' },
         { label: 'Contribution',   data: s.map(x => (x.rev - x.do - x.cost) / 1000),                 backgroundColor: '#2563EB' }
       ] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' } },
+        scales: { x: { ticks: { autoSkip: false, maxRotation: 60, minRotation: 45, font: { size: 10 } } } }
+      }
     });
     chartRefs.push(c);
   }, 50);
@@ -2686,7 +2778,7 @@ function renderBoardPack(view) {
   heroCard.innerHTML = `
     <h3 style="justify-content: center; font-size: 15px;">Board pack · May 2026</h3>
     <div style="font-size: 14px; color: var(--tx3); margin: 6px 0 20px; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.5;">
-      Contains: 7 close-readiness gates · P&L summary · Cash flow · Collection aging · P&L↔CF bridge · Per-stream unit economics · 5-month forecast · Anomaly log.
+      Contains: 7 close-readiness gates · P&L summary · Cash flow · Collection aging · P&L↔CF bridge · Per-business-unit unit economics · 5-month forecast · Anomaly log.
     </div>
     <button class="btn lg" id="gen-pack-btn" onclick="generatePack()">📄 Generate Board Pack</button>
     <div id="gen-status" style="margin-top: 20px; font-size: 13px; color: var(--tx3); min-height: 24px;"></div>
@@ -2751,7 +2843,7 @@ function generatePack() {
   const steps = [
     'Assembling P&L summary…',
     'Rendering waterfall bridge…',
-    'Compiling per-stream detail…',
+    'Compiling per-business-unit detail…',
     'Adding forecast fan charts…',
     'Attaching anomaly + DQ log…',
     'Rendering PDF (22 pages)…'
