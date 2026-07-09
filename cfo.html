@@ -170,6 +170,24 @@ html, body { width: 100%; min-height: 100vh; font-family: 'Inter', -apple-system
 .tbl .pos { color: var(--pr2); }
 .tbl .neg { color: var(--rd); }
 
+/* Detail tables inside drilldown panel */
+.detail-wrap { max-height: 360px; overflow-y: auto; border: 1px solid var(--bd); border-radius: 6px; margin-top: 6px; }
+.detail-wrap table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.detail-wrap thead th { position: sticky; top: 0; z-index: 1; background: var(--bg2); padding: 7px 10px; text-align: left; font-size: 10px; color: var(--tx3); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid var(--bd); }
+.detail-wrap th.num, .detail-wrap td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.detail-wrap td { padding: 7px 10px; border-bottom: 1px solid var(--bd); color: var(--tx2); }
+.detail-wrap tbody tr:last-child td { border-bottom: none; }
+.detail-wrap tbody tr:hover td { background: var(--bg2); }
+.detail-wrap .di-name { font-weight: 600; color: var(--tx); }
+.detail-wrap .di-sub { font-size: 10.5px; color: var(--tx3); display: block; margin-top: 1px; }
+.detail-wrap .delta-up { color: var(--rd); font-weight: 600; }
+.detail-wrap .delta-dn { color: var(--pr2); font-weight: 600; }
+.detail-wrap .delta-flat { color: var(--tx3); font-weight: 600; }
+.detail-wrap .spark-cell { width: 90px; padding: 4px 8px; }
+.detail-wrap .spark-cell canvas { display: block; width: 74px !important; height: 22px !important; }
+.detail-foot { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--bg2); border-top: 1px solid var(--bd); font-size: 11.5px; color: var(--tx3); font-weight: 600; }
+.detail-foot strong { color: var(--tx); font-weight: 700; }
+
 /* ============ TAGS + CALLOUTS ============ */
 .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10.5px; font-weight: 700; letter-spacing: .02em; }
 .tag.gn { background: var(--prbg); color: var(--pr2); }
@@ -561,6 +579,458 @@ const uploadedFiles = [
   { name: 'Malta_May2026_Payroll.xlsx', size: '32 KB',  time: '2026-06-08 09:18', rows: 27, status: 'gn' },
   { name: 'Malta_Apr2026_PL_v3.xlsx',   size: '46 KB',  time: '2026-05-09 14:22', rows: 82, status: 'gn' }
 ];
+
+/* ================================================================
+   PLACEHOLDER DETAIL FIXTURES
+   ---
+   All rows are OBVIOUSLY placeholder — no real names, no real amounts.
+   Moshik will re-derive from Malta payroll / vendor invoices / DO ledger.
+   Amounts are round + varied so it's visually clear this is not real data.
+================================================================ */
+// 6-month placeholder sparkline series generator (round numbers only)
+function ph_series(base) {
+  // deterministic-ish variation using base as seed
+  const out = [];
+  const seeds = [0.82, 0.90, 0.95, 1.05, 0.98, 1.00];
+  for (let i = 0; i < 6; i++) out.push(Math.round(base * seeds[i]));
+  return out;
+}
+
+const placeholderDetail = {
+  // ============ P&L DIRECT COSTS ============
+  'do-payouts': {
+    source: "Malta's DO payout ledger",
+    itemLabel: 'Data Owner',
+    rows: [
+      { label: 'Data Owner 01', curr:  95000, prev:  92000 },
+      { label: 'Data Owner 02', curr:  82000, prev:  85000 },
+      { label: 'Data Owner 03', curr:  68000, prev:  61000 },
+      { label: 'Data Owner 04', curr:  55000, prev:  58000 },
+      { label: 'Data Owner 05', curr:  42000, prev:  40000 },
+      { label: 'Data Owner 06', curr:  28000, prev:  30000 },
+      { label: 'Data Owner 07', curr:  18000, prev:  15000 }
+    ]
+  },
+  'msg-cost': {
+    source: "Malta's messaging-vendor invoices",
+    itemLabel: 'Provider',
+    rows: [
+      { label: 'Provider A · SMS EU',       curr: 42000, prev: 40000 },
+      { label: 'Provider B · SMS EU',       curr: 35000, prev: 33000 },
+      { label: 'Provider C · WhatsApp',     curr: 28000, prev: 30000 },
+      { label: 'Provider D · WhatsApp',     curr: 22000, prev: 20000 },
+      { label: 'Provider E · Voice',        curr: 18000, prev: 17000 },
+      { label: 'Provider F · Voice',        curr: 15000, prev: 14000 },
+      { label: 'Provider G · Fallback SMS', curr: 12000, prev: 13000 },
+      { label: 'Provider H · Overflow',     curr: 14000, prev: 11000 }
+    ]
+  },
+  'proxy-cost': {
+    source: "Malta's proxy + SIM vendor invoices",
+    itemLabel: 'Vendor',
+    rows: [
+      { label: 'Vendor 01 · Residential proxy', curr: 22000, prev: 24000 },
+      { label: 'Vendor 02 · Mobile proxy',       curr: 18000, prev: 19000 },
+      { label: 'Vendor 03 · SIM pool',           curr: 12000, prev: 11000 },
+      { label: 'Vendor 04 · Datacentre proxy',   curr:  6500, prev:  7000 },
+      { label: 'Vendor 05 · SIM top-ups',        curr:  5000, prev:  5500 },
+      { label: 'Vendor 06 · eSIM inventory',     curr:  3000, prev:  3200 },
+      { label: 'Vendor 07 · Misc',               curr:  1500, prev:  1300 }
+    ]
+  },
+  'ai-cost': {
+    source: "Malta's AI/API vendor invoices",
+    itemLabel: 'Vendor',
+    rows: [
+      { label: 'Vendor 01 · LLM inference A', curr: 15000, prev: 13000 },
+      { label: 'Vendor 02 · LLM inference B', curr: 10000, prev:  9000 },
+      { label: 'Vendor 03 · Data enrichment',  curr:  6500, prev:  6000 },
+      { label: 'Vendor 04 · Verification API', curr:  5000, prev:  4500 },
+      { label: 'Vendor 05 · Anti-fraud',       curr:  3000, prev:  3200 },
+      { label: 'Vendor 06 · Vector store',     curr:  2000, prev:  1800 },
+      { label: 'Vendor 07 · Misc APIs',        curr:   500, prev:   500 }
+    ]
+  },
+  // ============ P&L OPEX ============
+  'salaries': {
+    source: "Malta's payroll system",
+    itemLabel: 'Employee',
+    twoCol: true, // base + bonus split
+    rows: [
+      { label: 'Employee 01', base: 12000, bonus: 3000, curr: 15000, prev: 15000 },
+      { label: 'Employee 02', base: 11000, bonus: 2500, curr: 13500, prev: 13000 },
+      { label: 'Employee 03', base: 10000, bonus: 2000, curr: 12000, prev: 12000 },
+      { label: 'Employee 04', base:  9500, bonus: 1500, curr: 11000, prev: 11000 },
+      { label: 'Employee 05', base:  9000, bonus: 1000, curr: 10000, prev:  9500 },
+      { label: 'Employee 06', base:  8500, bonus: 1000, curr:  9500, prev:  9500 },
+      { label: 'Employee 07', base:  8000, bonus:  800, curr:  8800, prev:  8500 },
+      { label: 'Employee 08', base:  7500, bonus:  500, curr:  8000, prev:  8000 },
+      { label: 'Employee 09', base:  7000, bonus:  500, curr:  7500, prev:  7500 },
+      { label: 'Employee 10', base:  6500, bonus:  500, curr:  7000, prev:  7000 },
+      { label: 'Employee 11', base:  6000, bonus:  200, curr:  6200, prev:  6000 },
+      { label: 'Employee 12', base:  5500, bonus:  200, curr:  5700, prev:  5700 },
+      { label: 'Contractor A', base:  5000, bonus:  0,   curr:  5000, prev:  4500 },
+      { label: 'Contractor B', base:  4000, bonus:  0,   curr:  4000, prev:  4000 },
+      { label: 'Contractor C', base:  3500, bonus:  0,   curr:  3500, prev:  3000 }
+    ]
+  },
+  'infra': {
+    source: 'Azure billing portal',
+    itemLabel: 'Azure resource group',
+    rows: [
+      { label: 'Resource Group A · App services', curr: 18000, prev: 17000 },
+      { label: 'Resource Group B · SQL',           curr: 14000, prev: 14000 },
+      { label: 'Resource Group C · Storage',       curr: 10000, prev:  9500 },
+      { label: 'Resource Group D · Functions',     curr:  8000, prev:  7500 },
+      { label: 'Resource Group E · AKS',           curr:  7500, prev:  7000 },
+      { label: 'Resource Group F · Cognitive',     curr:  6500, prev:  6000 },
+      { label: 'Resource Group G · Networking',    curr:  5000, prev:  5000 },
+      { label: 'Resource Group H · Monitor',       curr:  4000, prev:  4000 },
+      { label: 'Resource Group I · Backup',        curr:  3500, prev:  3500 },
+      { label: 'Resource Group J · Misc',          curr:  7500, prev:  7500 }
+    ]
+  },
+  'tools': {
+    source: "Malta's SaaS-vendor invoices",
+    itemLabel: 'SaaS Vendor',
+    rows: [
+      { label: 'SaaS Vendor 01',  curr: 6500, prev: 6500 },
+      { label: 'SaaS Vendor 02',  curr: 5000, prev: 4500 },
+      { label: 'SaaS Vendor 03',  curr: 4500, prev: 4500 },
+      { label: 'SaaS Vendor 04',  curr: 4000, prev: 4000 },
+      { label: 'SaaS Vendor 05',  curr: 3500, prev: 3500 },
+      { label: 'SaaS Vendor 06',  curr: 3000, prev: 2800 },
+      { label: 'SaaS Vendor 07',  curr: 2500, prev: 2500 },
+      { label: 'SaaS Vendor 08',  curr: 2500, prev: 2500 },
+      { label: 'SaaS Vendor 09',  curr: 2000, prev: 2000 },
+      { label: 'SaaS Vendor 10',  curr: 1500, prev: 1300 },
+      { label: 'SaaS Vendor 11',  curr: 1500, prev: 1500 },
+      { label: 'SaaS Vendor 12',  curr: 1000, prev: 1000 },
+      { label: 'SaaS Vendor 13',  curr:  500, prev:  400 }
+    ]
+  },
+  'legal': {
+    source: "Malta's legal + compliance ledger",
+    itemLabel: 'Category',
+    rows: [
+      { label: 'Category 01 · Outside counsel',       curr: 22000, prev: 12000 },
+      { label: 'Category 02 · Compliance retainer',    curr: 15000, prev: 15000 },
+      { label: 'Category 03 · KYC / verification',     curr: 10000, prev:  6500 },
+      { label: 'Category 04 · Regulatory filings',     curr:  8000, prev:  4000 },
+      { label: 'Category 05 · Contract review',        curr:  6500, prev:  2500 },
+      { label: 'Category 06 · IP + trademark',         curr:  4000, prev:  1500 },
+      { label: 'Category 07 · Insurance',              curr:  2500, prev:  500 }
+    ]
+  },
+  'marketing': {
+    source: "Malta's marketing + BD spend log",
+    itemLabel: 'Channel / Campaign',
+    rows: [
+      { label: 'Channel A · Paid search',   curr: 5000, prev: 4500 },
+      { label: 'Channel B · Paid social',   curr: 4500, prev: 3500 },
+      { label: 'Campaign 01 · Trade show',  curr: 4000, prev: 2000 },
+      { label: 'Campaign 02 · Sponsorship', curr: 3000, prev: 3000 },
+      { label: 'Channel C · Content',       curr: 2500, prev: 2000 },
+      { label: 'Channel D · Affiliates',    curr: 1500, prev: 1500 },
+      { label: 'Campaign 03 · BD travel',   curr: 1000, prev:  800 },
+      { label: 'Channel E · Misc',          curr:  500, prev:  700 }
+    ]
+  },
+  'other-opex': {
+    source: "Malta's G&A ledger",
+    itemLabel: 'Category',
+    rows: [
+      { label: 'Category 01 · Accounting + audit',  curr: 10000, prev:  9500 },
+      { label: 'Category 02 · Rent + office',        curr:  8500, prev:  8500 },
+      { label: 'Category 03 · Travel',               curr:  6500, prev:  5500 },
+      { label: 'Category 04 · Utilities + telecom',  curr:  4500, prev:  4000 },
+      { label: 'Category 05 · Insurance',            curr:  4000, prev:  4000 },
+      { label: 'Category 06 · Bank + FX fees',       curr:  3500, prev:  1500 },
+      { label: 'Category 07 · Office supplies',      curr:  2000, prev:  1500 },
+      { label: 'Category 08 · Misc',                 curr:  1000, prev:  500 }
+    ]
+  },
+  // ============ CF LINES ============
+  'cf-do': {
+    source: "Malta's DO settlement ledger",
+    itemLabel: 'Data Owner',
+    rows: [
+      { label: 'Data Owner 01', curr: 88000, prev: 85000 },
+      { label: 'Data Owner 02', curr: 75000, prev: 78000 },
+      { label: 'Data Owner 03', curr: 62000, prev: 55000 },
+      { label: 'Data Owner 04', curr: 50000, prev: 52000 },
+      { label: 'Data Owner 05', curr: 38000, prev: 36000 },
+      { label: 'Data Owner 06', curr: 25000, prev: 28000 },
+      { label: 'Data Owner 07', curr: 15000, prev: 12000 }
+    ]
+  },
+  'cf-msg': {
+    source: "Malta's messaging-vendor payables",
+    itemLabel: 'Provider',
+    rows: [
+      { label: 'Provider A · SMS EU',       curr: 40000, prev: 38000 },
+      { label: 'Provider B · SMS EU',       curr: 32000, prev: 30000 },
+      { label: 'Provider C · WhatsApp',     curr: 26000, prev: 28000 },
+      { label: 'Provider D · WhatsApp',     curr: 20000, prev: 18000 },
+      { label: 'Provider E · Voice',        curr: 16000, prev: 15000 },
+      { label: 'Provider F · Voice',        curr: 14000, prev: 13000 },
+      { label: 'Provider G · Overflow',     curr: 12000, prev: 10000 },
+      { label: 'Provider H · Fallback',     curr: 12000, prev: 12000 }
+    ]
+  },
+  'cf-proxy': {
+    source: "Malta's proxy + SIM payables",
+    itemLabel: 'Vendor',
+    rows: [
+      { label: 'Vendor 01 · Residential proxy', curr: 22000, prev: 24000 },
+      { label: 'Vendor 02 · Mobile proxy',       curr: 18000, prev: 19000 },
+      { label: 'Vendor 03 · SIM pool',           curr: 12000, prev: 11000 },
+      { label: 'Vendor 04 · Datacentre proxy',   curr:  6500, prev:  7000 },
+      { label: 'Vendor 05 · SIM top-ups',        curr:  5000, prev:  5500 },
+      { label: 'Vendor 06 · eSIM inventory',     curr:  3000, prev:  3200 },
+      { label: 'Vendor 07 · Misc',               curr:  1500, prev:  1300 }
+    ]
+  },
+  'cf-payroll': {
+    source: "Malta's payroll bank debits",
+    itemLabel: 'Employee',
+    twoCol: true,
+    rows: [
+      { label: 'Employee 01', base: 12000, bonus: 3000, curr: 15000, prev: 15000 },
+      { label: 'Employee 02', base: 11000, bonus: 2500, curr: 13500, prev: 13000 },
+      { label: 'Employee 03', base: 10000, bonus: 2000, curr: 12000, prev: 12000 },
+      { label: 'Employee 04', base:  9500, bonus: 1500, curr: 11000, prev: 11000 },
+      { label: 'Employee 05', base:  9000, bonus: 1000, curr: 10000, prev:  9500 },
+      { label: 'Employee 06', base:  8500, bonus: 1000, curr:  9500, prev:  9500 },
+      { label: 'Employee 07', base:  8000, bonus:  800, curr:  8800, prev:  8500 },
+      { label: 'Employee 08', base:  7500, bonus:  500, curr:  8000, prev:  8000 },
+      { label: 'Employee 09', base:  7000, bonus:  500, curr:  7500, prev:  7500 },
+      { label: 'Employee 10', base:  6500, bonus:  500, curr:  7000, prev:  7000 },
+      { label: 'Employee 11', base:  6000, bonus:  200, curr:  6200, prev:  6000 },
+      { label: 'Employee 12', base:  5500, bonus:  200, curr:  5700, prev:  5700 },
+      { label: 'Contractor A', base:  5000, bonus:  0,   curr:  5000, prev:  4500 },
+      { label: 'Contractor B', base:  4000, bonus:  0,   curr:  4000, prev:  4000 },
+      { label: 'Contractor C', base:  3500, bonus:  0,   curr:  3500, prev:  3000 }
+    ]
+  },
+  'cf-azure': {
+    source: 'Azure billing portal',
+    itemLabel: 'Azure resource group',
+    rows: [
+      { label: 'Resource Group A · App services', curr: 18000, prev: 17000 },
+      { label: 'Resource Group B · SQL',           curr: 14000, prev: 14000 },
+      { label: 'Resource Group C · Storage',       curr: 10000, prev:  9500 },
+      { label: 'Resource Group D · Functions',     curr:  8000, prev:  7500 },
+      { label: 'Resource Group E · AKS',           curr:  7500, prev:  7000 },
+      { label: 'Resource Group F · Cognitive',     curr:  6500, prev:  6000 },
+      { label: 'Resource Group G · Networking',    curr:  5000, prev:  5000 },
+      { label: 'Resource Group H · Monitor',       curr:  4000, prev:  4000 },
+      { label: 'Resource Group I · Backup',        curr:  3500, prev:  3500 },
+      { label: 'Resource Group J · Misc',          curr:  7500, prev:  7500 }
+    ]
+  },
+  'cf-tools': {
+    source: "Malta's SaaS-vendor payables",
+    itemLabel: 'SaaS Vendor',
+    rows: [
+      { label: 'SaaS Vendor 01',  curr: 6500, prev: 6500 },
+      { label: 'SaaS Vendor 02',  curr: 5000, prev: 4500 },
+      { label: 'SaaS Vendor 03',  curr: 4500, prev: 4500 },
+      { label: 'SaaS Vendor 04',  curr: 4000, prev: 4000 },
+      { label: 'SaaS Vendor 05',  curr: 3500, prev: 3500 },
+      { label: 'SaaS Vendor 06',  curr: 3000, prev: 2800 },
+      { label: 'SaaS Vendor 07',  curr: 2500, prev: 2500 },
+      { label: 'SaaS Vendor 08',  curr: 2500, prev: 2500 },
+      { label: 'SaaS Vendor 09',  curr: 2000, prev: 2000 },
+      { label: 'SaaS Vendor 10',  curr: 1500, prev: 1300 }
+    ]
+  },
+  'cf-legal': {
+    source: "Malta's legal + compliance payables",
+    itemLabel: 'Category',
+    rows: [
+      { label: 'Category 01 · Outside counsel',       curr: 22000, prev: 12000 },
+      { label: 'Category 02 · Compliance retainer',    curr: 15000, prev: 15000 },
+      { label: 'Category 03 · KYC / verification',     curr: 10000, prev:  6500 },
+      { label: 'Category 04 · Regulatory filings',     curr:  8000, prev:  4000 },
+      { label: 'Category 05 · Contract review',        curr:  6500, prev:  2500 },
+      { label: 'Category 06 · IP + trademark',         curr:  4000, prev:  1500 },
+      { label: 'Category 07 · Insurance',              curr:  2500, prev:  500 }
+    ]
+  },
+  // ============ STREAM (Unit Econ) drilldowns — per code ============
+  // stream detail = DO payable + Direct cost provider mix + top-3 campaigns
+  _streamDetailFor: function(code) {
+    return {
+      source: "Malta's DO ledger + provider invoices + campaign log",
+      itemLabel: 'Line item',
+      rows: [
+        // DO payable
+        { label: `${code} · Data Owner 01`,      curr: 42000, prev: 40000 },
+        { label: `${code} · Data Owner 02`,      curr: 35000, prev: 33000 },
+        { label: `${code} · Data Owner 03`,      curr: 22000, prev: 24000 },
+        // Direct cost by provider
+        { label: `${code} · Provider A messaging`, curr: 18000, prev: 16000 },
+        { label: `${code} · Provider B messaging`, curr: 12000, prev: 12000 },
+        { label: `${code} · Vendor 01 proxy`,       curr:  6500, prev:  7000 },
+        // Top campaigns
+        { label: `${code} · Campaign 01`,           curr:  8000, prev:  6500 },
+        { label: `${code} · Campaign 02`,           curr:  5000, prev:  5000 },
+        { label: `${code} · Campaign 03`,           curr:  3000, prev:  3500 }
+      ]
+    };
+  },
+  // ============ ANOMALY drilldowns — per anomaly line ============
+  'anomaly-legal': {
+    source: "Malta's legal + compliance ledger",
+    itemLabel: 'Category',
+    rows: [
+      { label: 'Category 01 · Outside counsel',    curr: 22000, prev: 12000 },
+      { label: 'Category 02 · Compliance retainer', curr: 15000, prev: 15000 },
+      { label: 'Category 03 · KYC / verification',  curr: 10000, prev:  6500 },
+      { label: 'Category 04 · Regulatory filings',  curr:  8000, prev:  4000 },
+      { label: 'Category 05 · Contract review',     curr:  6500, prev:  2500 },
+      { label: 'Category 06 · IP + trademark',      curr:  4000, prev:  1500 },
+      { label: 'Category 07 · Insurance',           curr:  2500, prev:  500 }
+    ]
+  },
+  'anomaly-ai': {
+    source: "Malta's AI/API vendor invoices",
+    itemLabel: 'Vendor',
+    rows: [
+      { label: 'Vendor 01 · LLM inference A', curr: 15000, prev: 13000 },
+      { label: 'Vendor 02 · LLM inference B', curr: 10000, prev:  9000 },
+      { label: 'Vendor 03 · Data enrichment',  curr:  6500, prev:  6000 },
+      { label: 'Vendor 04 · Verification API', curr:  5000, prev:  4500 },
+      { label: 'Vendor 05 · Anti-fraud',       curr:  3000, prev:  3200 },
+      { label: 'Vendor 06 · Vector store',     curr:  2000, prev:  1800 }
+    ]
+  },
+  'anomaly-msg': {
+    source: "Malta's messaging-vendor invoices",
+    itemLabel: 'Provider',
+    rows: [
+      { label: 'Provider A · SMS EU',       curr: 42000, prev: 40000 },
+      { label: 'Provider B · SMS EU',       curr: 35000, prev: 33000 },
+      { label: 'Provider C · WhatsApp',     curr: 28000, prev: 30000 },
+      { label: 'Provider D · WhatsApp',     curr: 22000, prev: 20000 },
+      { label: 'Provider E · Voice',        curr: 18000, prev: 17000 },
+      { label: 'Provider F · Voice',        curr: 15000, prev: 14000 }
+    ]
+  },
+  'anomaly-proxy': {
+    source: "Malta's proxy + SIM vendor invoices",
+    itemLabel: 'Vendor',
+    rows: [
+      { label: 'Vendor 01 · Residential proxy', curr: 22000, prev: 24000 },
+      { label: 'Vendor 02 · Mobile proxy',       curr: 18000, prev: 19000 },
+      { label: 'Vendor 03 · SIM pool',           curr: 12000, prev: 11000 },
+      { label: 'Vendor 04 · Datacentre proxy',   curr:  6500, prev:  7000 },
+      { label: 'Vendor 05 · SIM top-ups',        curr:  5000, prev:  5500 },
+      { label: 'Vendor 06 · eSIM inventory',     curr:  3000, prev:  3200 }
+    ]
+  }
+};
+
+/* ================================================================
+   DETAIL TABLE RENDERER
+   Emits detail-wrap HTML for a placeholder detail config.
+   Sparkline canvases are painted post-openPanel via renderDetailSparks.
+================================================================ */
+function renderPlaceholderDetail(detail, canvasPrefix) {
+  if (!detail) return '';
+  const twoCol = detail.twoCol === true;
+  const header = twoCol
+    ? `<tr><th>${detail.itemLabel}</th><th class="num">Base</th><th class="num">Bonus</th><th class="num">Current</th><th class="num">Prev</th><th class="num">MoM Δ %</th><th>6-mo</th></tr>`
+    : `<tr><th>${detail.itemLabel}</th><th class="num">Current</th><th class="num">Prev</th><th class="num">MoM Δ %</th><th>6-mo</th></tr>`;
+
+  const bodyRows = detail.rows.map((r, i) => {
+    const pct = r.prev !== 0 ? ((r.curr - r.prev) / Math.abs(r.prev)) * 100 : 0;
+    const cls = pct > 0.5 ? 'delta-up' : pct < -0.5 ? 'delta-dn' : 'delta-flat';
+    const arrow = pct > 0.5 ? '▲' : pct < -0.5 ? '▼' : '·';
+    const canvasId = `${canvasPrefix}-spark-${i}`;
+    const baseCell = twoCol ? `<td class="num">€${(r.base||0).toLocaleString('en-US')}</td><td class="num">€${(r.bonus||0).toLocaleString('en-US')}</td>` : '';
+    return `<tr>
+      <td><span class="di-name">${r.label}</span></td>
+      ${baseCell}
+      <td class="num">€${r.curr.toLocaleString('en-US')}</td>
+      <td class="num">€${r.prev.toLocaleString('en-US')}</td>
+      <td class="num ${cls}">${arrow} ${Math.abs(pct).toFixed(1)}%</td>
+      <td class="spark-cell"><canvas id="${canvasId}"></canvas></td>
+    </tr>`;
+  }).join('');
+
+  const totalCurr = detail.rows.reduce((a, r) => a + r.curr, 0);
+  const totalPrev = detail.rows.reduce((a, r) => a + r.prev, 0);
+
+  return `
+    <div class="card" style="margin-top: 14px;">
+      <h3>Detail · line items <span class="h-sub">${detail.rows.length} rows</span></h3>
+      <div class="callout warn" style="margin-bottom: 8px;">
+        <strong>🟠 Placeholder detail</strong> · Actual line items will be sourced from ${detail.source} once wired in. Totals will re-derive from real data — do not reconcile these placeholders to fixture line totals.
+      </div>
+      <div class="detail-wrap">
+        <table>
+          <thead>${header}</thead>
+          <tbody>${bodyRows}</tbody>
+        </table>
+        <div class="detail-foot">
+          <span>${detail.rows.length} placeholder rows · month: May 2026</span>
+          <span>Sum current <strong>€${totalCurr.toLocaleString('en-US')}</strong> · prev <strong>€${totalPrev.toLocaleString('en-US')}</strong></span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderDetailSparks(detail, canvasPrefix) {
+  if (!detail) return;
+  detail.rows.forEach((r, i) => {
+    const el = document.getElementById(`${canvasPrefix}-spark-${i}`);
+    if (!el) return;
+    const series = ph_series(r.curr);
+    const up = r.curr >= r.prev;
+    const c = new Chart(el, {
+      type: 'line',
+      data: {
+        labels: ['','','','','',''],
+        datasets: [{ data: series, borderColor: up ? '#DC2626' : '#059669', backgroundColor: (up ? '#DC2626' : '#059669') + '22', borderWidth: 1.3, fill: true, tension: 0.4, pointRadius: 0 }]
+      },
+      options: {
+        responsive: false, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        scales: { x: { display: false }, y: { display: false } }
+      }
+    });
+    chartRefs.push(c);
+  });
+}
+
+// Which P&L line keys have a placeholder detail?
+const PL_DETAIL_KEYS = new Set(['do-payouts','msg-cost','proxy-cost','ai-cost','salaries','infra','tools','legal','marketing','other-opex']);
+
+// Map CF line index → placeholder detail key (cfLines order)
+// 0: Opening, 1: Cash from customers, 2: DO settlement, 3: Messaging, 4: Proxy+SIM,
+// 5: Payroll, 6: Azure, 7: Tools+SaaS, 8: Legal, 9: VAT, 10: Closing
+const CF_DETAIL_KEYS = {
+  2: 'cf-do',
+  3: 'cf-msg',
+  4: 'cf-proxy',
+  5: 'cf-payroll',
+  6: 'cf-azure',
+  7: 'cf-tools',
+  8: 'cf-legal'
+};
+
+// Map anomaly line-name substring → detail key
+function anomalyDetailKey(lineName) {
+  const n = (lineName || '').toLowerCase();
+  if (n.includes('legal')) return 'anomaly-legal';
+  if (n.includes('ai') || n.includes('api')) return 'anomaly-ai';
+  if (n.includes('messaging')) return 'anomaly-msg';
+  if (n.includes('proxy') || n.includes('sim')) return 'anomaly-proxy';
+  return null;
+}
 
 /* ================================================================
    ROUTER
@@ -1191,6 +1661,8 @@ function renderPL(view) {
 function openPLPanel(idx) {
   const l = plLines[idx];
   if (l.cat === 'subtotal' || l.cat === 'total') return;
+  const detail = PL_DETAIL_KEYS.has(l.key) ? placeholderDetail[l.key] : null;
+  const detailHTML = renderPlaceholderDetail(detail, 'pl');
   openPanel(`
     <div class="panel-head">
       <h3>P&amp;L drilldown · ${l.name}</h3>
@@ -1213,6 +1685,7 @@ function openPLPanel(idx) {
         </tbody>
       </table>
     </div>
+    ${detailHTML}
     <div class="card" style="margin-top: 14px;">
       <h3>Level 3 · 12-month trend</h3>
       <div class="chart-sm"><canvas id="panel-chart"></canvas></div>
@@ -1225,12 +1698,15 @@ function openPLPanel(idx) {
       options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
     });
     chartRefs.push(c);
+    renderDetailSparks(detail, 'pl');
   }, 50);
 }
 
 function openStreamPanel(code) {
   const s = streams.find(x => x.code === code);
   const contribution = s.rev - s.do - s.cost;
+  const detail = placeholderDetail._streamDetailFor(code);
+  const detailHTML = renderPlaceholderDetail(detail, 'stream');
   openPanel(`
     <div class="panel-head">
       <h3>Stream · ${s.name}</h3>
@@ -1243,6 +1719,7 @@ function openStreamPanel(code) {
       <dt>Contribution margin</dt><dd class="pos">€${contribution/1000}K (${(contribution/s.rev*100).toFixed(1)}%)</dd>
       <dt>Mgmt allocation</dt><dd>-€${s.mgmt/1000}K</dd>
     </dl>
+    ${detailHTML}
     <div class="card" style="margin-top: 14px;">
       <h3>Revenue trend · 12 months</h3>
       <div class="chart-sm"><canvas id="panel-chart"></canvas></div>
@@ -1257,6 +1734,7 @@ function openStreamPanel(code) {
       options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
     });
     chartRefs.push(c);
+    renderDetailSparks(detail, 'stream');
   }, 50);
 }
 
@@ -1322,6 +1800,9 @@ function renderCF(view) {
 
 function openCFPanel(idx) {
   const l = cfLines[idx];
+  const detailKey = CF_DETAIL_KEYS[idx];
+  const detail = detailKey ? placeholderDetail[detailKey] : null;
+  const detailHTML = renderPlaceholderDetail(detail, 'cf');
   openPanel(`
     <div class="panel-head">
       <h3>Cash flow · ${l.name}</h3>
@@ -1331,6 +1812,7 @@ function openCFPanel(idx) {
       <dt>May 2026 amount</dt><dd>${l.may >= 0 ? '€' : '-€'}${Math.abs(l.may)}K</dd>
       <dt>Timing</dt><dd>${l.name.includes('T+') ? l.name.match(/T\+\d+/)[0] : 'Same-day'}</dd>
     </dl>
+    ${detailHTML}
     <div class="card" style="margin-top: 14px;">
       <h3>Trend · 12 months</h3>
       <div class="chart-sm"><canvas id="panel-chart"></canvas></div>
@@ -1343,6 +1825,7 @@ function openCFPanel(idx) {
       options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
     });
     chartRefs.push(c);
+    renderDetailSparks(detail, 'cf');
   }, 50);
 }
 
@@ -1829,6 +2312,9 @@ function renderAnomaly(view) {
 
 function openAnomalyPanel(idx) {
   const a = anomalies[idx];
+  const detailKey = anomalyDetailKey(a.line);
+  const detail = detailKey ? placeholderDetail[detailKey] : null;
+  const detailHTML = renderPlaceholderDetail(detail, 'anom');
   openPanel(`
     <div class="panel-head">
       <h3>Anomaly · ${a.line}</h3>
@@ -1842,6 +2328,7 @@ function openAnomalyPanel(idx) {
       <dt>Approver</dt><dd>${a.sev === 'red' ? 'Oren (partner)' : 'Moshik (CFO)'}</dd>
       <dt>Status</dt><dd>${a.sev === 'red' ? 'Awaiting sign-off' : 'Auto-cleared'}</dd>
     </dl>
+    ${detailHTML}
     <div class="card" style="margin-top: 14px;">
       <h3>Line trend · 12 months</h3>
       <div class="chart-sm"><canvas id="panel-chart"></canvas></div>
@@ -1854,6 +2341,7 @@ function openAnomalyPanel(idx) {
       options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
     });
     chartRefs.push(c);
+    renderDetailSparks(detail, 'anom');
   }, 50);
 }
 
