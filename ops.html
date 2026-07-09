@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galaxy&apos;s Operational Concept</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 100%; height: 100%; overflow: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #F3F4F6;
+}
+
+:root {
+  --bg: #FFFFFF; --bg2: #F9FAFB; --bg3: #F3F4F6;
+  --bd: #E5E7EB; --bd2: #D1D5DB; --bd3: #9CA3AF;
+  --tx: #111827; --tx2: #374151; --tx3: #6B7280; --tx4: #9CA3AF; --tx5: #D1D5DB;
+  --pr: #059669; --pr2: #047857; --prbg: #D1FAE5; --prbg2: #ECFDF5;
+  --rd: #DC2626; --rdbg: #FEE2E2; --rdbg2: #FEF2F2;
+  --am: #D97706; --ambg: #FEF3C7; --ambg2: #FFFBEB;
+  --bl: #2563EB; --blbg: #DBEAFE; --blbg2: #EFF6FF;
+  --pu: #7C3AED; --pubg: #EDE9FE;
+
+  /* Foundation grayscale — lightest on top (Analysis) to darkest on bottom (Tech) */
+  --f-analysis-fill: #F3F4F6;
+  --f-analysis-stroke: #D1D5DB;
+  --f-product-fill:  #D1D5DB;
+  --f-product-stroke: #9CA3AF;
+  --f-tech-fill:     #6B7280;
+  --f-tech-stroke:   #4B5563;
+}
+
+body { display: flex; flex-direction: column; height: 100vh; }
+
+/* ============ HEADER ============ */
+.header {
+  background: var(--bg);
+  border-bottom: 1px solid var(--bd);
+  padding: 20px 40px 18px;
+  flex: 0 0 auto;
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.03);
+  position: relative;
+}
+.header .eyebrow {
+  font-size: 11px; color: var(--pr); font-weight: 700;
+  text-transform: uppercase; letter-spacing: .12em;
+}
+.header h1 {
+  font-size: 26px; font-weight: 800; color: var(--tx);
+  letter-spacing: -.02em;
+}
+.header .sub {
+  font-size: 14px; color: var(--tx3); font-weight: 500;
+  margin-top: 4px;
+}
+.header .spacer { display: none; }
+.header .meta {
+  position: absolute; top: 20px; right: 40px;
+  font-size: 12px; color: var(--tx4);
+  display: flex; gap: 16px;
+}
+.header .meta strong { color: var(--tx2); font-weight: 600; }
+
+/* ============ MAIN CANVAS ============ */
+.canvas {
+  flex: 1 1 0; min-height: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 16px 24px 16px;
+  gap: 12px;
+}
+
+.diagram-wrap {
+  flex: 1 1 0; min-height: 0; width: 100%;
+  max-width: 1600px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+
+svg.diagram {
+  width: 100%; height: 100%;
+  max-height: 100%;
+  display: block;
+  margin: auto;
+}
+
+/* ============ SVG ELEMENT STYLES ============ */
+.node {
+  cursor: pointer;
+  transition: opacity .2s ease, transform .2s ease;
+}
+.node text { pointer-events: none; }
+.node .pill-bg {
+  transition: filter .2s ease;
+}
+.node:hover .pill-bg {
+  filter: drop-shadow(0 3px 8px rgba(0,0,0,.14));
+}
+
+/* dim non-hovered when any node hovered */
+svg.diagram:hover .node:not(:hover) { opacity: .35; }
+svg.diagram:hover .edge:not(:hover) { opacity: .3; }
+svg.diagram:hover .foundation:not(:hover) { opacity: .45; }
+
+.triangle-fill {
+  fill: #FAFAFA;
+  stroke: #E5E7EB;
+  stroke-width: 1.5;
+  stroke-dasharray: 4 4;
+}
+
+/* Edges — two flavors */
+.edge {
+  fill: none;
+  stroke-linecap: round;
+  cursor: pointer;
+  transition: opacity .2s ease, stroke-width .2s ease;
+}
+.edge.spoke {
+  stroke: var(--pr);
+  stroke-width: 2;
+}
+.edge.side {
+  stroke: var(--am);
+  stroke-width: 2;
+}
+.edge:hover { stroke-width: 3.25; }
+
+.edge-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  fill: #6B7280;
+  pointer-events: none;
+}
+.edge-label.side  { fill: #B45309; }
+.edge-label.spoke { fill: #047857; }
+.edge-label-bg {
+  fill: #FFFFFF;
+  stroke: #E5E7EB;
+  stroke-width: 1;
+}
+
+.foundation {
+  cursor: pointer;
+  transition: opacity .2s ease, filter .2s ease;
+}
+.foundation:hover { filter: drop-shadow(0 4px 10px rgba(0,0,0,.12)); }
+.foundation text { pointer-events: none; }
+
+/* ============ OPS MACHINE — rotating rings ============ */
+/* Guy: "OPS needs to have a round-shape movement style around it → make the machine work." */
+.ops-ring {
+  transform-origin: 600px 298px;
+  transform-box: fill-box;
+}
+/* fallback for engines that don't honor transform-box on <g>: we set explicit origin via CSS var + attr */
+.ops-ring-1 {
+  animation: opsSpinCW 18s linear infinite;
+  transform-origin: 600px 298px;
+}
+.ops-ring-2 {
+  animation: opsSpinCCW 26s linear infinite;
+  transform-origin: 600px 298px;
+}
+.ops-ring-3 {
+  animation: opsSpinCW 12s linear infinite;
+  transform-origin: 600px 298px;
+}
+.ops-orbit {
+  animation: opsSpinCW 14s linear infinite;
+  transform-origin: 600px 298px;
+}
+
+@keyframes opsSpinCW {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes opsSpinCCW {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ops-ring-1, .ops-ring-2, .ops-ring-3, .ops-orbit { animation: none; }
+}
+
+/* ============ LEGEND ============ */
+.legend {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.legend-card {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 8px;
+  padding: 12px 16px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.03);
+}
+.legend-card h3 {
+  font-size: 11px; font-weight: 700; color: var(--tx3);
+  text-transform: uppercase; letter-spacing: .06em;
+  margin-bottom: 8px;
+}
+.legend-items {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.legend-item {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12.5px; color: var(--tx2); line-height: 1.4;
+}
+.swatch {
+  width: 14px; height: 14px; border-radius: 3px;
+  flex: 0 0 auto; border: 1px solid var(--bd2);
+}
+.swatch.blue { background: var(--bl); border-color: var(--bl); }
+.swatch.green { background: var(--pr); border-color: var(--pr2); }
+.swatch.amber { background: var(--am); border-color: var(--am); }
+.swatch.f-analysis { background: var(--f-analysis-fill); border-color: var(--f-analysis-stroke); }
+.swatch.f-product  { background: var(--f-product-fill);  border-color: var(--f-product-stroke); }
+.swatch.f-tech     { background: var(--f-tech-fill);     border-color: var(--f-tech-stroke); }
+.legend-item strong { color: var(--tx); font-weight: 700; }
+
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="eyebrow">Operating Model</div>
+  <h1>Galaxy&apos;s Operational Concept</h1>
+  <div class="sub">Every entity talks to every entity — Ops is the running machine</div>
+</div>
+
+<div class="canvas">
+
+  <div class="diagram-wrap">
+    <svg class="diagram" viewBox="0 0 1200 780" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+
+      <!-- ARROWHEAD MARKERS (green for spokes, amber for triangle sides) -->
+      <defs>
+        <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5"
+                markerUnits="strokeWidth" markerWidth="5" markerHeight="5" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#059669" />
+        </marker>
+        <marker id="arrow-green-start" viewBox="0 0 10 10" refX="1" refY="5"
+                markerUnits="strokeWidth" markerWidth="5" markerHeight="5" orient="auto">
+          <path d="M 10 0 L 0 5 L 10 10 z" fill="#059669" />
+        </marker>
+        <marker id="arrow-amber" viewBox="0 0 10 10" refX="9" refY="5"
+                markerUnits="strokeWidth" markerWidth="5" markerHeight="5" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#D97706" />
+        </marker>
+        <marker id="arrow-amber-start" viewBox="0 0 10 10" refX="1" refY="5"
+                markerUnits="strokeWidth" markerWidth="5" markerHeight="5" orient="auto">
+          <path d="M 10 0 L 0 5 L 10 10 z" fill="#D97706" />
+        </marker>
+      </defs>
+
+      <!-- ================= PYRAMID (TOP 60%) ================= -->
+      <!-- Triangle apex ~ (600,110), base-left (240,455), base-right (960,455) -->
+      <polygon class="triangle-fill"
+               points="600,110 240,455 960,455" />
+
+      <!-- ============ TRIANGLE-SIDE EDGES (AMBER = entity ↔ entity) ============ -->
+      <!-- These carry bidirectional peer-to-peer flow between the 3 corners.
+           Slight curve outward so they don't collide with the spokes or the hub. -->
+
+      <!-- Side 1: Execution (apex) <-> Supply (bottom-left) — briefs / capacity -->
+      <path class="edge side" id="edge-exec-supply"
+            d="M 545 158 Q 340 260 285 420"
+            marker-start="url(#arrow-amber-start)"
+            marker-end="url(#arrow-amber)" />
+
+      <!-- Side 2: Execution (apex) <-> Demand (bottom-right) — briefs / capacity -->
+      <path class="edge side" id="edge-exec-demand"
+            d="M 655 158 Q 860 260 915 420"
+            marker-start="url(#arrow-amber-start)"
+            marker-end="url(#arrow-amber)" />
+
+      <!-- Side 3: Supply (bottom-left) <-> Demand (bottom-right) — targeting / fit -->
+      <path class="edge side" id="edge-supply-demand"
+            d="M 355 455 Q 600 545 845 455"
+            marker-start="url(#arrow-amber-start)"
+            marker-end="url(#arrow-amber)" />
+
+      <!-- ============ SPOKE EDGES (GREEN = entity ↔ Ops coordination) ============ -->
+      <!-- Straight-ish bidirectional lines from Ops (600,298) to each corner. -->
+
+      <!-- Spoke A: Ops <-> Execution (apex) -->
+      <path class="edge spoke" id="spoke-ops-exec"
+            d="M 600 226 L 600 168"
+            marker-start="url(#arrow-green-start)"
+            marker-end="url(#arrow-green)" />
+
+      <!-- Spoke B: Ops <-> Supply -->
+      <path class="edge spoke" id="spoke-ops-supply"
+            d="M 543 335 L 340 428"
+            marker-start="url(#arrow-green-start)"
+            marker-end="url(#arrow-green)" />
+
+      <!-- Spoke C: Ops <-> Demand -->
+      <path class="edge spoke" id="spoke-ops-demand"
+            d="M 657 335 L 860 428"
+            marker-start="url(#arrow-green-start)"
+            marker-end="url(#arrow-green)" />
+
+      <!-- ============ EDGE LABELS (small, subtle) ============ -->
+      <!-- Triangle-side labels — amber -->
+      <!-- BOTH sides into Execution carry CAPACITY (Supply's execution capacity + Demand's execution capacity) -->
+      <g>
+        <rect class="edge-label-bg" x="298" y="272" width="80" height="18" rx="4" />
+        <text class="edge-label side" x="338" y="285" text-anchor="middle">capacity</text>
+      </g>
+      <g>
+        <rect class="edge-label-bg" x="830" y="272" width="80" height="18" rx="4" />
+        <text class="edge-label side" x="870" y="285" text-anchor="middle">capacity</text>
+      </g>
+      <!-- Supply <-> Demand: brief & synch (moved ABOVE the curve, inside the triangle interior, to clear the Analysis · Data foundation plate at y=510) -->
+      <g>
+        <rect class="edge-label-bg" x="540" y="470" width="120" height="18" rx="4" />
+        <text class="edge-label side" x="600" y="483" text-anchor="middle">brief &amp; synch</text>
+      </g>
+
+      <!-- ============ SPOKE LABELS (Ops role on each spoke) ============ -->
+      <!-- Ops -> Supply / Ops -> Demand = SYNCH ; Ops -> Execution = MANAGE -->
+      <g>
+        <rect class="edge-label-bg" x="440" y="386" width="60" height="18" rx="4" />
+        <text class="edge-label spoke" x="470" y="399" text-anchor="middle">synch</text>
+      </g>
+      <g>
+        <rect class="edge-label-bg" x="700" y="386" width="60" height="18" rx="4" />
+        <text class="edge-label spoke" x="730" y="399" text-anchor="middle">synch</text>
+      </g>
+      <g>
+        <rect class="edge-label-bg" x="567" y="188" width="66" height="18" rx="4" />
+        <text class="edge-label spoke" x="600" y="201" text-anchor="middle">manage</text>
+      </g>
+
+      <!-- ============ APEX: Campaign Manager -> Senders (BLUE = execution) ============ -->
+      <g class="node" id="node-apex">
+        <rect class="pill-bg" x="440" y="80" width="320" height="72" rx="14" ry="14"
+              fill="#EFF6FF" stroke="#2563EB" stroke-width="1.75" />
+        <text x="600" y="105" text-anchor="middle"
+              font-family="Inter, sans-serif" font-size="11" font-weight="700"
+              fill="#2563EB" letter-spacing="1.5">EXECUTION · APEX</text>
+        <text x="600" y="132" text-anchor="middle"
+              font-family="Inter, sans-serif" font-size="16" font-weight="700"
+              fill="#111827">Campaign Manager <tspan fill="#6B7280" font-weight="500">&#8594;</tspan> Senders</text>
+      </g>
+
+      <!-- ============ CENTER HUB: Operational Manager — THE MACHINE ============ -->
+      <!-- Rendering order: rings & orbit FIRST (behind), then solid inner disc + label ON TOP. -->
+
+      <!-- Outer dashed ring — rotates CW slow -->
+      <g class="ops-ring ops-ring-1">
+        <circle cx="600" cy="298" r="105"
+                fill="none" stroke="#059669" stroke-width="1.25"
+                stroke-dasharray="6 8" opacity="0.55" />
+      </g>
+
+      <!-- Mid ring with tick marks — rotates CCW -->
+      <g class="ops-ring ops-ring-2">
+        <circle cx="600" cy="298" r="92"
+                fill="none" stroke="#10B981" stroke-width="1"
+                stroke-dasharray="2 10" opacity="0.7" />
+      </g>
+
+      <!-- Inner dashed accent — rotates CW faster -->
+      <g class="ops-ring ops-ring-3">
+        <circle cx="600" cy="298" r="80"
+                fill="none" stroke="#059669" stroke-width="1"
+                stroke-dasharray="3 5" opacity="0.55" />
+      </g>
+
+      <!-- Orbiting dots (flywheel feel) — 3 dots equidistant, rotate together -->
+      <g class="ops-orbit">
+        <circle cx="600" cy="193" r="4.5" fill="#059669" />
+        <circle cx="690.93" cy="350.5" r="4.5" fill="#10B981" />
+        <circle cx="509.07" cy="350.5" r="4.5" fill="#059669" />
+      </g>
+
+      <!-- Solid inner circle — the stable label surface -->
+      <g class="node" id="node-hub">
+        <circle class="pill-bg" cx="600" cy="298" r="66"
+                fill="#ECFDF5" stroke="#059669" stroke-width="2" />
+        <text x="600" y="273" text-anchor="middle"
+              font-family="Inter, sans-serif" font-size="9.5" font-weight="700"
+              fill="#047857" letter-spacing=".8">COORDINATE <tspan fill="#6B7280">&amp;</tspan> MG. EXECUTION</text>
+        <text x="600" y="303" text-anchor="middle"
+              font-family="Inter, sans-serif" font-size="14" font-weight="700"
+              fill="#111827">Operational</text>
+        <text x="600" y="321" text-anchor="middle"
+              font-family="Inter, sans-serif" font-size="14" font-weight="700"
+              fill="#111827">Manager</text>
+      </g>
+
+      <!-- ============ BOTTOM-LEFT: Supply — data/contacts (AMBER = supply-side input) ============ -->
+      <g class="node" id="node-supply">
+        <rect class="pill-bg" x="140" y="418" width="220" height="72" rx="14" ry="14"
+              fill="#FFFBEB" stroke="#D97706" stroke-width="1.75" />
+        <text x="250" y="443" text-anchor="middle"
+              font-family="Inter, sans-serif" font-size="11" font-weight="700"
+              fill="#D97706" letter-spacing="1.5">SUPPLY</text>
+        <text x="250" y="470" text-anchor="middle"
+              font-family="Inter, sans-serif" font-size="14" font-weight="700"
+              fill="#111827">Data / Contacts</text>
+      </g>
+
+      <!-- ============ BOTTOM-RIGHT: Demand — BizDev / Brands (AMBER = demand-side input) ============ -->
+      <g class="node" id="node-demand">
+        <rect class="pill-bg" x="840" y="418" width="220" height="72" rx="14" ry="14"
+              fill="#FFFBEB" stroke="#D97706" stroke-width="1.75" />
+        <text x="950" y="443" text-anchor="middle"
+              font-family="Inter, sans-serif" font-size="11" font-weight="700"
+              fill="#D97706" letter-spacing="1.5">DEMAND</text>
+        <text x="950" y="470" text-anchor="middle"
+              font-family="Inter, sans-serif" font-size="14" font-weight="700"
+              fill="#111827">Biz Dev · Brands</text>
+      </g>
+
+      <!-- ================= FOUNDATION PLATES (BOTTOM 40%) ================= -->
+      <!-- Perspective: each plate progressively wider and shorter -->
+
+      <!-- 1) TOP PLATE: Analysis / Data (lightest) -->
+      <g class="foundation" id="found-analysis">
+        <path d="M 300 510 L 900 510 L 940 552 L 260 552 Z"
+              fill="var(--f-analysis-fill)"
+              stroke="var(--f-analysis-stroke)" stroke-width="1.5"/>
+        <text x="600" y="536" text-anchor="middle"
+              font-family="Inter, sans-serif" font-size="14" font-weight="700"
+              fill="#374151">Analysis <tspan fill="#6B7280" font-weight="500">·</tspan> Data</text>
+      </g>
+
+      <!-- 2) MIDDLE PLATE: Product -->
+      <g class="foundation" id="found-product">
+        <path d="M 250 566 L 950 566 L 995 618 L 205 618 Z"
+              fill="var(--f-product-fill)"
+              stroke="var(--f-product-stroke)" stroke-width="1.5"/>
+        <text x="600" y="597" text-anchor="middle"
+              font-family="Inter, sans-serif" font-size="15" font-weight="700"
+              fill="#111827">Product</text>
+      </g>
+
+      <!-- 3) BOTTOM PLATE: Tech (darkest) -->
+      <g class="foundation" id="found-tech">
+        <path d="M 195 632 L 1005 632 L 1060 700 L 140 700 Z"
+              fill="var(--f-tech-fill)"
+              stroke="var(--f-tech-stroke)" stroke-width="1.5"/>
+        <text x="600" y="670" text-anchor="middle"
+              font-family="Inter, sans-serif" font-size="16" font-weight="700"
+              fill="#FFFFFF" letter-spacing=".5">Tech</text>
+      </g>
+
+      <!-- Foundation side-label -->
+      <text x="1085" y="580" text-anchor="start"
+            font-family="Inter, sans-serif" font-size="10" font-weight="700"
+            fill="#9CA3AF" letter-spacing="1.2" transform="rotate(90 1085 580)">FOUNDATIONS</text>
+
+      <!-- Pyramid side-label -->
+      <text x="115" y="260" text-anchor="start"
+            font-family="Inter, sans-serif" font-size="10" font-weight="700"
+            fill="#9CA3AF" letter-spacing="1.2" transform="rotate(-90 115 260)">OPERATING SURFACE</text>
+
+    </svg>
+  </div>
+
+  <div class="legend">
+
+    <div class="legend-card">
+      <h3>Fully-connected operating loop</h3>
+      <div class="legend-items">
+        <div class="legend-item">
+          <div class="swatch green"></div>
+          <div><strong>Ops spokes</strong> (green) — Operational Manager coordinates each of the 3 entities. The rotating rings show the machine is running.</div>
+        </div>
+        <div class="legend-item">
+          <div class="swatch amber"></div>
+          <div><strong>Entity ↔ Entity</strong> (amber) — Supply, Demand and Execution also talk directly to each other: briefs, targeting, capacity.</div>
+        </div>
+        <div class="legend-item">
+          <div class="swatch blue"></div>
+          <div><strong>Execution apex</strong> — Campaign Manager → Senders. Where coordinated intent becomes outbound traffic.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="legend-card">
+      <h3>Foundations — stacked beneath</h3>
+      <div class="legend-items">
+        <div class="legend-item">
+          <div class="swatch f-analysis"></div>
+          <div><strong>Analysis · Data</strong> — feeds every decision on the operating surface.</div>
+        </div>
+        <div class="legend-item">
+          <div class="swatch f-product"></div>
+          <div><strong>Product</strong> — the workflows and interfaces that turn decisions into operable actions.</div>
+        </div>
+        <div class="legend-item">
+          <div class="swatch f-tech"></div>
+          <div><strong>Tech</strong> — the widest plate. Everything above rests on it.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>
